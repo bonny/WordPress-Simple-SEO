@@ -32,7 +32,7 @@ see what it looks like and how it works.
 #### Why yet another SEO-plugin for WordPress?
 I felt that the existing plugins for WordPress Search Engine Optimization where a bit to complex 
 and difficult to use, especially for new users of WordPress.
-Simple SEO tries to be a simple and unobtrusive alternative.
+Simple SEO aim to be a simple and unobtrusive alternative.
 
 #### Donation and more plugins
 * If you like this plugin don't forget to [donate to support further development](http://eskapism.se/sida/donate/).
