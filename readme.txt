@@ -16,7 +16,6 @@ Thich is very important for SEO (Search Engine Optimization) reasons, but it can
 the usability of your website, making it more friendly and understandable for your visitors.
 
 #### Features
-
 - **Change the page title of your posts and pages.** This is the title that you see in the title bar of your web browser.
 - **Change the menu title label of your posts and pages.** This is the title that is shown in your menus/navigation.
 - Supports **custom post types**.
@@ -34,6 +33,10 @@ the usability of your website, making it more friendly and understandable for yo
 I felt that the existing plugins for WordPress Search Engine Optimization where a bit to complex 
 and difficult to use, especially for new users of WordPress.
 Simple SEO Optimizer tries to be a simple and unobtrusive alternative.
+
+#### Donation and more plugins
+* If you like this plugin don't forget to [donate to support further development](http://eskapism.se/sida/donate/).
+* Check out some [more WordPress plugins by me](http://wordpress.org/extend/plugins/profile/eskapism).
 
 == Installation ==
 
