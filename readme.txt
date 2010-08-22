@@ -15,6 +15,9 @@ Optimize your web site or blog by changing the title and menu output for any pag
 Thich is very important for SEO (Search Engine Optimization) reasons, but it can also increase
 the usability of your website, making it more friendly and understandable for your visitors.
 
+[Take a look at the screenshots](http://wordpress.org/extend/plugins/simple-seo/screenshots/) to 
+see what it looks like and how it works.
+
 #### Features
 - **Change the page title of your posts and pages.** This is the title that you see in the title bar of your web browser.
 - **Change the menu title label of your posts and pages.** This is the title that is shown in your menus/navigation.
@@ -27,9 +30,7 @@ the usability of your website, making it more friendly and understandable for yo
 - Uses WordPress own custom fields, so **no extra database tables**.
 - Works with most themes and plugins. (Well.. at least that's what I hope for... ;)
 
-
 #### Why yet another SEO-plugin for WordPress?
-
 I felt that the existing plugins for WordPress Search Engine Optimization where a bit to complex 
 and difficult to use, especially for new users of WordPress.
 Simple SEO Optimizer tries to be a simple and unobtrusive alternative.
