@@ -13,8 +13,7 @@ Useful for SEO and usability reasons and almost a necessarity on a CMS-like webs
 
 Optimize your web site or blog by changing the title and menu output for any page or post.
 Thich is very important for SEO (Search Engine Optimization) reasons, but it can also increase
-the usability of your website, making it more friendly and understandable for your visitors.
-
+the usability of your website, making it more friendly and understandable for your visitors. 
 [Take a look at the screenshots](http://wordpress.org/extend/plugins/simple-seo/screenshots/) to 
 see what it looks like and how it works.
 
@@ -50,8 +49,7 @@ Now go and edit a page and you should have two new options: "Custom Page Title" 
 == Screenshots ==
 
 1. Edit Page screen showing an article with modified/optimized Page Title and Menu Label.
-2. Example of a web site before using Simple SEO. It says "About us" is *four* places. That's a bit to uniform.
-3. Example of a web site after using Simple SEO. Notice that the page title and the menu label is different. Much better variation!
+2. Example of a web site after using Simple SEO. Notice that the page title, the menu label and the headline all are different from each other. Hooray for variation!
 
 == Changelog ==
 
