@@ -48,7 +48,7 @@ Now go and edit a page and you should have two new options: "Custom Page Title" 
 
 == Screenshots ==
 
-1. Edit Page screen showing an article with modified/optimized Page Title and Menu Label.
+1. Edit Page screen showing an article with modified/optimized Page Title and Menu Label. The next screenshot shows the corresponding web page.
 2. Example of a web site after using Simple SEO. Notice that the page title, the menu label and the headline all are different from each other. Hooray for variation!
 
 == Changelog ==
