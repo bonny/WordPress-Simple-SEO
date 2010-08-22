@@ -6,27 +6,26 @@ Requires at least: 3.0
 Tested up to: 3.0
 Stable tag: trunk
 
-Change the title and menu output for any page or post, which can be useful for SEO (Search Engine Optimization) reasons. It may also increase the usability of your website, making it more friendly and understandable for your visitors.
+Change the page title and menu label output for any page or post.
+Useful for SEO and usability reasons and almost a necessarity on a CMS-like website.
 
 == Description ==
 
-Change the title and menu output for any page or post, which can be useful for SEO (Search Engine Optimization) reasons. 
-It can also increase the usability of your website, making it more friendly and understandable for your visitors.
-
-With this plugin you no longer need to have a web page with the page title "About our company", 
-with the headline "About our company" and with the menu label "About our company". Instead you can have the page title say "Our company - The best since 1980", leave the headline with "About our campany", but change the menu label to read "More about our company". 
-That's a bit more variation, don't you think?
+Optimize your web site or blog by changing the title and menu output for any page or post.
+Thich is very important for SEO (Search Engine Optimization) reasons, but it can also increase
+the usability of your website, making it more friendly and understandable for your visitors.
 
 #### Features
 
-- Change the page title of your posts and pages. This is the title that you see in the title menu of your web browser.
-- Change the menu title label of your posts and pages. This is the title that is shown in your menus/navigation.
-- Make your post or page more attrictive in Googles search results, 
-- Add adding additional keywords synonyms to your pages or posts.
-- Increase usability
-- Nicely integrated into wordpress
-- No settings, just activate the plugin and you're ready to go
-- Uses WordPress own custom fields, so no extra database tables
+- **Change the page title of your posts and pages.** This is the title that you see in the title bar of your web browser.
+- **Change the menu title label of your posts and pages.** This is the title that is shown in your menus/navigation.
+- Supports **custom post types**.
+- Make your post or page **more attractive** in Google's search results (Google SERP).
+- Add additional **keywords synonyms** to your pages or posts.
+- Increase **usability**
+- **Nicely integrated** into WordPress. Looks like it was built into the core.
+- No settings, just activate the plugin and you're ready to go.
+- Uses WordPress own custom fields, so **no extra database tables**.
 - Works with most themes and plugins. (Well.. at least that's what I hope for... ;)
 
 
@@ -42,7 +41,7 @@ Simple SEO Optimizer tries to be a simple and unobtrusive alternative.
 1. Activate the plugin through the "Plugins" menu in WordPress
 1. Done!
 
-Now go and edit a page and you should have two new options: "Custom Page Title" and "Custom Menu Label"
+Now go and edit a page and you should have two new options: "Custom Page Title" and "Custom Menu Label".
 
 == Screenshots ==
 
