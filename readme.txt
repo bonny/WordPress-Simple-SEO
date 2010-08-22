@@ -38,11 +38,11 @@ Simple SEO Optimizer tries to be a simple and unobtrusive alternative.
 
 == Installation ==
 
-1. Upload the folder "simple-seo-optimizer" to "/wp-content/plugins/"
+1. Upload the folder "simple-seo" to "/wp-content/plugins/"
 1. Activate the plugin through the "Plugins" menu in WordPress
 1. Done!
 
-Now go and edit a page and you should have two new options: "Custom Page Title" and "Custom Menu label"
+Now go and edit a page and you should have two new options: "Custom Page Title" and "Custom Menu Label"
 
 == Screenshots ==
 
