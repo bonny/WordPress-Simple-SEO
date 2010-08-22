@@ -1,12 +1,30 @@
 <?php
 /*
 Plugin Name: Simple SEO
+Plugin URI: http://eskapism.se/code-playground/simple-seo/
 Description: Change the page title and menu label output for any page or post, which can be useful for SEO (Search Engine Optimization) reasons. It may also increase the usability of your website, making it more friendly and understandable for your visitors.
+Version: 0.1
+Author: Pär Thernström
+Author URI: http://eskapism.se/
+License: GPL2
 */
-/*
-simple_seo
-vid post save: spara våra värden
+
+/*  Copyright 2010  Pär Thernström (email: par.thernstrom@gmail.com)
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License, version 2, as 
+    published by the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
+
 add_action('admin_init', 'simple_seo_admin_init');
 add_action("admin_head", "simple_seo_admin_head");
 add_action("save_post", "simple_seo_save_post");
