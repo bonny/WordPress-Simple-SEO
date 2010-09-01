@@ -3,7 +3,7 @@
 Plugin Name: Simple SEO
 Plugin URI: http://eskapism.se/code-playground/simple-seo/
 Description: Change the page title and menu label output for any page or post, which can be useful for SEO (Search Engine Optimization) reasons. It may also increase the usability of your website, making it more friendly and understandable for your visitors.
-Version: 0.1
+Version: 0.2
 Author: Pär Thernström
 Author URI: http://eskapism.se/
 License: GPL2
@@ -188,7 +188,7 @@ function simple_seo_dbs_post_sidebar($arg) {
 			<label for="simple_seo_custom_page_title">Custom Page Title</label>
 			<div class="simple_seo_row_edit <?php echo ($simple_seo_use_custom_page_title) ? "" : "hidden" ?>">
 				<input class="text" type="text" name="simple_seo_custom_page_title_value" value="<?php echo $simple_seo_custom_page_title_value ?>" />
-				<div class="simple_seo_row_edit_help">The Page Title is shown in the title bar in the web browser window.</div>
+				<div class="simple_seo_row_edit_help">The Page Title is shown in search engines and in the title bar of web browsers</div>
 			</div>
 		</div>
 		<div class="simple_seo_row">

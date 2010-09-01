@@ -18,7 +18,7 @@ the usability of your website, making it more friendly and understandable for yo
 see what it looks like and how it works.
 
 #### Features
-- **Change the page title of your posts and pages.** This is the title that you see in the title bar of your web browser.
+- **Change the page title of your posts and pages.** This is the title that you see in the title bar of your web browser. It is also the title that shows up in search engines like Google.
 - **Change the menu title label of your posts and pages.** This is the title that is shown in your menus/navigation.
 - Supports **custom post types**.
 - Make your post or page **more attractive** in Google's search results (Google SERP).
@@ -52,6 +52,9 @@ Now go and edit a page and you should have two new options: "Custom Page Title" 
 2. Example of a web site after using Simple SEO. Notice that the page title, the menu label and the headline all are different from each other. Hooray for variation!
 
 == Changelog ==
+
+= 0.2 =
+- Some text changes
 
 = 0.1 =
 - It's kinda the first version. Works fine for me. Let me know if it works for you!
