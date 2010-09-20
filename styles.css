@@ -1,0 +1,36 @@
+
+#simple_seo_edit_wrapper {
+	font-size: 11px;
+	margin: 8px 0 -10px 6px;
+	overflow: auto;
+}
+#simple_seo_edit_wrapper input.text {
+	font-size: 11px;
+	width: 100%;
+}
+#simple_seo_edit_wrapper label {
+	cursor: pointer;
+	
+}
+.simple_seo_row {
+	clear: both;
+}
+.simple_seo_row_edit {
+	/* margin-left: 18px; */
+	float: left;
+	margin-left: 10px;
+	width: 50%;
+}
+.simple_seo_row_edit_help {
+	font-style: italic;
+}
+
+#edit-slug-box {
+	height: auto;
+	line-height: 1;
+}
+
+.simle_seo_row_checkbox_and_label {
+	float: left;
+	height: 2.2em;
+}

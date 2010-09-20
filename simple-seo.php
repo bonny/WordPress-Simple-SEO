@@ -3,7 +3,7 @@
 Plugin Name: Simple SEO
 Plugin URI: http://eskapism.se/code-playground/simple-seo/
 Description: Change the page title and menu label output for any page or post, which can be useful for SEO (Search Engine Optimization) reasons. It may also increase the usability of your website, making it more friendly and understandable for your visitors.
-Version: 0.2
+Version: 0.3
 Author: Pär Thernström
 Author URI: http://eskapism.se/
 License: GPL2
@@ -119,28 +119,6 @@ function simple_seo_save_post($post_id) {
  */
 function simple_seo_admin_head() {
 	?>
-	<style type="text/css">
-		#simple_seo_edit_wrapper {
-			font-size: 11px;
-			margin: 10px 0 0 6px;
-		}
-		#simple_seo_edit_wrapper input.text {
-			font-size: 11px;
-			width: 450px;
-		}
-		#simple_seo_edit_wrapper label {
-			cursor: pointer;
-		}
-		.simple_seo_row {
-			
-		}
-		.simple_seo_row_edit {
-			margin-left: 18px;
-		}
-		.simple_seo_row_edit_help {
-			font-style: italic;
-		}
-	</style>
 	<script type="text/javascript">
 /*
 		jQuery(function($) {
@@ -157,7 +135,12 @@ function simple_seo_admin_head() {
 
 function simple_seo_admin_init() {
 
+	load_plugin_textdomain('cms-tree-page-view', false, "/simple-seo/languages");
+
 	add_filter("dbx_post_sidebar", "simple_seo_dbs_post_sidebar", 10, 1);
+
+	define("SIMPLE_SEO_URL", WP_PLUGIN_URL . '/simple-seo/');
+	wp_enqueue_style( "simple_seo_styles", SIMPLE_SEO_URL . "styles.css", false );
 
 }
 
@@ -184,19 +167,23 @@ function simple_seo_dbs_post_sidebar($arg) {
 	?>
 	<div id="simple_seo_edit_wrapper">
 		<div class="simple_seo_row">
-			<input type="checkbox" name="simple_seo_custom_page_title" id="simple_seo_custom_page_title" value="1" <?php echo ($simple_seo_use_custom_page_title) ? " checked='checked' " : "" ?> />
-			<label for="simple_seo_custom_page_title">Custom Page Title</label>
+			<div class="simle_seo_row_checkbox_and_label">
+				<input type="checkbox" name="simple_seo_custom_page_title" id="simple_seo_custom_page_title" value="1" <?php echo ($simple_seo_use_custom_page_title) ? " checked='checked' " : "" ?> />
+				<label for="simple_seo_custom_page_title"><?php _e("Custom Page Title", 'simple-seo') ?></label>
+			</div>
 			<div class="simple_seo_row_edit <?php echo ($simple_seo_use_custom_page_title) ? "" : "hidden" ?>">
 				<input class="text" type="text" name="simple_seo_custom_page_title_value" value="<?php echo $simple_seo_custom_page_title_value ?>" />
-				<div class="simple_seo_row_edit_help">The Page Title is shown in search engines and in the title bar of web browsers</div>
+				<div class="hidden simple_seo_row_edit_help">The Page Title is shown in search engines and in the title bar of web browsers</div>
 			</div>
 		</div>
 		<div class="simple_seo_row">
-			<input type="checkbox" name="simple_seo_custom_menu_label" id="simple_seo_custom_menu_label" value="1" <?php echo ($simple_seo_use_custom_menu_label) ? " checked='checked '" : "" ?> />
-			<label for="simple_seo_custom_menu_label">Custom Menu Label</label>
+			<div class="simle_seo_row_checkbox_and_label">
+				<input type="checkbox" name="simple_seo_custom_menu_label" id="simple_seo_custom_menu_label" value="1" <?php echo ($simple_seo_use_custom_menu_label) ? " checked='checked '" : "" ?> />
+				<label for="simple_seo_custom_menu_label"><?php _e("Custom Menu Label", 'simple-seo') ?></label>
+			</div>
 			<div class="simple_seo_row_edit <?php echo ($simple_seo_use_custom_menu_label) ? "" : "hidden" ?>">
 				<input class="text" type="text" name="simple_seo_custom_menu_label_value" value="<?php echo $simple_seo_custom_menu_label_value ?>" />
-				<div class="simple_seo_row_edit_help">The Menu Label is the text shown for a page in for example menus.</div>
+				<div class="hidden simple_seo_row_edit_help">The Menu Label is the text shown for a page in for example menus.</div>
 			</div>
 		</div>
 	</div>
