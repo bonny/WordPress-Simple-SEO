@@ -3,7 +3,7 @@
 Plugin Name: Simple SEO
 Plugin URI: http://eskapism.se/code-playground/simple-seo/
 Description: Change the page title and menu label output for any page or post, which can be useful for SEO (Search Engine Optimization) reasons. It may also increase the usability of your website, making it more friendly and understandable for your visitors.
-Version: 0.3
+Version: 0.3.1
 Author: Pär Thernström
 Author URI: http://eskapism.se/
 License: GPL2
