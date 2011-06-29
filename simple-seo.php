@@ -3,7 +3,7 @@
 Plugin Name: Simple SEO
 Plugin URI: http://eskapism.se/code-playground/simple-seo/
 Description: Change the page title and menu label output for any page or post, which can be useful for SEO (Search Engine Optimization) reasons. It may also increase the usability of your website, making it more friendly and understandable for your visitors.
-Version: 0.3.1
+Version: 0.3.2
 Author: Pär Thernström
 Author URI: http://eskapism.se/
 License: GPL2
@@ -39,14 +39,58 @@ add_action('get_pages', 'simple_seo_get_pages', 10, 2);
  * some other plugins and templates may use it too. they get the customize for free! :)
  */
 function simple_seo_get_pages($pages, $r) {
+
+	global $wpdb;
+
+	// Get all pages that have a custom menu label
+	$arr_pages_ids = array();
 	foreach ($pages as $loop_id => $page) {
-		$use_custom_page_title = (bool) get_post_meta($page->ID, "_simple_seo_use_custom_menu_label", true);
-		if ($use_custom_page_title) {
-			$custom_menu_label = get_post_meta($page->ID, "_simple_seo_custom_menu_label_value", true);
-			$pages[$loop_id]->post_title = $custom_menu_label;
+		$arr_pages_ids[] = $page->ID;
+	}
+	$str_ids = join(",", $arr_pages_ids);
+	// echo $str_ids;
+	$sql = "
+		SELECT
+			post_id
+			#, meta_key, meta_value 
+		FROM $wpdb->postmeta 
+		WHERE 
+			post_id IN ($str_ids) 
+			AND meta_key = '_simple_seo_use_custom_menu_label' 
+			AND meta_value = 1
+		";
+	$rows = $wpdb->get_results( $sql );
+	
+	// nu har vi alla som ska ha custom menu label
+	// så hämta in alla igen fast den andra key'n då
+	$arr_pages_ids = array();
+	foreach ($rows as $row) {
+		$arr_pages_ids[] = $row->post_id;
+	}
+	$str_ids = join(",", $arr_pages_ids);
+	
+	$sql = "
+		SELECT
+			post_id,
+			meta_value
+		FROM $wpdb->postmeta 
+		WHERE 
+			post_id IN ($str_ids) 
+			AND meta_key = '_simple_seo_custom_menu_label_value'
+		";
+	$rows = $wpdb->get_results( $sql );
+	
+	// för varje hittad titel som ska ändras
+	foreach ($rows as $row) {
+		// ... leta upp rätt post och uppdatera titeln
+		foreach ($pages as $page_index => & $one_page) {
+			if ($one_page->ID == $row->post_id) {
+				$one_page->post_title = $row->meta_value;
+				break;
+			}
 		}
 	}
-	
+		
 	return $pages;
 }
 
