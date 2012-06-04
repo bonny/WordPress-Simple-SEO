@@ -3,8 +3,8 @@ Contributors: eskapism, MarsApril
 Donate link: http://eskapism.se/sida/donate/
 Tags: page, post, pages, posts, page title, menu title, menu label, title, seo, Search engine optimization, optimize, usability
 Requires at least: 3.0
-Tested up to: 3.0
-Stable tag: 0.3.2
+Tested up to: 3.3
+Stable tag: 0.3.3
 
 Change the page title and menu label output for any page or post.
 Useful for SEO and usability reasons and almost a necessarity on a CMS-like website.
@@ -52,6 +52,9 @@ Now go and edit a page and you should have two new options: "Custom Page Title" 
 2. Example of a web site after using Simple SEO. Notice that the page title, the menu label and the headline all are different from each other. Hooray for variation!
 
 == Changelog ==
+
+= 0.3.3 =
+- Fixed: it ran some SQL queries with errors in them when in admin
 
 = 0.3.2 =
 - Fixed: No longer depends on get_post_meta to fetch the setting and title for each page. Could take a long time and use a lot of queries on a site/installation with many pages.

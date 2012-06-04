@@ -3,7 +3,7 @@
 Plugin Name: Simple SEO
 Plugin URI: http://eskapism.se/code-playground/simple-seo/
 Description: Change the page title and menu label output for any page or post, which can be useful for SEO (Search Engine Optimization) reasons. It may also increase the usability of your website, making it more friendly and understandable for your visitors.
-Version: 0.3.2
+Version: 0.3.3
 Author: Pär Thernström
 Author URI: http://eskapism.se/
 License: GPL2
@@ -26,7 +26,7 @@ License: GPL2
 */
 
 add_action('admin_init', 'simple_seo_admin_init');
-add_action("admin_head", "simple_seo_admin_head");
+// add_action("admin_head", "simple_seo_admin_head");
 add_action("save_post", "simple_seo_save_post");
 add_action("single_post_title", "simple_seo_single_post_title");
 add_action('get_pages', 'simple_seo_get_pages', 10, 2);
@@ -48,18 +48,22 @@ function simple_seo_get_pages($pages, $r) {
 		$arr_pages_ids[] = $page->ID;
 	}
 	$str_ids = join(",", $arr_pages_ids);
-	// echo $str_ids;
-	$sql = "
-		SELECT
-			post_id
-			#, meta_key, meta_value 
-		FROM $wpdb->postmeta 
-		WHERE 
-			post_id IN ($str_ids) 
-			AND meta_key = '_simple_seo_use_custom_menu_label' 
-			AND meta_value = 1
-		";
-	$rows = $wpdb->get_results( $sql );
+
+	// Fetch the ids of all pages that have a custom menu label
+	$rows = array();
+	if ($str_ids) {
+		$sql = "
+			SELECT
+				post_id
+				#, meta_key, meta_value 
+			FROM $wpdb->postmeta 
+			WHERE 
+				post_id IN ($str_ids) 
+				AND meta_key = '_simple_seo_use_custom_menu_label' 
+				AND meta_value = 1
+			";
+		$rows = $wpdb->get_results( $sql );
+	}	
 	
 	// nu har vi alla som ska ha custom menu label
 	// så hämta in alla igen fast den andra key'n då
@@ -69,16 +73,19 @@ function simple_seo_get_pages($pages, $r) {
 	}
 	$str_ids = join(",", $arr_pages_ids);
 	
-	$sql = "
-		SELECT
-			post_id,
-			meta_value
-		FROM $wpdb->postmeta 
-		WHERE 
-			post_id IN ($str_ids) 
-			AND meta_key = '_simple_seo_custom_menu_label_value'
-		";
-	$rows = $wpdb->get_results( $sql );
+	$rows = array();
+	if ($str_ids) {
+		$sql = "
+			SELECT
+				post_id,
+				meta_value
+			FROM $wpdb->postmeta 
+			WHERE 
+				post_id IN ($str_ids) 
+				AND meta_key = '_simple_seo_custom_menu_label_value'
+			";
+		$rows = $wpdb->get_results( $sql );
+	}
 	
 	// för varje hittad titel som ska ändras
 	foreach ($rows as $row) {
@@ -101,7 +108,7 @@ function simple_seo_the_title($post_title, $post_id) {
 }
 */
 /**
- * change the page title. called by aciton single_post_title
+ * change the page title. called by action single_post_title
  */
 function simple_seo_single_post_title($title) {
 	global $post;
@@ -161,21 +168,10 @@ function simple_seo_save_post($post_id) {
  * Output CSS and JS in head of admin
  * @todo: perhaps move to external files
  */
-function simple_seo_admin_head() {
-	?>
-	<script type="text/javascript">
 /*
-		jQuery(function($) {
-			// append our html to the title/permalink-area, where it look so much better
-			$("#simple_seo_edit_wrapper").appendTo("#titlediv");
-			$("#simple_seo_custom_page_title,#simple_seo_custom_menu_label").click(function() {
-				$(this).closest(".simple_seo_row").find(".simple_seo_row_edit").toggle().find("input[type=text]").focus();
-			});
-		});
-*/
-	</script>
-	<?php
+function simple_seo_admin_head() {
 }
+*/
 
 function simple_seo_admin_init() {
 
