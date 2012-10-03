@@ -3,7 +3,7 @@
 Plugin Name: Simple SEO
 Plugin URI: http://eskapism.se/code-playground/simple-seo/
 Description: Change the page title and menu label output for any page or post, which can be useful for SEO (Search Engine Optimization) reasons. It may also increase the usability of your website, making it more friendly and understandable for your visitors.
-Version: 0.3.3
+Version: 0.3.4
 Author: Pär Thernström
 Author URI: http://eskapism.se/
 License: GPL2
@@ -30,7 +30,7 @@ add_action('admin_init', 'simple_seo_admin_init');
 add_action("save_post", "simple_seo_save_post");
 add_action("single_post_title", "simple_seo_single_post_title");
 add_action('get_pages', 'simple_seo_get_pages', 10, 2);
-// add_action('the_title', 'simple_seo_the_title', 10, 2);
+add_action('wp_title', 'simple_seo_wp_title', 10, 3);
 
 
 /**
@@ -102,11 +102,27 @@ function simple_seo_get_pages($pages, $r) {
 }
 
 
-/*
-function simple_seo_the_title($post_title, $post_id) {
+function simple_seo_wp_title($post_title, $sep, $seplocation) {
+
+	// If on front page and post has custom page title then append our title
+	global $post;
+	if (isset($post) && isset($post->ID)) {
+		$post_id = $post->ID;
+		$use_custom_page_title = (bool) get_post_meta($post_id, "_simple_seo_use_custom_page_title", true);
+
+		if (is_front_page() && $use_custom_page_title) {
+			$custom_page_title_value = (string) get_post_meta($post_id, "_simple_seo_custom_page_title_value", true);
+			$post_title = $custom_page_title_value;
+			if ( !empty($post_title) ) {
+				$post_title .= " $sep ";
+			}
+
+		}
+	
+	}
 	return $post_title;
 }
-*/
+
 /**
  * change the page title. called by action single_post_title
  */
@@ -240,5 +256,4 @@ function simple_seo_dbs_post_sidebar($arg) {
 
 	<?php
 }
-
 
