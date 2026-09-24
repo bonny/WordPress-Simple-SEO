@@ -1,0 +1,15 @@
+services:
+  # Lightweight PHP service for linting (phpcs, phpstan), modeled on CMS Tree
+  # Page View. Runs the tooling on a pinned PHP version, independent of the host.
+  #
+  #   docker compose run --rm php-lint composer check
+  #   PHP_CLI_VERSION=74 docker compose run --rm php-lint composer check
+  php-lint:
+    image: dockette/ci:php${PHP_CLI_VERSION:-81}
+    init: true
+    container_name: simple-seo-php-lint
+    profiles:
+      - noautostart
+    working_dir: /srv
+    volumes:
+      - ./:/srv

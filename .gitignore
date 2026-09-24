@@ -1,0 +1,9 @@
+# macOS
+.DS_Store
+
+# WordPress.org SVN working copy (release tooling)
+.svn
+
+# Composer / static-analysis tooling
+/vendor/
+.phpcs.cache

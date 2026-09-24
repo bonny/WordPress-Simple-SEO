@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<ruleset name="Simple-SEO">
+	<description>Coding standards for Simple SEO. Modeled on CMS Tree Page View.</description>
+
+	<!-- Show sniff codes and progress; use colors. -->
+	<arg value="ps"/>
+	<arg name="colors"/>
+	<arg name="extensions" value="php"/>
+	<arg name="cache"/>
+	<arg name="basepath" value="./"/>
+
+	<file>.</file>
+
+	<exclude-pattern>*/vendor/</exclude-pattern>
+	<exclude-pattern>*/languages/</exclude-pattern>
+	<exclude-pattern>*/.claude/</exclude-pattern>
+
+	<!-- Check PHP cross-version compatibility from 7.4 upward. -->
+	<config name="testVersion" value="7.4-"/>
+	<config name="minimum_wp_version" value="6.6"/>
+
+	<rule ref="WordPress">
+		<!-- Single-file procedural plugin; file/package doc blocks add no value here. -->
+		<exclude name="Squiz.Commenting.FileComment.Missing" />
+		<exclude name="Squiz.Commenting.FileComment.MissingPackageTag" />
+		<!-- Short arrays are fine. -->
+		<exclude name="Universal.Arrays.DisallowShortArraySyntax.Found" />
+		<!-- Don't enforce Yoda conditions. -->
+		<exclude name="WordPress.PHP.YodaConditions.NotYoda" />
+	</rule>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="simple-seo"/>
+			</property>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="simple_seo"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- PHP cross-version compatibility, scoped to supported WordPress versions. -->
+	<rule ref="PHPCompatibilityWP"/>
+</ruleset>
