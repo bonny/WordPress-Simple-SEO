@@ -1,5 +1,5 @@
 === Simple SEO ===
-Contributors: eskapism, MarsApril
+Contributors: eskapism
 Donate link: https://eskapism.se/sida/donate/
 Tags: seo, page title, title tag, menu label, classic editor
 Requires at least: 6.6
