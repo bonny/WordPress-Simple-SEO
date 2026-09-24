@@ -51,7 +51,10 @@ Now go and edit a page and you should have two new options: "Custom Page Title" 
 
 = Unreleased =
 - Tested with WordPress 7.1 and PHP 7.4 to 8.3.
-- Fixed: a page title box that was checked but left empty blanked the page title. It now falls back to the normal title.
+- Fixed: a page title or menu label box that was checked but left empty blanked the title or menu link. It now falls back to the normal title.
+- Fixed: the blog page could get the page title of the newest post.
+- Fixed: with "Your latest posts" on the front page, older themes could show the newest post's custom title on the home page.
+- Fixed: when another plugin saved extra posts at the same time, they could get this page's title and menu label.
 - Fixed: the fields are only saved by users who can edit the post, and HTML is stripped from the values.
 - Fixed: translations loaded the wrong text domain. Translations now come from translate.wordpress.org, so the old bundled translation template is gone.
 - Fixed: the fields were misaligned and cut off in the current WordPress admin.

@@ -1,6 +1,7 @@
 name: Deploy Tag to WordPress.org
+# Tag pushes only. No workflow_dispatch: a manual run has no tag, so the 10up action
+# would take the branch ref as the version and push main to SVN trunk.
 on:
-    workflow_dispatch:
     push:
         tags:
             # Semver (https://semver.org/) release pattern.

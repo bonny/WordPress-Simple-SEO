@@ -39,7 +39,7 @@ define( 'SIMPLE_SEO_VERSION', '0.3.4' );
 add_action( 'admin_init', 'simple_seo_admin_init' );
 add_action( 'admin_enqueue_scripts', 'simple_seo_admin_enqueue_scripts' );
 add_action( 'save_post', 'simple_seo_save_post' );
-add_filter( 'single_post_title', 'simple_seo_single_post_title' );
+add_filter( 'single_post_title', 'simple_seo_single_post_title', 10, 2 );
 add_filter( 'get_pages', 'simple_seo_get_pages' );
 add_filter( 'wp_title', 'simple_seo_wp_title', 10, 2 );
 
@@ -64,14 +64,35 @@ function simple_seo_get_pages( $pages ) {
 			continue;
 		}
 
-		$page->post_title = (string) get_post_meta( $page->ID, '_simple_seo_custom_menu_label_value', true );
+		$label = (string) get_post_meta( $page->ID, '_simple_seo_custom_menu_label_value', true );
+
+		// Checked but left empty: keep the page title instead of an empty link.
+		if ( trim( $label ) === '' ) {
+			continue;
+		}
+
+		$page->post_title = $label;
 	}
 
 	return $pages;
 }
 
 /**
- * If on front page and post has custom page title then prepend our title.
+ * The custom page title of a post, or '' when it's not turned on or left empty.
+ *
+ * @param int $post_id Post ID.
+ * @return string
+ */
+function simple_seo_get_custom_page_title( $post_id ) {
+	if ( ! get_post_meta( $post_id, '_simple_seo_use_custom_page_title', true ) ) {
+		return '';
+	}
+
+	return trim( (string) get_post_meta( $post_id, '_simple_seo_custom_page_title_value', true ) );
+}
+
+/**
+ * If a static front page has a custom page title then prepend our title.
  * Only used by old themes that still call wp_title().
  *
  * @param string $post_title Page title.
@@ -79,40 +100,35 @@ function simple_seo_get_pages( $pages ) {
  * @return string
  */
 function simple_seo_wp_title( $post_title, $sep ) {
-	global $post;
-	if ( isset( $post ) && isset( $post->ID ) ) {
-		$post_id               = $post->ID;
-		$use_custom_page_title = (bool) get_post_meta( $post_id, '_simple_seo_use_custom_page_title', true );
-
-		if ( is_front_page() && $use_custom_page_title ) {
-			$custom_page_title_value = (string) get_post_meta( $post_id, '_simple_seo_custom_page_title_value', true );
-			$post_title              = $custom_page_title_value;
-			if ( ! empty( $post_title ) ) {
-				$post_title .= " $sep ";
-			}
-		}
+	// With "Your latest posts" on the front page there is no page to take a title from.
+	if ( ! is_front_page() || get_option( 'show_on_front' ) !== 'page' ) {
+		return $post_title;
 	}
-	return $post_title;
+
+	$custom_page_title = simple_seo_get_custom_page_title( get_queried_object_id() );
+	if ( $custom_page_title === '' ) {
+		return $post_title;
+	}
+
+	return "$custom_page_title $sep ";
 }
 
 /**
  * Change the page title. Called by filter single_post_title.
  *
- * @param string $title Page title.
+ * @param string       $title Page title.
+ * @param WP_Post|null $_post The post the title is for. On the blog page this is the
+ *                            page, while global $post is the first post in the list.
  * @return string
  */
-function simple_seo_single_post_title( $title ) {
-	global $post;
-	if ( isset( $post ) && isset( $post->ID ) ) {
-		$post_id                 = $post->ID;
-		$use_custom_page_title   = (bool) get_post_meta( $post_id, '_simple_seo_use_custom_page_title', true );
-		$custom_page_title_value = (string) get_post_meta( $post_id, '_simple_seo_custom_page_title_value', true );
-		// Checked but left empty: keep the normal title instead of blanking it.
-		if ( $use_custom_page_title && trim( $custom_page_title_value ) !== '' ) {
-			$title = $custom_page_title_value;
-		}
+function simple_seo_single_post_title( $title, $_post = null ) {
+	if ( ! $_post instanceof WP_Post ) {
+		return $title;
 	}
-	return $title;
+
+	$custom_page_title = simple_seo_get_custom_page_title( $_post->ID );
+
+	return $custom_page_title !== '' ? $custom_page_title : $title;
 }
 
 /**
@@ -135,6 +151,11 @@ function simple_seo_save_post( $post_id ) {
 	}
 
 	if ( wp_is_post_revision( $post_id ) || ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+
+	// Only save to the post the form belongs to, not to other posts saved in the same request.
+	if ( ! isset( $_POST['post_ID'] ) || absint( $_POST['post_ID'] ) !== $post_id ) {
 		return;
 	}
 
