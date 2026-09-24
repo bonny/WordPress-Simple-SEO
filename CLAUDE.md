@@ -12,7 +12,7 @@ Goals for the revival: a deliberately tiny SEO plugin (a few fields per post, no
 
 This git repo was created on 2026-09-24 by replaying the WordPress.org SVN trunk history (r279243 to r607674) into git with the original authors, dates, and messages. Git tags `0.1` and `0.3.1` to `0.3.4` point at the matching trunk commits. SVN is still the release channel; GitHub (`bonny/simple-seo`, private for now) is the source of truth for development.
 
-## Current code (0.3.4)
+## Current code (0.3.5)
 
 - `simple-seo.php` holds everything: two optional fields per post, a custom page title and a custom menu label.
 - Post meta keys, which existing sites depend on, so keep reading them:
@@ -32,7 +32,25 @@ cd ../_docker-compose-to-run-on-system-boot
 docker compose run --rm wpcli_mariadb plugin list --name=simple-seo
 ```
 
+The `wordpress_php74` site has no paired wpcli service; `scripts/smoke-test.sh` shows how to run a one-off `wordpress:cli` container against it. It was installed on 2026-09-24 (admin / admin) and updated to current WordPress.
+
 Jetpack and Rank Math were deactivated on the stable site (2026-09-24) because they exhausted WP-CLI's 128M memory limit. If WP-CLI dies with "Allowed memory size exhausted" again, check for a newly activated heavy plugin, or add `--skip-plugins`.
+
+## Checks
+
+```bash
+composer install                   # once
+composer check                     # PHPCS (WPCS + PHPCompatibilityWP) and PHPStan level 5; both must be clean
+PHP_CLI_VERSION=74 docker compose run --rm php-lint composer check   # same, on PHP 7.4
+scripts/smoke-test.sh stable       # Classic Editor save + front end, WP 7.x on PHP 8.3
+scripts/smoke-test.sh php74        # same on PHP 7.4
+```
+
+The smoke test needs Simple SEO and Classic Editor active on the site. Floors are PHP 7.4 and WP 6.6, set in the plugin header, `readme.txt`, `phpcs.xml.dist` and `phpstan.neon.dist` (wp-compat). There is no baseline; any new PHPCS or PHPStan error is a regression.
+
+## Releasing
+
+`.github/workflows/deploy.yml` deploys to WordPress.org SVN (trunk + tag) with the 10up action when a semver tag is pushed. It needs the `SVN_USERNAME` and `SVN_PASSWORD` repo secrets. `.distignore` decides what ships.
 
 ## Conventions
 

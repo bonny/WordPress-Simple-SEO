@@ -20,6 +20,14 @@ README.md
 
 # Dev tooling
 .github
+vendor
+composer.json
+composer.lock
+phpcs.xml.dist
+phpstan.neon.dist
+.phpcs.cache
+compose.yaml
+scripts
 
 # WordPress.org assets (screenshots/banners/icons), synced to SVN assets/ by the
 # deploy action, not shipped inside the plugin zip
