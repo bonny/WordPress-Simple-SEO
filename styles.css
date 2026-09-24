@@ -1,26 +1,27 @@
-
 #simple_seo_edit_wrapper {
-	font-size: 11px;
-	margin: 8px 0 -10px 6px;
-	overflow: auto;
+	margin: 8px 0 0 10px;
 }
 #simple_seo_edit_wrapper input.text {
-	font-size: 11px;
 	width: 100%;
 }
 #simple_seo_edit_wrapper label {
 	cursor: pointer;
-	
 }
+
+/* One row per field: checkbox + label in a fixed column, so the inputs line up. */
 .simple_seo_row {
-	clear: both;
-	line-height: 2;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-height: 32px;
+	margin-bottom: 4px;
+}
+.simle_seo_row_checkbox_and_label {
+	flex: 0 0 160px;
 }
 .simple_seo_row_edit {
-	/* margin-left: 18px; */
-	float: left;
-	margin-left: 10px;
-	width: 50%;
+	flex: 1 1 auto;
+	max-width: 480px;
 }
 .simple_seo_row_edit_help {
 	font-style: italic;
@@ -30,9 +31,4 @@
 #edit-slug-box {
 	height: auto !important;
 	line-height: 1 !important;
-}
-
-.simle_seo_row_checkbox_and_label {
-	float: left;
-	height: 2.2em;
 }

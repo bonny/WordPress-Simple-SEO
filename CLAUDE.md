@@ -19,7 +19,7 @@ This git repo was created on 2026-09-24 by replaying the WordPress.org SVN trunk
   - `_simple_seo_use_custom_page_title` (0/1) and `_simple_seo_custom_page_title_value`
   - `_simple_seo_use_custom_menu_label` (0/1) and `_simple_seo_custom_menu_label_value`
 - The fields are printed on `dbx_post_sidebar` and moved into `#titlediv` with jQuery, so they only appear in the Classic Editor. Gutenberg support is planned for 1.0.
-- The title reaches the front end through the `single_post_title` filter, which `wp_get_document_title()` still uses. The menu label only affects `get_pages()` / `wp_list_pages()`, not nav menus or the Navigation block.
+- The title reaches the front end through the `single_post_title` filter, which `wp_get_document_title()` still uses. The menu label only affects `get_pages()` / `wp_list_pages()`. That includes the Page List block, which block themes use as the default Navigation (verified in Twenty Twenty-Five), but not custom nav menus or Navigation blocks with hand-picked links.
 
 ## Local development
 
@@ -46,7 +46,7 @@ scripts/smoke-test.sh stable       # Classic Editor save + front end, WP 7.x on 
 scripts/smoke-test.sh php74        # same on PHP 7.4
 ```
 
-The smoke test needs Simple SEO and Classic Editor active on the site. Floors are PHP 7.4 and WP 6.6, set in the plugin header, `readme.txt`, `phpcs.xml.dist` and `phpstan.neon.dist` (wp-compat). There is no baseline; any new PHPCS or PHPStan error is a regression.
+The smoke test needs Simple SEO and Classic Editor active on the site. For screenshots and a browser check, use the `visual-check` skill (`.claude/skills/visual-check/`). Floors are PHP 7.4 and WP 6.6, set in the plugin header, `readme.txt`, `phpcs.xml.dist` and `phpstan.neon.dist` (wp-compat). There is no baseline; any new PHPCS or PHPStan error is a regression.
 
 ## Releasing
 

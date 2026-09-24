@@ -63,6 +63,7 @@ Now go and edit a page and you should have two new options: "Custom Page Title" 
 - Fixed: a page title box that was checked but left empty blanked the page title. It now falls back to the normal title.
 - Fixed: the fields are only saved by users who can edit the post, and HTML is stripped from the values.
 - Fixed: translations loaded the wrong text domain.
+- Fixed: the fields were misaligned and cut off in the current WordPress admin.
 - Now requires WordPress 6.6 and PHP 7.4.
 
 = 0.3.4 =

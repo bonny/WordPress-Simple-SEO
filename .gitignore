@@ -7,3 +7,6 @@
 # Composer / static-analysis tooling
 /vendor/
 .phpcs.cache
+
+# Playwright MCP browser-session artifacts
+/.playwright-mcp/
