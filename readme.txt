@@ -1,15 +1,20 @@
 === Simple SEO (Search Engine Optimization) ===
 Contributors: eskapism, MarsApril
-Donate link: http://eskapism.se/sida/donate/
-Tags: page, post, pages, posts, page title, menu title, menu label, title, seo, Search engine optimization, optimize, usability
-Requires at least: 3.0
-Tested up to: 3.4.2
-Stable tag: 0.3.4
+Donate link: https://eskapism.se/sida/donate/
+Tags: seo, page title, title tag, menu label, classic editor
+Requires at least: 6.6
+Tested up to: 7.1
+Requires PHP: 7.4
+Stable tag: 0.3.5
+License: GPLv2
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Change the page title and menu label output for any page or post.
 Useful for SEO and usability reasons and almost a necessarity on a CMS-like website.
 
 == Description ==
+
+**Heads up: the fields only show up in the Classic Editor for now.** If you use the block editor (Gutenberg), install the [Classic Editor](https://wordpress.org/plugins/classic-editor/) plugin, or wait for Simple SEO 1.0, which adds block editor support. Titles you have already set keep working on the front end either way.
 
 Optimize your web site or blog by changing the title and menu output for any page or post.
 Thich is very important for SEO (Search Engine Optimization) reasons, but it can also increase
@@ -52,6 +57,13 @@ Now go and edit a page and you should have two new options: "Custom Page Title" 
 2. Example of a web site after using Simple SEO. Notice that the page title, the menu label and the headline all are different from each other. Hooray for variation!
 
 == Changelog ==
+
+= 0.3.5 =
+- Tested with WordPress 7.1 and PHP 7.4 to 8.3.
+- Fixed: a page title box that was checked but left empty blanked the page title. It now falls back to the normal title.
+- Fixed: the fields are only saved by users who can edit the post, and HTML is stripped from the values.
+- Fixed: translations loaded the wrong text domain.
+- Now requires WordPress 6.6 and PHP 7.4.
 
 = 0.3.4 =
 - Added: if post used on front page has a custom title, that title is prepended to the page title.

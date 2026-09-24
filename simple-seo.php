@@ -3,7 +3,11 @@
 Plugin Name: Simple SEO
 Plugin URI: http://eskapism.se/code-playground/simple-seo/
 Description: Change the page title and menu label output for any page or post, which can be useful for SEO (Search Engine Optimization) reasons. It may also increase the usability of your website, making it more friendly and understandable for your visitors.
-Version: 0.3.4
+Version: 0.3.5
+Requires at least: 6.6
+Requires PHP: 7.4
+Text Domain: simple-seo
+Domain Path: /languages
 Author: Pär Thernström
 Author URI: http://eskapism.se/
 License: GPL2
@@ -47,7 +51,7 @@ function simple_seo_get_pages($pages, $r) {
 	foreach ($pages as $loop_id => $page) {
 		$arr_pages_ids[] = $page->ID;
 	}
-	$str_ids = join(",", $arr_pages_ids);
+	$str_ids = join(",", array_map('intval', $arr_pages_ids));
 
 	// Fetch the ids of all pages that have a custom menu label
 	$rows = array();
@@ -71,7 +75,7 @@ function simple_seo_get_pages($pages, $r) {
 	foreach ($rows as $row) {
 		$arr_pages_ids[] = $row->post_id;
 	}
-	$str_ids = join(",", $arr_pages_ids);
+	$str_ids = join(",", array_map('intval', $arr_pages_ids));
 	
 	$rows = array();
 	if ($str_ids) {
@@ -124,20 +128,20 @@ function simple_seo_wp_title($post_title, $sep, $seplocation) {
 }
 
 /**
- * change the page title. called by action single_post_title
+ * change the page title. called by filter single_post_title
  */
 function simple_seo_single_post_title($title) {
 	global $post;
 	if (isset($post) && isset($post->ID)) {
 		$post_id = $post->ID;
 		$use_custom_page_title = (bool) get_post_meta($post_id, "_simple_seo_use_custom_page_title", true);
-		if ($use_custom_page_title) {
-			$custom_page_title_value = (string) get_post_meta($post_id, "_simple_seo_custom_page_title_value", true);
+		$custom_page_title_value = (string) get_post_meta($post_id, "_simple_seo_custom_page_title_value", true);
+		// Checked but left empty: keep the normal title instead of blanking it.
+		if ($use_custom_page_title && trim($custom_page_title_value) !== '') {
 			$title = $custom_page_title_value;
 		}
-		return $title;
 	}
-
+	return $title;
 }
 
 /**
@@ -160,6 +164,10 @@ function simple_seo_save_post($post_id) {
 		return $post_id;
 	}
 
+	if ( wp_is_post_revision($post_id) || !current_user_can('edit_post', $post_id) ) {
+		return $post_id;
+	}
+
 	// okej, go on and save
 	if (isset($_POST["simple_seo_custom_page_title"])) {
 		update_post_meta($post_id, "_simple_seo_use_custom_page_title", 1);
@@ -173,8 +181,8 @@ function simple_seo_save_post($post_id) {
 		update_post_meta($post_id, "_simple_seo_use_custom_menu_label", 0);
 	}
 
-	$title_value = (isset($_POST["simple_seo_custom_page_title_value"])) ? $_POST["simple_seo_custom_page_title_value"] : "";
-	$label_value = (isset($_POST["simple_seo_custom_menu_label_value"])) ? $_POST["simple_seo_custom_menu_label_value"] : "";
+	$title_value = (isset($_POST["simple_seo_custom_page_title_value"])) ? sanitize_text_field(wp_unslash($_POST["simple_seo_custom_page_title_value"])) : "";
+	$label_value = (isset($_POST["simple_seo_custom_menu_label_value"])) ? sanitize_text_field(wp_unslash($_POST["simple_seo_custom_menu_label_value"])) : "";
 	update_post_meta($post_id, "_simple_seo_custom_page_title_value", $title_value);
 	update_post_meta($post_id, "_simple_seo_custom_menu_label_value", $label_value);
 	
@@ -191,12 +199,11 @@ function simple_seo_admin_head() {
 
 function simple_seo_admin_init() {
 
-	load_plugin_textdomain('cms-tree-page-view', false, "/simple-seo/languages");
+	load_plugin_textdomain('simple-seo', false, dirname(plugin_basename(__FILE__)) . '/languages');
 
 	add_filter("dbx_post_sidebar", "simple_seo_dbs_post_sidebar", 10, 1);
 
-	define("SIMPLE_SEO_URL", WP_PLUGIN_URL . '/simple-seo/');
-	wp_enqueue_style( "simple_seo_styles", SIMPLE_SEO_URL . "styles.css", false );
+	wp_enqueue_style( "simple_seo_styles", plugins_url("styles.css", __FILE__), array(), "0.3.5" );
 
 }
 
@@ -210,36 +217,34 @@ function simple_seo_dbs_post_sidebar($arg) {
 	global $post;
 	$post_id = (int) $post->ID;
 
-	echo '<input type="hidden" name="simple_seo_save" value="' . wp_create_nonce("simple_seo_save") . '" />';
+	echo '<input type="hidden" name="simple_seo_save" value="' . esc_attr(wp_create_nonce("simple_seo_save")) . '" />';
 
 	$simple_seo_use_custom_page_title = (bool) get_post_meta($post_id, "_simple_seo_use_custom_page_title", true);
 	$simple_seo_custom_page_title_value = (string) get_post_meta($post_id, "_simple_seo_custom_page_title_value", true);
-	$simple_seo_custom_page_title_value = esc_html($simple_seo_custom_page_title_value);
 	
 	$simple_seo_use_custom_menu_label = (bool) get_post_meta($post_id, "_simple_seo_use_custom_menu_label", true);
 	$simple_seo_custom_menu_label_value = (string) get_post_meta($post_id, "_simple_seo_custom_menu_label_value", true);
-	$simple_seo_custom_menu_label_value = esc_html($simple_seo_custom_menu_label_value);
 	
 	?>
 	<div id="simple_seo_edit_wrapper">
 		<div class="simple_seo_row">
 			<div class="simle_seo_row_checkbox_and_label">
 				<input type="checkbox" name="simple_seo_custom_page_title" id="simple_seo_custom_page_title" value="1" <?php echo ($simple_seo_use_custom_page_title) ? " checked='checked' " : "" ?> />
-				<label for="simple_seo_custom_page_title"><?php _e("Custom Page Title", 'simple-seo') ?></label>
+				<label for="simple_seo_custom_page_title"><?php esc_html_e("Custom Page Title", 'simple-seo') ?></label>
 			</div>
 			<div class="simple_seo_row_edit <?php echo ($simple_seo_use_custom_page_title) ? "" : "hidden" ?>">
-				<input class="text" type="text" name="simple_seo_custom_page_title_value" value="<?php echo $simple_seo_custom_page_title_value ?>" />
-				<div class="hidden simple_seo_row_edit_help">The Page Title is shown in search engines and in the title bar of web browsers</div>
+				<input class="text" type="text" name="simple_seo_custom_page_title_value" value="<?php echo esc_attr($simple_seo_custom_page_title_value) ?>" />
+				<div class="hidden simple_seo_row_edit_help"><?php esc_html_e("The Page Title is shown in search engines and in the title bar of web browsers", 'simple-seo') ?></div>
 			</div>
 		</div>
 		<div class="simple_seo_row">
 			<div class="simle_seo_row_checkbox_and_label">
-				<input type="checkbox" name="simple_seo_custom_menu_label" id="simple_seo_custom_menu_label" value="1" <?php echo ($simple_seo_use_custom_menu_label) ? " checked='checked '" : "" ?> />
-				<label for="simple_seo_custom_menu_label"><?php _e("Custom Menu Label", 'simple-seo') ?></label>
+				<input type="checkbox" name="simple_seo_custom_menu_label" id="simple_seo_custom_menu_label" value="1" <?php echo ($simple_seo_use_custom_menu_label) ? " checked='checked' " : "" ?> />
+				<label for="simple_seo_custom_menu_label"><?php esc_html_e("Custom Menu Label", 'simple-seo') ?></label>
 			</div>
 			<div class="simple_seo_row_edit <?php echo ($simple_seo_use_custom_menu_label) ? "" : "hidden" ?>">
-				<input class="text" type="text" name="simple_seo_custom_menu_label_value" value="<?php echo $simple_seo_custom_menu_label_value ?>" />
-				<div class="hidden simple_seo_row_edit_help">The Menu Label is the text shown for a page in for example menus.</div>
+				<input class="text" type="text" name="simple_seo_custom_menu_label_value" value="<?php echo esc_attr($simple_seo_custom_menu_label_value) ?>" />
+				<div class="hidden simple_seo_row_edit_help"><?php esc_html_e("The Menu Label is the text shown for a page in for example menus.", 'simple-seo') ?></div>
 			</div>
 		</div>
 	</div>
