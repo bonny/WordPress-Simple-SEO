@@ -1,6 +1,7 @@
 name: Deploy Tag to WordPress.org
-# Tag pushes only. No workflow_dispatch: a manual run has no tag, so the 10up action
-# would take the branch ref as the version and push main to SVN trunk.
+# Tag pushes only. There's no manual trigger: a manual run from a branch gets the
+# branch ref as version and fails before committing anything to SVN, so it would
+# only add confusion. To retry a failed release, use "Re-run jobs" on the tag's run.
 on:
     push:
         tags:
