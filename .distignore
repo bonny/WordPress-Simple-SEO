@@ -1,0 +1,26 @@
+# Files and directories listed here are excluded from the distributed
+# plugin zip. Read by `wp dist-archive` and the 10up WordPress.org deploy
+# GitHub Action. Everything not listed here ships to WordPress.org.
+
+# Version control & editor metadata
+.git
+.gitignore
+.gitattributes
+.distignore
+.svn
+.DS_Store
+.vscode
+
+# Internal dev files (roadmap, todos, AI assistant config)
+.claude
+todos
+todo.md
+CLAUDE.md
+README.md
+
+# Dev tooling
+.github
+
+# WordPress.org assets (screenshots/banners/icons), synced to SVN assets/ by the
+# deploy action, not shipped inside the plugin zip
+.wordpress-org
