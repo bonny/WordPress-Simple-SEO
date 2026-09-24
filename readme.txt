@@ -55,7 +55,7 @@ Now go and edit a page and you should have two new options: "Custom Page Title" 
 - Fixed: the fields are only saved by users who can edit the post, and HTML is stripped from the values.
 - Fixed: translations loaded the wrong text domain. Translations now come from translate.wordpress.org, so the old bundled translation template is gone.
 - Fixed: the fields were misaligned and cut off in the current WordPress admin.
-- Now requires WordPress 6.6 and PHP 7.4.
+- Now requires WordPress 6.6 and PHP 7.4. On an older site? WordPress won't install this update there, and 0.3.4 keeps working just like before.
 
 = 0.3.4 =
 - Added: if post used on front page has a custom title, that title is prepended to the page title.
