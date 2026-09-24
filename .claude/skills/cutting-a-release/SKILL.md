@@ -41,6 +41,17 @@ Do **not** bump, tag or push a release unless Pär asks for it in this conversat
 - The Live Preview button uses `.wordpress-org/blueprints/blueprint.json`, which installs the released version from WordPress.org. It may need turning on in the plugin's Advanced view on WordPress.org.
 - The WordPress.org changelog is cut off at 5,000 characters. When Plugin Check warns, move the oldest entries to a `changelog.txt`. Not needed yet.
 
+## Readme or assets only, between releases
+
+`.github/workflows/readme-assets.yml` publishes `readme.txt` and `.wordpress-org/` from `main` without a new version (trunk, the stable tag's readme, and SVN `assets/`). Manual only, and it's Pär's call like a release:
+
+```bash
+gh workflow run readme-assets.yml -R bonny/simple-seo
+gh run watch -R bonny/simple-seo $(gh run list -R bonny/simple-seo --workflow readme-assets.yml --limit 1 --json databaseId -q '.[0].databaseId')
+```
+
+It publishes the readme exactly as it is on `main`. If `= Unreleased =` has lines for work that isn't released yet, those go public too, so check the readme first.
+
 ## Gotchas
 
 - The tag must match `[0-9]+.[0-9]+.[0-9]+*`. The old SVN-era tags (`0.1`, `0.3.1` … `0.3.4`) are fine: their commits have no workflow file, so pushing them runs nothing.
