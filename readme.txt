@@ -13,6 +13,9 @@ Set a custom page title and menu label for any page or post. Two fields, no sett
 
 == Description ==
 
+#### Back from the dead!
+Simple SEO slept from 2012 to 2026. That's fourteen years, 37 major WordPress releases and one block editor. Now it's awake again, dusted off, and tested with WordPress 7.1. Still small on purpose.
+
 **Heads up: the fields only show up in the Classic Editor for now.** If you use the block editor (Gutenberg), install the [Classic Editor](https://wordpress.org/plugins/classic-editor/) plugin, or wait for Simple SEO 1.0, which adds block editor support. Titles you have already set keep working on the front end either way.
 
 Change the title and menu label of any page or post, without touching the headline on the page itself.
@@ -50,6 +53,7 @@ Now go and edit a page and you should have two new options: "Custom Page Title" 
 == Changelog ==
 
 = 0.3.5 =
+- Back from the dead! The first update in fourteen years. Everything below is what the plugin needed after its long nap.
 - Tested with WordPress 7.1 and PHP 7.4 to 8.3.
 - Fixed: a page title or menu label box that was checked but left empty blanked the title or menu link. It now falls back to the normal title.
 - Fixed: the blog page could get the page title of the newest post.
