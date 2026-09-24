@@ -12,7 +12,7 @@ Goals for the revival: a deliberately tiny SEO plugin (a few fields per post, no
 
 This git repo was created on 2026-09-24 by replaying the WordPress.org SVN trunk history (r279243 to r607674) into git with the original authors, dates, and messages. Git tags `0.1` and `0.3.1` to `0.3.4` point at the matching trunk commits. SVN is still the release channel; GitHub (`bonny/simple-seo`, private for now) is the source of truth for development.
 
-## Current code (0.3.5)
+## Current code (0.3.4 + unreleased 0.3.5 work)
 
 - `simple-seo.php` holds everything: two optional fields per post, a custom page title and a custom menu label.
 - Post meta keys, which existing sites depend on, so keep reading them:
@@ -44,16 +44,20 @@ composer check                     # PHPCS (WPCS + PHPCompatibilityWP) and PHPSt
 PHP_CLI_VERSION=74 docker compose run --rm php-lint composer check   # same, on PHP 7.4
 scripts/smoke-test.sh stable       # Classic Editor save + front end, WP 7.x on PHP 8.3
 scripts/smoke-test.sh php74        # same on PHP 7.4
+scripts/plugin-check.sh            # WordPress.org Plugin Check on the .distignore build
 ```
 
-The smoke test needs Simple SEO and Classic Editor active on the site. For screenshots and a browser check, use the `visual-check` skill (`.claude/skills/visual-check/`). Floors are PHP 7.4 and WP 6.6, set in the plugin header, `readme.txt`, `phpcs.xml.dist` and `phpstan.neon.dist` (wp-compat). There is no baseline; any new PHPCS or PHPStan error is a regression.
+The smoke test needs Simple SEO and Classic Editor active on the site. For screenshots and a browser check, use the `visual-check` skill (`.claude/skills/visual-check/`). Floors are PHP 7.4 and WP 6.6, set in the plugin header, `readme.txt`, `phpcs.xml.dist` and `phpstan.neon.dist` (wp-compat). There is no baseline; any new PHPCS or PHPStan error is a regression. CI (`.github/workflows/lint.yml`) runs `composer check` on PHP 7.4 for every push and PR.
 
 ## Releasing
 
-`.github/workflows/deploy.yml` deploys to WordPress.org SVN (trunk + tag) with the 10up action when a semver tag is pushed. It needs the `SVN_USERNAME` and `SVN_PASSWORD` repo secrets. `.distignore` decides what ships.
+Use the `cutting-a-release` skill; it's Pär's call, so never bump or tag unless asked. In short: `.github/workflows/deploy.yml` deploys trunk + tag to WordPress.org SVN with the 10up action when a semver tag is pushed, and syncs `.wordpress-org/` (screenshots, Live Preview blueprint) to SVN `assets/`. It needs the `SVN_USERNAME` and `SVN_PASSWORD` repo secrets. `.distignore` decides what ships.
+
+Between releases the version stays at the last released one (`bumping-version` skill changes it) and changelog lines go under `= Unreleased =` in `readme.txt`, written for users.
 
 ## Conventions
 
 - Take tooling and conventions from `../WordPress-CMS-Tree-Page-View` (the most recent plugin Pär revived) and, behind it, Simple History. Keep it proportionate: this plugin is small.
 - Pär posts all public content himself. Draft readme copy, WordPress.org replies, and blog posts into `todo.md` or a `todos/` file and stop.
-- Readme tone: short, personal, a bit funny. See the example copy in `todo.md`.
+- Readme tone: short, personal, a bit funny. See the example copy in `todo.md` and the draft in `todos/readme-draft.md`.
+- Images: every committed PNG goes through `pngquant` then `oxipng` (see the `visual-check` skill).
