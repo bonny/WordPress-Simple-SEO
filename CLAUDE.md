@@ -19,7 +19,7 @@ This git repo was created on 2026-09-24 by replaying the WordPress.org SVN trunk
   - `_simple_seo_use_custom_page_title` (0/1) and `_simple_seo_custom_page_title_value`
   - `_simple_seo_use_custom_menu_label` (0/1) and `_simple_seo_custom_menu_label_value`
 - The fields are printed on `dbx_post_sidebar` and moved into `#titlediv` with jQuery, so they only appear in the Classic Editor. Gutenberg support is planned for 1.0.
-- The title reaches the front end through the `single_post_title` filter, which `wp_get_document_title()` still uses. The menu label only affects `get_pages()` / `wp_list_pages()`. That includes the Page List block, which block themes use as the default Navigation (verified in Twenty Twenty-Five), but not custom nav menus or Navigation blocks with hand-picked links.
+- The title reaches the front end through the `single_post_title` filter, which `wp_get_document_title()` still uses. The menu label only affects `get_pages()` / `wp_list_pages()`. That includes the Page List block (`wp-includes/blocks/page-list.php` calls `get_pages()`), which an empty Navigation block falls back to: WordPress creates a `wp_navigation` post containing `<!-- wp:page-list /-->` (verified in Twenty Twenty-Three on the php74 site). It does not reach classic menus or Navigation blocks with hand-picked Page Link blocks, which store their own labels.
 
 ## Local development
 
