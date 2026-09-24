@@ -1,16 +1,16 @@
 <?php
 /**
  * Plugin Name: Simple SEO
- * Plugin URI: http://eskapism.se/code-playground/simple-seo/
+ * Plugin URI: https://wordpress.org/plugins/simple-seo/
  * Description: Change the page title and menu label output for any page or post, which can be useful for SEO (Search Engine Optimization) reasons. It may also increase the usability of your website, making it more friendly and understandable for your visitors.
  * Version: 0.3.5
  * Requires at least: 6.6
  * Requires PHP: 7.4
  * Text Domain: simple-seo
- * Domain Path: /languages
  * Author: Pär Thernström
- * Author URI: http://eskapism.se/
- * License: GPL2
+ * Author URI: https://eskapism.se/
+ * License: GPLv2
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 /*
@@ -29,6 +29,12 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+define( 'SIMPLE_SEO_VERSION', '0.3.5' );
 
 add_action( 'admin_init', 'simple_seo_admin_init' );
 add_action( 'admin_enqueue_scripts', 'simple_seo_admin_enqueue_scripts' );
@@ -142,11 +148,10 @@ function simple_seo_save_post( $post_id ) {
 }
 
 /**
- * Load translations and hook the fields into the edit post screen.
+ * Hook the fields into the edit post screen.
+ * Translations load on their own from translate.wordpress.org (WP 4.6+).
  */
 function simple_seo_admin_init() {
-	load_plugin_textdomain( 'simple-seo', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
-
 	add_action( 'dbx_post_sidebar', 'simple_seo_dbs_post_sidebar' );
 }
 
@@ -160,7 +165,7 @@ function simple_seo_admin_enqueue_scripts( $hook_suffix ) {
 		return;
 	}
 
-	wp_enqueue_style( 'simple_seo_styles', plugins_url( 'styles.css', __FILE__ ), array(), '0.3.5' );
+	wp_enqueue_style( 'simple_seo_styles', plugins_url( 'styles.css', __FILE__ ), array(), SIMPLE_SEO_VERSION );
 }
 
 /**

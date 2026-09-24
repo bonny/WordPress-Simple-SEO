@@ -11,8 +11,9 @@
 .DS_Store
 .vscode
 
-# Internal dev files (roadmap, todos, AI assistant config)
+# Internal dev files (roadmap, todos, AI assistant config, browser test output)
 .claude
+.playwright-mcp
 todos
 todo.md
 CLAUDE.md
