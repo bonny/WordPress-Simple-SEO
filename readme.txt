@@ -5,7 +5,7 @@ Tags: seo, page title, title tag, menu label, classic editor
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.3.4
+Stable tag: 0.3.5
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,7 +49,7 @@ Now go and edit a page and you should have two new options: "Custom Page Title" 
 
 == Changelog ==
 
-= Unreleased =
+= 0.3.5 =
 - Tested with WordPress 7.1 and PHP 7.4 to 8.3.
 - Fixed: a page title or menu label box that was checked but left empty blanked the title or menu link. It now falls back to the normal title.
 - Fixed: the blog page could get the page title of the newest post.
