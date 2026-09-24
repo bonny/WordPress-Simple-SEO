@@ -47,6 +47,8 @@ scripts/smoke-test.sh php74        # same on PHP 7.4
 scripts/plugin-check.sh            # WordPress.org Plugin Check on the .distignore build
 ```
 
+`scripts/old-wp/compose.yaml` is a throwaway WordPress 4.9 / PHP 5.6 stack. WordPress before 5.2 ignores `Requires at least` / `Requires PHP` and installs updates anyway, and the 0.3.5 changelog promises old sites keep working, so keep the code runnable there (no PHP 7 syntax, no WordPress functions newer than about 3.6) until that promise is dropped. Checked on 2026-09-24: activate, save and front end all fine.
+
 The smoke test needs Simple SEO and Classic Editor active on the site. For screenshots and a browser check, use the `visual-check` skill (`.claude/skills/visual-check/`). Floors are PHP 7.4 and WP 6.6, set in the plugin header, `readme.txt`, `phpcs.xml.dist` and `phpstan.neon.dist` (wp-compat). There is no baseline; any new PHPCS or PHPStan error is a regression. CI (`.github/workflows/lint.yml`) runs `composer check` on PHP 7.4 for every push and PR.
 
 ## Releasing

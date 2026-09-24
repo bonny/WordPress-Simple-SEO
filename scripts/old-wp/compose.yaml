@@ -1,0 +1,29 @@
+# Throwaway WordPress 4.9 / PHP 5.6 to check that sites which install an update
+# despite "Requires at least" / "Requires PHP" (WordPress before 5.2 ignores them)
+# still work. http://localhost:8399, install with admin/admin via the web installer.
+#   docker compose -f scripts/old-wp/compose.yaml up -d
+#   docker compose -f scripts/old-wp/compose.yaml down -v   # when done
+name: simple-seo-oldwp
+services:
+  db:
+    image: mysql:5.7
+    platform: linux/amd64
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: wp
+      MYSQL_USER: wp
+      MYSQL_PASSWORD: wp
+  wp:
+    image: wordpress:4.9-php5.6
+    platform: linux/amd64
+    depends_on: [db]
+    ports: ["8399:80"]
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wp
+      WORDPRESS_DB_PASSWORD: wp
+      WORDPRESS_DB_NAME: wp
+      WORDPRESS_DEBUG: "1"
+      WORDPRESS_CONFIG_EXTRA: "define( 'WP_DEBUG_LOG', true ); define( 'WP_DEBUG_DISPLAY', true );"
+    volumes:
+      - ../..:/var/www/html/wp-content/plugins/simple-seo:ro

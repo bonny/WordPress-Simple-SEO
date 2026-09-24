@@ -20,3 +20,18 @@ jobs:
             - run: composer install --no-interaction --no-progress
 
             - run: composer check
+
+    # The 0.3.5 changelog promises that old sites keep working if they install the
+    # update anyway (WordPress before 5.2 ignores Requires PHP). See CLAUDE.md.
+    php56-syntax:
+        name: PHP 5.6 syntax
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+
+            - uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '5.6'
+                  coverage: none
+
+            - run: php -l simple-seo.php
