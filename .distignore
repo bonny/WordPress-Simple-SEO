@@ -14,6 +14,7 @@
 # Internal dev files (roadmap, todos, AI assistant config, browser test output)
 .claude
 .playwright-mcp
+docs
 todos
 todo.md
 CLAUDE.md
