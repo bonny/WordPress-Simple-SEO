@@ -1,0 +1,44 @@
+{
+	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
+	"meta": {
+		"title": "Simple SEO demo",
+		"author": "eskapism",
+		"description": "Classic Editor plus Simple SEO, with an About page that has a custom page title and menu label."
+	},
+	"landingPage": "/wp-admin/post.php?post=1000&action=edit",
+	"preferredVersions": {
+		"php": "8.3",
+		"wp": "latest"
+	},
+	"steps": [
+		{
+			"step": "login",
+			"username": "admin",
+			"password": "password"
+		},
+		{
+			"step": "installPlugin",
+			"pluginData": {
+				"resource": "wordpress.org/plugins",
+				"slug": "classic-editor"
+			},
+			"options": {
+				"activate": true
+			}
+		},
+		{
+			"step": "installPlugin",
+			"pluginData": {
+				"resource": "wordpress.org/plugins",
+				"slug": "simple-seo"
+			},
+			"options": {
+				"activate": true
+			}
+		},
+		{
+			"step": "runPHP",
+			"code": "<?php require_once '/wordpress/wp-load.php'; update_option( 'blogname', 'Acme Coffee Roasters' ); $id = wp_insert_post( array( 'import_id' => 1000, 'post_type' => 'page', 'post_title' => 'About us', 'post_content' => 'We have been roasting coffee in a small shed in Stockholm since 1998. These days the shed is a bit bigger.', 'post_status' => 'publish', 'menu_order' => 1 ) ); update_post_meta( $id, '_simple_seo_use_custom_page_title', 1 ); update_post_meta( $id, '_simple_seo_custom_page_title_value', 'Our story - small batch coffee from Stockholm' ); update_post_meta( $id, '_simple_seo_use_custom_menu_label', 1 ); update_post_meta( $id, '_simple_seo_custom_menu_label_value', 'About' );"
+		}
+	]
+}
