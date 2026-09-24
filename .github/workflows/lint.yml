@@ -1,0 +1,22 @@
+name: PHPCS and PHPStan
+on:
+    push:
+        branches: [main]
+    pull_request:
+jobs:
+    check:
+        name: composer check
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+
+            # PHP 7.4 is the plugin's floor, and composer.json pins the platform to it.
+            - uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '7.4'
+                  tools: composer:v2
+                  coverage: none
+
+            - run: composer install --no-interaction --no-progress
+
+            - run: composer check
