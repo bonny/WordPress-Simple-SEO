@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Simple SEO is a small WordPress plugin by Pär (eskapism), on WordPress.org at https://wordpress.org/plugins/simple-seo/ (slug `simple-seo`, about 300 active installs). It was last released as 0.3.4 in October 2012 and is now being brought back to life. The plan and its status live in [`todo.md`](todo.md).
+Simple SEO is a small WordPress plugin by Pär (eskapism), on WordPress.org at https://wordpress.org/plugins/simple-seo/ (slug `simple-seo`, about 300 active installs). It went unreleased from 0.3.4 (October 2012) until 0.3.5 (2026-09-24), the first release of the revival. The plan and its status live in [`todo.md`](todo.md).
 
 Goals for the revival: a deliberately tiny SEO plugin (a few fields per post, no settings maze, no upsells), working on modern WordPress and PHP, and a friendly home for existing users.
 
@@ -12,7 +12,7 @@ Goals for the revival: a deliberately tiny SEO plugin (a few fields per post, no
 
 This git repo was created on 2026-09-24 by replaying the WordPress.org SVN trunk history (r279243 to r607674) into git with the original authors, dates, and messages. Git tags `0.1` and `0.3.1` to `0.3.4` point at the matching trunk commits. SVN is still the release channel; GitHub (`bonny/simple-seo`, private for now) is the source of truth for development.
 
-## Current code (0.3.4 + unreleased 0.3.5 work)
+## Current code (0.3.5)
 
 - `simple-seo.php` holds everything: two optional fields per post, a custom page title and a custom menu label.
 - Post meta keys, which existing sites depend on, so keep reading them:
