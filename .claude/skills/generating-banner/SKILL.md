@@ -15,7 +15,7 @@ Both are rendered from committed sources, like CMS Tree Page View's `generating-
 
 ## Render
 
-Playwright MCP `browser_run_code_unsafe` with `filename: .claude/skills/generating-banner/render.js`. It writes `banner-772x250.png`, `banner-1544x500.png` (2x), `icon-128x128.png` and `icon-256x256.png` (transparent corners). No WordPress site needed.
+Playwright MCP `browser_run_code_unsafe` with `filename: .claude/skills/generating-banner/render.js`. It writes `icon-128x128.png` and `icon-256x256.png` (transparent corners) to `.wordpress-org/`, and `banner-772x250.png` / `banner-1544x500.png` (2x) to `bannerDir`. **The banner is not approved yet:** Pär published the icon alone on 2026-09-24 and rejected the current banner, so `bannerDir` is the gitignored `.design-drafts/`. Everything in `.wordpress-org/` is mirrored to SVN `assets/` (rsync `--delete`), so only put a banner there once it's approved. No WordPress site needed.
 
 Then compress, as for every committed PNG:
 

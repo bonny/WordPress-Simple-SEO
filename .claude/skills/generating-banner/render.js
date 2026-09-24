@@ -6,6 +6,9 @@ async (page) => {
 	const root = 'file:///path/to/WordPress-Simple-SEO';
 	const browser = page.context().browser();
 	const out = [];
+	// The banner isn't approved yet (2026-09-24), so it renders to the gitignored drafts
+	// folder. Set this to '.wordpress-org' once Pär approves a banner.
+	const bannerDir = '.design-drafts';
 
 	for ( const scale of [ 1, 2 ] ) {
 		const ctx = await browser.newContext( { viewport: { width: 772, height: 250 }, deviceScaleFactor: scale } );
@@ -13,7 +16,7 @@ async (page) => {
 		await p.goto( root + '/.claude/skills/generating-banner/banner.html' );
 		await p.evaluate( () => document.fonts.ready );
 		await p.waitForLoadState( 'networkidle' );
-		const file = scale === 1 ? '.wordpress-org/banner-772x250.png' : '.wordpress-org/banner-1544x500.png';
+		const file = bannerDir + ( scale === 1 ? '/banner-772x250.png' : '/banner-1544x500.png' );
 		await p.locator( '.banner' ).screenshot( { path: file } );
 		out.push( file );
 		await ctx.close();
