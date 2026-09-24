@@ -9,8 +9,8 @@ Both are rendered from committed sources, like CMS Tree Page View's `generating-
 
 ## Sources
 
-- `.wordpress-org/icon.svg`: the icon, source of truth. A search result card (blue title, green link, grey text) on a grape (`#8a3ffc`) to pink (`#ff6fa8`) rounded square. Picked by Pär on 2026-09-24 from three drafts.
-- `banner.html` (this folder): layout, copy and palette. Headline "Really simple SEO. *That's it.*", a search result showing the custom title from the screenshots' Acme Coffee demo, and a handwritten "your custom title" arrow.
+- `.wordpress-org/icon.svg`: the icon, source of truth. A search result card (green link line, blue title, grey text, in Google's order) on a flat sunny yellow (`#FFD23F`) rounded square. Pär picked the card from three drafts on 2026-09-24. It first had a grape to pink gradient; an art director review found that read as a polished SaaS app and blended in with the purple SEO competitors (Yoast, Rank Math), so it went flat yellow: calm but distinct, and between the family's mint Simple History and coral CMS Tree Page View. Keep it flat, no gradients.
+- `banner.html` (this folder): layout, copy and palette. Warm cream background (`#FFF8E1`) with one soft yellow glow, headline "Really simple SEO. *That's it.*", a search result showing the custom title from the screenshots' Acme Coffee demo, and handwriting in link blue (`#2f6fed`) pointing at it.
 - `fonts/`: Quicksand (headline), Nunito (brand, sub-copy), Caveat (script accent). Copied from CMS Tree Page View so the plugins look like a family; bundled so renders don't depend on system fonts.
 
 ## Render
@@ -24,7 +24,7 @@ pngquant --quality=80-95 --strip --skip-if-larger --force --ext .png .wordpress-
 oxipng -o max --strip safe .wordpress-org/banner-*.png .wordpress-org/icon-*.png
 ```
 
-2026-09-24: banner 338/116 KB -> 92/36 KB, icons 17/6 KB -> 3.4/1.9 KB. Check the gradients for banding; if they band, raise to `--quality=90-100`.
+2026-09-24 (yellow version): banner 203/80 KB -> 61/26 KB, icons 3.7/1.8 KB -> 1.2/0.6 KB. Check the gradients for banding; if they band, raise to `--quality=90-100`.
 
 ## Publish
 
