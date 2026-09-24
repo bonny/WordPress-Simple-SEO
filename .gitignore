@@ -10,3 +10,6 @@
 
 # Playwright MCP browser-session artifacts
 /.playwright-mcp/
+
+# Local design drafts (icon/banner exploration), never committed
+.design-drafts/
