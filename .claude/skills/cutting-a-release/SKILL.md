@@ -26,7 +26,7 @@ Do **not** bump, tag or push a release unless Pär asks for it in this conversat
 ## Steps
 
 1. Bump: `node .claude/skills/bumping-version/bump.mjs patch` (or `minor`, `major`, `X.Y.Z`).
-2. In `readme.txt`, rename `= Unreleased =` to `= X.Y.Z =`.
+2. In `readme.txt`, rename `= Unreleased =` to `= X.Y.Z (Month YYYY) =`, e.g. `= 0.3.5 (September 2026) =`, like Pär's other plugins.
 3. Commit both together: `Release X.Y.Z`.
 4. Push `main`, then the tag:
    ```bash
@@ -55,5 +55,5 @@ It publishes the readme exactly as it is on `main`. If `= Unreleased =` has line
 ## Gotchas
 
 - The tag must match `[0-9]+.[0-9]+.[0-9]+*`. The old SVN-era tags (`0.1`, `0.3.1` … `0.3.4`) are fine: their commits have no workflow file, so pushing them runs nothing.
-- Keep the classic `== Section ==` / `= 1.0 =` readme syntax the file already uses.
+- Keep the classic `== Section ==` / `= 1.0 (Month YYYY) =` readme syntax the file already uses.
 - Replies to the WordPress.org plugin review team are drafts only; write them into `todos/` for Pär.

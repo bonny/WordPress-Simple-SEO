@@ -52,7 +52,7 @@ Now go and edit a page and you should have two new options: "Custom Page Title" 
 
 == Changelog ==
 
-= 0.3.5 =
+= 0.3.5 (September 2026) =
 - Back from the dead! The first update in fourteen years. Everything below is what the plugin needed after its long nap.
 - Tested with WordPress 7.1 and PHP 7.4 to 8.3.
 - Fixed: a page title or menu label box that was checked but left empty blanked the title or menu link. It now falls back to the normal title.
@@ -64,25 +64,25 @@ Now go and edit a page and you should have two new options: "Custom Page Title" 
 - Fixed: the fields were misaligned and cut off in the current WordPress admin.
 - Now requires WordPress 6.6 and PHP 7.4. On an older site? WordPress won't install this update there, and 0.3.4 keeps working just like before.
 
-= 0.3.4 =
+= 0.3.4 (October 2012) =
 - Added: if post used on front page has a custom title, that title is prepended to the page title.
 
-= 0.3.3 =
+= 0.3.3 (June 2012) =
 - Fixed: it ran some SQL queries with errors in them when in admin
 
-= 0.3.2 =
+= 0.3.2 (June 2011) =
 - Fixed: No longer depends on get_post_meta to fetch the setting and title for each page. Could take a long time and use a lot of queries on a site/installation with many pages.
 
-= 0.3.1 =
+= 0.3.1 (October 2010) =
 - added POT-file. Please translate! :)
 - probably something else that I can't remember...
 
-= 0.3 =
+= 0.3 (September 2010) =
 - tried to compress the plugin space a bit.
 - prepare for translators.
 
-= 0.2 =
+= 0.2 (September 2010) =
 - Some text changes
 
-= 0.1 =
+= 0.1 (August 2010) =
 - It's kinda the first version. Works fine for me. Let me know if it works for you!
