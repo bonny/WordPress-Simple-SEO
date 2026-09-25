@@ -1,54 +1,113 @@
-// WordPress.org screenshots for Simple SEO. Run with the Playwright MCP tool
-// browser_run_code_unsafe, filename: .claude/skills/visual-check/capture-screenshots.js
-// after seed.php (see SKILL.md). Writes .wordpress-org/screenshot-1.png and -2.png
-// uncompressed; run the pngquant + oxipng step afterwards.
-async (page) => {
-	const base = 'http://wordpress-php74.test:8299';
-	const browser = page.context().browser();
-	const results = {};
+/**
+ * WordPress.org screenshots for Simple SEO 1.0. Run with the Playwright MCP tool
+ * browser_run_code_unsafe, filename: .claude/skills/visual-check/capture-screenshots.js,
+ * after seeding both sites with seed.php (see SKILL.md). Edit the two IDs first.
+ *
+ * 1. Block editor SEO panel (wp-env dev site, localhost:8315, admin / password)
+ * 2. Classic Editor box (Classic Editor site, :8314, admin / admin)
+ * 3. Settings → General, Simple SEO section (wp-env)
+ * 4. Simple History entry for an SEO change made in shot 1 (wp-env)
+ *
+ * Writes .wordpress-org/screenshot-1.png … -4.png, uncompressed. Compress after.
+ */
+async ( page ) => {
+	const WP_ENV = 'http://localhost:8315';
+	const CLASSIC = 'http://wp-playground-classiceditor.test:8314';
+	const WP_ENV_PAGE = 27; // "About us" from seed.php on wp-env.
+	const CLASSIC_PAGE = 63; // "About us" from seed.php on the Classic Editor site.
 
-	// Shot 1: the fields on the Edit Page screen, logged in, 2x for sharp text.
-	const admin = await browser.newContext( { viewport: { width: 1200, height: 800 }, deviceScaleFactor: 2 } );
-	const a = await admin.newPage();
-	await a.goto( base + '/?pagename=about-us' );
-	const aboutId = await a.evaluate( () => ( document.body.className.match( /page-id-(\d+)/ ) || [] )[ 1 ] );
-	await a.goto( base + '/wp-login.php' );
-	await a.fill( '#user_login', 'admin' );
-	await a.fill( '#user_pass', 'admin' );
-	await Promise.all( [ a.waitForNavigation(), a.click( '#wp-submit' ) ] );
-	await a.goto( base + '/wp-admin/post.php?action=edit&post=' + aboutId );
-	await a.waitForLoadState( 'networkidle' );
-	// Hide admin notices and the "Howdy" avatar noise; keep everything else stock.
-	await a.addStyleTag( { content: '.notice, .update-nag, #screen-meta-links { display: none !important; }' } );
-	const body = await a.locator( '#post-body' ).boundingBox();
-	const editor = await a.locator( '#postdivrich' ).boundingBox();
-	await a.screenshot( {
-		path: '.wordpress-org/screenshot-1.png',
-		clip: { x: body.x - 20, y: 50, width: body.width + 40, height: editor.y + 200 - 50 },
+	const context = await page
+		.context()
+		.browser()
+		.newContext( {
+			viewport: { width: 1280, height: 1100 },
+			deviceScaleFactor: 2,
+		} );
+	const p = await context.newPage();
+
+	const login = async ( base, user, pass ) => {
+		await p.goto( `${ base }/wp-login.php` );
+		await p.fill( '#user_login', user );
+		await p.fill( '#user_pass', pass );
+		await p.click( '#wp-submit' );
+		await p.waitForLoadState( 'networkidle' );
+	};
+
+	// 1. Block editor.
+	await login( WP_ENV, 'admin', 'password' );
+	await p.goto( `${ WP_ENV }/wp-admin/post.php?post=${ WP_ENV_PAGE }&action=edit` );
+	await p.waitForSelector( '.editor-header' );
+	await p.waitForTimeout( 2000 );
+	// No welcome guide, and the SEO panel open (plugin panels start collapsed).
+	await p.evaluate( () => {
+		wp.data.dispatch( 'core/preferences' ).set( 'core/edit-post', 'welcomeGuide', false );
+		const panel = 'simple-seo/simple-seo';
+		if ( ! wp.data.select( 'core/editor' ).isEditorPanelOpened( panel ) ) {
+			wp.data.dispatch( 'core/editor' ).toggleEditorPanelOpened( panel );
+		}
 	} );
-	results.shot1 = { aboutId, inputs: await a.locator( '#simple_seo_edit_wrapper input[type=text]' ).count() };
-	await admin.close();
+	const close = p.locator( '.components-modal__screen-overlay button[aria-label="Close"]' );
+	if ( await close.count() ) {
+		await close.first().click();
+	}
+	await p.waitForSelector( '.components-modal__screen-overlay', { state: 'detached' } );
+	const tab = p.getByRole( 'tab', { name: 'Page' } );
+	if ( await tab.count() ) {
+		await tab.click();
+	}
+	await p.waitForTimeout( 500 );
+	// A change for the Simple History shot.
+	await p
+		.getByRole( 'textbox', { name: 'Meta description' } )
+		.fill( 'Small batch coffee, roasted to order in a shed in Stockholm since 1998.' );
+	await p.getByRole( 'button', { name: 'Save', exact: true } ).click();
+	await p.waitForTimeout( 2500 );
+	await p.evaluate( () => document.activeElement?.blur() ); // No focus ring on Save.
+	await p.evaluate( () => {
+		const title = [ ...document.querySelectorAll( '.components-panel__body-title' ) ].find(
+			( e ) => e.textContent === 'SEO'
+		);
+		title.scrollIntoView( { block: 'start' } );
+		// Just below the sidebar's sticky tabs.
+		document.querySelector( '.interface-complementary-area' ).scrollBy( 0, -72 );
+		document.querySelector( '.components-snackbar-list' )?.remove();
+	} );
+	await p.waitForTimeout( 300 );
+	await p.screenshot( { path: '.wordpress-org/screenshot-1.png' } );
 
-	// Shot 2: the front end, logged out, with a browser tab strip showing the real <title>.
-	const visitor = await browser.newContext( { viewport: { width: 1200, height: 800 }, deviceScaleFactor: 2 } );
-	const v = await visitor.newPage();
-	await v.goto( base + '/?pagename=about-us' );
-	await v.waitForLoadState( 'networkidle' );
-	const title = await v.title();
-	await v.evaluate( ( t ) => {
-		const bar = document.createElement( 'div' );
-		bar.style.cssText = 'position:relative;z-index:99999;background:#dee1e6;padding:8px 12px 0;font:13px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;';
-		const tab = document.createElement( 'div' );
-		tab.style.cssText = 'display:inline-flex;align-items:center;gap:8px;background:#fff;border-radius:8px 8px 0 0;padding:9px 14px;max-width:560px;color:#202124;';
-		tab.innerHTML = '<span style="width:14px;height:14px;border-radius:50%;background:#7a5230;flex:none"></span><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></span>';
-		tab.lastChild.textContent = t;
-		bar.appendChild( tab );
-		document.body.prepend( bar );
-	}, title );
-	const heading = await v.locator( 'h1' ).first().boundingBox();
-	await v.screenshot( { path: '.wordpress-org/screenshot-2.png', clip: { x: 0, y: 0, width: 1200, height: heading.y + heading.height + 190 } } );
-	results.shot2 = { title, nav: await v.locator( '.wp-block-navigation' ).first().innerText() };
-	await visitor.close();
+	// 3. Settings → General.
+	await p.goto( `${ WP_ENV }/wp-admin/options-general.php` );
+	const heading = p.locator( 'h2', { hasText: 'Simple SEO' } );
+	const help = p.locator( '.simple-seo-share-image + .description, td:has(.simple-seo-share-image) .description' ).first();
+	await heading.scrollIntoViewIfNeeded();
+	const top = ( await heading.boundingBox() ).y - 16;
+	const bottom = ( await help.boundingBox() ).y + ( await help.boundingBox() ).height + 16;
+	const left = ( await heading.boundingBox() ).x - 16;
+	await p.screenshot( {
+		path: '.wordpress-org/screenshot-3.png',
+		clip: { x: left, y: top, width: 1000, height: bottom - top },
+	} );
 
-	return results;
+	// 4. Simple History.
+	await p.goto( `${ WP_ENV }/wp-admin/admin.php?page=simple_history_admin_menu_page` );
+	const entry = p.locator( 'li', { hasText: 'Updated the SEO for "About us"' } ).first();
+	await entry.waitFor();
+	await p.waitForTimeout( 800 );
+	// The li's top edge sits under the "Today" date label, so start below it.
+	const box = await entry.boundingBox();
+	await p.screenshot( {
+		path: '.wordpress-org/screenshot-4.png',
+		clip: { x: box.x, y: box.y + 24, width: box.width, height: box.height - 24 },
+	} );
+
+	// 2. Classic Editor box.
+	await login( CLASSIC, 'admin', 'admin' );
+	await p.setViewportSize( { width: 1280, height: 1120 } );
+	await p.goto( `${ CLASSIC }/wp-admin/post.php?post=${ CLASSIC_PAGE }&action=edit` );
+	await p.waitForSelector( '#simple-seo' );
+	await p.waitForTimeout( 800 );
+	await p.screenshot( { path: '.wordpress-org/screenshot-2.png' } );
+
+	await context.close();
+	return 'ok';
 }

@@ -2,16 +2,18 @@
 /**
  * Seed the demo content for the WordPress.org screenshots.
  *
- * Run with wp eval-file on the wordpress_php74 site (see SKILL.md). Idempotent:
- * deletes the pages it made last time, then recreates them. Trashes "Sample Page"
- * and sets the site title, so only point it at a throwaway test site.
+ * Run with `wp eval-file` on a throwaway site (see SKILL.md): the wp-env dev site for the
+ * block editor, settings and Simple History shots, the Classic Editor site for the Classic box.
+ * Idempotent: deletes the pages it made last time, then recreates them. Trashes "Sample Page",
+ * sets the site title and the default share image, so never point it at a real site.
  *
  * Prints the ID of the "About us" page.
  */
 
 update_option( 'blogname', 'Acme Coffee Roasters' );
+update_option( 'blogdescription', 'Small batch coffee from Stockholm' );
 
-// Pretty permalinks, so the Edit screen doesn't show ?page_id= and a "Change Permalink Structure" button.
+// Pretty permalinks, so the edit screen doesn't show ?page_id=.
 update_option( 'permalink_structure', '/%postname%/' );
 flush_rewrite_rules();
 
@@ -20,35 +22,52 @@ if ( $sample ) {
 	wp_trash_post( $sample->ID );
 }
 
-foreach ( get_posts( array( 'post_type' => 'page', 'post_status' => 'any', 'numberposts' => -1, 'meta_key' => '_simple_seo_demo' ) ) as $old ) {
+foreach ( get_posts( [ 'post_type' => 'page', 'post_status' => 'any', 'numberposts' => -1, 'meta_key' => '_simple_seo_demo' ] ) as $old ) {
 	wp_delete_post( $old->ID, true );
 }
 
-$pages = array(
-	array( 'About us', 'We have been roasting coffee in a small shed in Stockholm since 1998. These days the shed is a bit bigger.', 'Our story – small batch coffee from Stockholm', 'About' ),
-	array( 'Our coffees', 'Light, medium and dark roasts, all roasted to order.', '', '' ),
-	array( 'Contact us', 'Drop by the roastery or send us an email.', '', 'Contact' ),
-);
+// Title, content, SEO title, meta description, menu label.
+$pages = [
+	[ 'About us', 'We have been roasting coffee in a small shed in Stockholm since 1998. These days the shed is a bit bigger.', 'Our story – small batch coffee from Stockholm', 'Small batch coffee, roasted to order in Stockholm since 1998.', 'About' ],
+	[ 'Our coffees', 'Light, medium and dark roasts, all roasted to order.', '', '', '' ],
+	[ 'Contact us', 'Drop by the roastery or send us an email.', '', '', 'Contact' ],
+];
 
 $about_id = 0;
 foreach ( $pages as $i => $p ) {
 	$id = wp_insert_post(
-		array(
+		[
 			'post_type'    => 'page',
 			'post_title'   => $p[0],
-			'post_content' => $p[1],
+			'post_content' => "<!-- wp:paragraph -->\n<p>{$p[1]}</p>\n<!-- /wp:paragraph -->",
 			'post_status'  => 'publish',
+			'post_author'  => 1,
 			'menu_order'   => $i + 1,
-		)
+		]
 	);
 	update_post_meta( $id, '_simple_seo_demo', 1 );
-	update_post_meta( $id, '_simple_seo_use_custom_page_title', '' !== $p[2] ? 1 : 0 );
-	update_post_meta( $id, '_simple_seo_custom_page_title_value', $p[2] );
-	update_post_meta( $id, '_simple_seo_use_custom_menu_label', '' !== $p[3] ? 1 : 0 );
-	update_post_meta( $id, '_simple_seo_custom_menu_label_value', $p[3] );
+	SimpleSEO\save_field( $id, SimpleSEO\TITLE_KEY, SimpleSEO\TITLE_DISABLED_KEY, '' !== $p[2], $p[2] );
+	SimpleSEO\save_field( $id, SimpleSEO\DESCRIPTION_KEY, SimpleSEO\DESCRIPTION_DISABLED_KEY, '' !== $p[3], $p[3] );
+	update_post_meta( $id, SimpleSEO\USE_MENU_LABEL_KEY, '' !== $p[4] ? 1 : 0 );
+	update_post_meta( $id, SimpleSEO\MENU_LABEL_KEY, $p[4] );
 	if ( 0 === $i ) {
 		$about_id = $id;
 	}
 }
+
+// The plugin banner as the default share image.
+require_once ABSPATH . 'wp-admin/includes/media.php';
+require_once ABSPATH . 'wp-admin/includes/file.php';
+require_once ABSPATH . 'wp-admin/includes/image.php';
+$banner = get_posts( [ 'post_type' => 'attachment', 'numberposts' => 1, 'meta_key' => '_simple_seo_demo' ] );
+if ( $banner ) {
+	$image_id = $banner[0]->ID;
+} else {
+	$tmp = wp_tempnam( 'share.png' );
+	copy( WP_PLUGIN_DIR . '/simple-seo/.wordpress-org/banner-1544x500.png', $tmp );
+	$image_id = media_handle_sideload( [ 'name' => 'acme-share-image.png', 'tmp_name' => $tmp ], 0, 'Acme share image' );
+	update_post_meta( $image_id, '_simple_seo_demo', 1 );
+}
+update_option( SimpleSEO\SHARE_IMAGE_OPTION, SimpleSEO\sanitize_share_image( $image_id ) );
 
 echo (int) $about_id;

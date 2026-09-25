@@ -1,6 +1,6 @@
 ---
 name: visual-check
-description: Screenshot Simple SEO's Classic Editor fields and the front end on the local docker sites and check for PHP, JS and debug.log errors, and regenerate the WordPress.org screenshots in .wordpress-org/. Use when asked to take screenshots, check the UI, verify a change in a real browser, or when the readme screenshots are stale.
+description: Screenshot Simple SEO's editor fields (Classic box, block editor panel), settings and the front end on the local sites and check for PHP, JS and debug.log errors, and regenerate the WordPress.org screenshots in .wordpress-org/. Use when asked to take screenshots, check the UI, verify a change in a real browser, or when the readme screenshots are stale.
 ---
 
 # Visual check in the local docker sites
@@ -32,28 +32,36 @@ Don't send WP-CLI stderr to `/dev/null` while setting up; an activation once fai
    ```bash
    docker compose run --rm -T wpcli_mariadb eval '$u = get_users( array( "role" => "administrator", "number" => 1 ) )[0]; $e = time() + 7200; echo wp_json_encode( array( array( "name" => AUTH_COOKIE, "value" => wp_generate_auth_cookie( $u->ID, $e, "auth" ) ), array( "name" => LOGGED_IN_COOKIE, "value" => wp_generate_auth_cookie( $u->ID, $e, "logged_in" ) ) ) );'
    ```
-4. In one `browser_run_code_unsafe` call: open `post.php?post=<id>&action=edit`, check `#titlediv #simple_seo_edit_wrapper` exists, compare the two inputs' `boundingBox()` (same `x` = aligned), screenshot, toggle a checkbox and screenshot again, then open the front end and read `page.title()`.
+4. In one `browser_run_code_unsafe` call: open `post.php?post=<id>&action=edit`, check the `#simple-seo` box (Classic) or the \"SEO\" panel (block editor) exists, screenshot, toggle a checkbox and save, then open the front end and read `page.title()`.
 5. Errors: listen to `console` (error/warning) and `pageerror`, count `text=/(Warning|Deprecated|Notice|Fatal error):/` on the page, and `tail -n +<start+1>` each debug.log.
 6. Also try an 800px wide viewport.
 
 ## WordPress.org screenshots
 
-`.wordpress-org/screenshot-1.png` (Edit Page fields) and `screenshot-2.png` (front end) are made by two files in this folder. The captions live in `readme.txt` under `== Screenshots ==`; keep them in sync.
+Four shots, captions in `readme.txt` under `== Screenshots ==` (keep them in sync):
 
-1. Seed the demo site on the php74 site (Acme Coffee Roasters: site title, pretty permalinks, three pages with the fields filled in; trashes Sample Page):
+1. `screenshot-1.png`: the SEO panel in the block editor (wp-env dev site, http://localhost:8315, admin / password)
+2. `screenshot-2.png`: the Simple SEO box in the Classic Editor (http://wp-playground-classiceditor.test:8314, admin / admin)
+3. `screenshot-3.png`: the Simple SEO section in Settings → General (wp-env)
+4. `screenshot-4.png`: the Simple History entry for the SEO change made in shot 1 (wp-env, where Simple History is active)
+
+Steps:
+
+1. `npm run env:start`, then activate Simple SEO there once: `npx wp-env run cli wp plugin activate simple-seo`.
+2. Seed both sites (Acme Coffee Roasters, three pages with the fields filled in, the plugin banner as default share image; trashes Sample Page). Each prints the "About us" ID:
    ```bash
-   # one-off wordpress:cli container as in scripts/smoke-test.sh, then:
-   wp eval-file wp-content/plugins/simple-seo/.claude/skills/visual-check/seed.php
+   npx wp-env run cli wp eval-file wp-content/plugins/simple-seo/.claude/skills/visual-check/seed.php
+   (cd ../_docker-compose-to-run-on-system-boot && docker compose run --rm -T wpcli_classiceditor eval-file wp-content/plugins/simple-seo/.claude/skills/visual-check/seed.php)
    ```
-2. Capture: Playwright MCP `browser_run_code_unsafe` with `filename: .claude/skills/visual-check/capture-screenshots.js`. It logs in as admin/admin in its own 2x context, and for shot 2 opens a logged-out context and draws a browser-tab strip with the real `document.title`, since headless Chrome shows no tab. That strip is the only thing painted on.
-3. Compress, same pipeline as Simple History's `code.md` "Images" (never commit a PNG straight out of Playwright):
+   Reseed wp-env before every capture: shot 1 edits the description and saves, which is the change shot 4 shows, and an unchanged description leaves the Save button disabled.
+3. Put the two IDs into `capture-screenshots.js` (`WP_ENV_PAGE`, `CLASSIC_PAGE`) and run it: Playwright MCP `browser_run_code_unsafe` with `filename: .claude/skills/visual-check/capture-screenshots.js`. It uses its own 2x context.
+4. Compress, same pipeline as Simple History's `code.md` "Images" (never commit a PNG straight out of Playwright):
    ```bash
    pngquant --quality=80-95 --strip --skip-if-larger --force --ext .png .wordpress-org/screenshot-*.png
    oxipng -o max --strip safe .wordpress-org/screenshot-*.png
-   ls -lh .wordpress-org/*.png
    ```
-   That took the 2026-09 shots from 87/69 KB to 26/20 KB with no visible change. If text looks degraded, raise the floor to `--quality=90-100`. Same pipeline for a future icon or banner.
-4. Look at both PNGs before committing. Keep the custom title short enough to fit its input (about 50 characters).
+   2026-09-25: 197/323/54/61 KB down to 62/103/16/17 KB.
+5. Look at all four before committing: the whole SEO panel visible in shot 1 (the viewport is 1100 high for that), nothing cut off in shot 2, no `about-us-2` slug (delete older "About us" pages on the Classic site).
 
 ## Gotchas
 
