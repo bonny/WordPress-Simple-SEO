@@ -13,6 +13,7 @@ Principles for everything we build (Pär, 2026-09-25):
 - **Fast.** No extra SQL queries on the front end: read post meta only for the queried object (the main `WP_Query` already primes the meta cache), prime caches in bulk where lists are involved (as `get_pages` does), no autoloaded options, no settings page. Load admin CSS/JS only on the editor screens.
 - **Not in the way.** No nags, notices, dashboards, or upsells. Nothing on screens where the fields aren't needed.
 - **Nice to use.** Few fields, clear labels, sensible defaults.
+- **Built for 2026 search.** GEO is mostly plain SEO; no llms.txt, meta keywords or AI scores. Evidence and scope in [`docs/seo-2026-research.md`](docs/seo-2026-research.md).
 - **AI friendly, not AI first.** Fields are registered post meta exposed over REST, so WP-CLI, the REST API and AI tools can read and write them. No AI-specific features that cost anything for people who don't use them.
 
 ## History
@@ -40,6 +41,8 @@ docker compose run --rm wpcli_mariadb plugin list --name=simple-seo
 ```
 
 The `wordpress_php74` site has no paired wpcli service; `scripts/smoke-test.sh` shows how to run a one-off `wordpress:cli` container against it. It was installed on 2026-09-24 (admin / admin) and updated to current WordPress.
+
+The local sites have "Discourage search engines" on (`blog_public` = 0), so core's `/wp-sitemap.xml` returns 404 and WordPress adds its own noindex. To test sitemap or robots output, run `option update blog_public 1` through WP-CLI and set it back to 0 afterwards.
 
 Jetpack and Rank Math were deactivated on the stable site (2026-09-24) because they exhausted WP-CLI's 128M memory limit. If WP-CLI dies with "Allowed memory size exhausted" again, check for a newly activated heavy plugin, or add `--skip-plugins`.
 
