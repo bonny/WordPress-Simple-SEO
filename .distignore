@@ -44,3 +44,4 @@ scripts
 # deploy action, not shipped inside the plugin zip
 .wordpress-org
 eslint.config.js
+.phpunit.result.cache

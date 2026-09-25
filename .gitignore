@@ -16,3 +16,6 @@
 
 # Local design drafts (icon/banner exploration), never committed
 .design-drafts/
+
+# PHPUnit
+.phpunit.result.cache
