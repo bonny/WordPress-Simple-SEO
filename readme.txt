@@ -57,7 +57,7 @@ Now go and edit a page and you should have two new options: "Custom Page Title" 
 == Changelog ==
 
 = Unreleased =
-- The custom page title, a new meta description and a new "hide from search engines" setting are now stored as post meta that the REST API and WP-CLI can read and write (`_simple_seo_title`, `_simple_seo_description`, `_simple_seo_noindex`). Existing custom page titles keep working and move to the new field the next time the post is saved.
+- The custom page title, a new meta description and a new "hide from search engines" setting are now stored as post meta that the REST API and WP-CLI can read and write (`_simple_seo_title`, `_simple_seo_description`, `_simple_seo_noindex`). Existing custom page titles keep working and move to the new field the next time the post is saved. Only logged-in users who can edit the post see the fields in the REST API.
 - New: the meta description and "hide from search engines" (noindex) are output in the page head. With "Your latest posts" as the front page, the tagline is the meta description.
 - Fixed: a custom page title on a static front page was ignored by current themes. It is now the whole title of the front page.
 - Changed: in the Classic Editor the fields moved from below the title into a "Simple SEO" box below the editor, with two new ones: a meta description and "Hide from search engines". Each field has a checkbox, so you can switch a value off without losing it.

@@ -54,7 +54,9 @@ function register_meta(): void {
 				'description'       => $description,
 				'single'            => true,
 				'default'           => 'boolean' === $type ? false : '',
-				'show_in_rest'      => true,
+				// Edit context only: logged-in editors (block editor, WP-CLI, application passwords) see the
+				// fields, anonymous requests don't. Keeps switched-off text private.
+				'show_in_rest'      => [ 'schema' => [ 'context' => [ 'edit' ] ] ],
 				'sanitize_callback' => 'boolean' === $type ? 'rest_sanitize_boolean' : 'sanitize_text_field',
 				'auth_callback'     => fn( $allowed, $meta_key, $post_id ) => current_user_can( 'edit_post', $post_id ),
 			]
