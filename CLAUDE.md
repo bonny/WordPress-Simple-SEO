@@ -20,7 +20,7 @@ Principles for everything we build (Pär, 2026-09-25):
 
 This git repo was created on 2026-09-24 by replaying the WordPress.org SVN trunk history (r279243 to r607674) into git with the original authors, dates, and messages. Git tags `0.1` and `0.3.1` to `0.3.4` point at the matching trunk commits. SVN is still the release channel; GitHub (`bonny/simple-seo`, private for now) is the source of truth for development.
 
-How old the SEO plugins are (first WordPress.org SVN commit, checked 2026-09-25 with `svn log -r 1:HEAD --limit 1 https://plugins.svn.wordpress.org/<slug>/`): SEO Title Tag and Optimal Title 2007-03-17, All in One SEO Pack 2007-03-30, HeadSpace2 2007-09, Robots Meta (Yoast) 2007-09, Platinum SEO Pack 2008-06, SEO Ultimate 2009-05, Add Meta Tags 2009-10, **Simple SEO 2010-08-22**, Yoast SEO 2010-10-11 (slug reserved 2009-01, first code 2010-10-11), SEOPress 2016-08, The SEO Framework 2015-05, Rank Math 2018-08. The readme's "seven weeks before Yoast SEO" line rests on this.
+How old the SEO plugins are, which still live, and their installs and downloads: [`docs/seo-plugin-history.md`](docs/seo-plugin-history.md). The readme's "seven weeks before Yoast SEO" line rests on it.
 
 ## Current code (0.3.5)
 
