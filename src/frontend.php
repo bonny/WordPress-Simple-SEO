@@ -1,6 +1,7 @@
 <?php
 /**
  * Front end: the title, meta description and robots tag, the sitemap, and the menu label in page lists.
+ * Link previews are in link-previews.php.
  *
  * Reads meta only for the queried post, which the main query has already cached. No extra queries.
  *
@@ -31,6 +32,8 @@ function add_seo_hooks(): void {
 	add_action( 'wp_head', __NAMESPACE__ . '\\meta_description', 1 );
 	add_filter( 'wp_robots', __NAMESPACE__ . '\\robots' );
 	add_filter( 'wp_sitemaps_posts_query_args', __NAMESPACE__ . '\\sitemap_skip_noindex' );
+	add_action( 'wp_head', __NAMESPACE__ . '\\link_preview_tags', 2 );
+	add_filter( 'jetpack_enable_open_graph', __NAMESPACE__ . '\\jetpack_open_graph' );
 }
 
 /**
@@ -46,13 +49,46 @@ function active_seo_plugin(): string {
 		'THE_SEO_FRAMEWORK_VERSION' => 'The SEO Framework',
 	];
 
+	$active = '';
+
 	foreach ( $plugins as $constant => $name ) {
 		if ( defined( $constant ) ) {
-			return $name;
+			$active = $name;
+			break;
 		}
 	}
 
-	return '';
+	/**
+	 * Filters the name of another active SEO plugin. While it's not '', Simple SEO outputs
+	 * nothing and the editor fields say that plugin is in charge.
+	 *
+	 * Return a name to step aside for a plugin Simple SEO doesn't know, or '' to output
+	 * anyway. Runs on plugins_loaded, so add the filter from a plugin, not a theme.
+	 *
+	 * @param string $active Name of the detected plugin, or ''.
+	 */
+	return (string) apply_filters( 'simple_seo_active_seo_plugin', $active );
+}
+
+/**
+ * The SEO title to output for a post, or '' for the normal title.
+ *
+ * @param int $post_id Post ID.
+ */
+function seo_title( int $post_id ): string {
+	// 0 is "no post", for example static_front_page_id() on any page but a static front page.
+	if ( ! $post_id ) {
+		return '';
+	}
+
+	/**
+	 * Filters the SEO title of a post before it's used in the <title> tag and link previews.
+	 * Return '' to use the normal title. The site name is added after it, except on the front page.
+	 *
+	 * @param string $title   The SEO title, '' when none is set or it's switched off.
+	 * @param int    $post_id Post ID.
+	 */
+	return trim( (string) apply_filters( 'simple_seo_title', get_title( $post_id ), $post_id ) );
 }
 
 /**
@@ -85,7 +121,7 @@ function post_title( $title, $post = null ) {
 		return $title;
 	}
 
-	$seo_title = get_title( $post->ID );
+	$seo_title = seo_title( $post->ID );
 
 	return '' !== $seo_title ? $seo_title : $title;
 }
@@ -98,7 +134,7 @@ function post_title( $title, $post = null ) {
  * @return array<string, string>
  */
 function front_page_title( array $parts ): array {
-	$seo_title = get_title( static_front_page_id() );
+	$seo_title = seo_title( static_front_page_id() );
 
 	if ( '' === $seo_title ) {
 		return $parts;
@@ -118,21 +154,39 @@ function front_page_title( array $parts ): array {
  * @return string
  */
 function wp_title_front_page( $title, $sep ) {
-	$seo_title = get_title( static_front_page_id() );
+	$seo_title = seo_title( static_front_page_id() );
 
 	return '' !== $seo_title ? "$seo_title $sep " : $title;
 }
 
 /**
- * Print the meta description. A front page with the latest posts uses the tagline.
+ * The meta description of the current page: the post's, or the tagline on a front page
+ * with the latest posts. '' for none.
  */
-function meta_description(): void {
+function current_description(): string {
 	$post_id     = queried_post_id();
-	$description = $post_id ? get_description( $post_id ) : '';
+	$description = '';
 
-	if ( ! $post_id && is_front_page() ) {
+	if ( $post_id ) {
+		$description = get_description( $post_id );
+	} elseif ( is_front_page() ) {
 		$description = get_bloginfo( 'description' );
 	}
+
+	/**
+	 * Filters the meta description, also used in link previews. Return '' for none.
+	 *
+	 * @param string $description The description.
+	 * @param int    $post_id     The post, 0 on a front page with the latest posts.
+	 */
+	return trim( (string) apply_filters( 'simple_seo_description', $description, $post_id ) );
+}
+
+/**
+ * Print the meta description.
+ */
+function meta_description(): void {
+	$description = current_description();
 
 	if ( '' !== $description ) {
 		printf( "<meta name=\"description\" content=\"%s\" />\n", esc_attr( $description ) );
@@ -148,7 +202,14 @@ function meta_description(): void {
 function robots( array $robots ): array {
 	$post_id = queried_post_id();
 
-	if ( $post_id && is_noindex( $post_id ) ) {
+	/**
+	 * Filters whether a post is hidden from search engines (the robots noindex tag).
+	 * The sitemap follows the stored setting, not this filter.
+	 *
+	 * @param bool $noindex Whether the post is hidden.
+	 * @param int  $post_id Post ID.
+	 */
+	if ( $post_id && apply_filters( 'simple_seo_noindex', is_noindex( $post_id ), $post_id ) ) {
 		$robots['noindex'] = true;
 	}
 

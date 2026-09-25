@@ -47,6 +47,7 @@ const SIMPLE_SEO_PLUGIN_FILE = __FILE__;
 
 require __DIR__ . '/src/meta.php';
 require __DIR__ . '/src/frontend.php';
+require __DIR__ . '/src/link-previews.php';
 require __DIR__ . '/src/classic-editor.php';
 require __DIR__ . '/src/block-editor.php';
 
