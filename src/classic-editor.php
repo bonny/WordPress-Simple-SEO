@@ -53,7 +53,7 @@ function meta_box( WP_Post $post ): void {
 			esc_html(
 				sprintf(
 					/* translators: %s: name of another SEO plugin, like Yoast SEO. */
-					__( '%s is active, so it handles titles, descriptions and search engines, and these fields aren\'t used. The menu label still works.', 'simple-seo' ),
+					__( '%s is active and handles SEO, so these fields aren\'t used. The menu label still works.', 'simple-seo' ),
 					$other_plugin
 				)
 			)
@@ -61,18 +61,19 @@ function meta_box( WP_Post $post ): void {
 	}
 
 	[ $title_on, $title ] = title_field( $post->ID );
-	text_field( 'title', __( 'Use a custom SEO title', 'simple-seo' ), $title_on, $title, __( 'Shown in search results and browser tabs instead of the post title. The site name is added after it.', 'simple-seo' ) );
+	text_field( 'title', __( 'Use a custom SEO title', 'simple-seo' ), __( 'SEO title', 'simple-seo' ), $title_on, $title, __( 'The site name is added after it.', 'simple-seo' ) );
 
 	[ $description_on, $description ] = description_field( $post->ID );
-	text_field( 'description', __( 'Use a custom meta description', 'simple-seo' ), $description_on, $description, __( 'Short summary shown under the title in search results. Without it, search engines pick text from the page.', 'simple-seo' ), true );
+	text_field( 'description', __( 'Use a custom meta description', 'simple-seo' ), __( 'Meta description', 'simple-seo' ), $description_on, $description, __( 'Shown under the title in search results.', 'simple-seo' ), true );
 
 	if ( 'page' === $post->post_type ) {
 		text_field(
 			'menu_label',
 			__( 'Use a custom menu label', 'simple-seo' ),
+			__( 'Menu label', 'simple-seo' ),
 			(bool) get_post_meta( $post->ID, USE_MENU_LABEL_KEY, true ),
 			(string) get_post_meta( $post->ID, MENU_LABEL_KEY, true ),
-			__( 'Shorter name for this page in automatic page lists (not hand-made menus).', 'simple-seo' )
+			__( 'Used in automatic page lists, not in hand-made menus.', 'simple-seo' )
 		);
 	}
 
@@ -80,21 +81,22 @@ function meta_box( WP_Post $post ): void {
 		'<p><label><input type="checkbox" name="simple_seo[noindex_on]" value="1" %1$s /> %2$s</label><br /><span class="description">%3$s</span></p>',
 		checked( is_noindex( $post->ID ), true, false ),
 		esc_html__( 'Hide from search engines', 'simple-seo' ),
-		esc_html__( 'Search engines won\'t list this page. Anyone with the link can still open it.', 'simple-seo' )
+		esc_html__( 'Anyone with the link can still open it.', 'simple-seo' )
 	);
 }
 
 /**
  * One checkbox + text field row.
  *
- * @param string $name     Field name.
- * @param string $label    Checkbox label.
- * @param bool   $on       Whether the box is ticked.
- * @param string $value    The text.
- * @param string $help     Help text below the field.
- * @param bool   $textarea A textarea instead of a one-line input.
+ * @param string $name        Field name.
+ * @param string $label       Checkbox label.
+ * @param string $input_label Label of the text field, for screen readers.
+ * @param bool   $on          Whether the box is ticked.
+ * @param string $value       The text.
+ * @param string $help        Help text below the field.
+ * @param bool   $textarea    A textarea instead of a one-line input.
  */
-function text_field( string $name, string $label, bool $on, string $value, string $help, bool $textarea = false ): void {
+function text_field( string $name, string $label, string $input_label, bool $on, string $value, string $help, bool $textarea = false ): void {
 	printf(
 		'<p><label><input type="checkbox" name="simple_seo[%1$s_on]" value="1" %2$s /> %3$s</label><br />',
 		esc_attr( $name ),
@@ -106,14 +108,14 @@ function text_field( string $name, string $label, bool $on, string $value, strin
 		printf(
 			'<textarea class="widefat" rows="2" name="simple_seo[%1$s]" aria-label="%2$s">%3$s</textarea>',
 			esc_attr( $name ),
-			esc_attr( $label ),
+			esc_attr( $input_label ),
 			esc_textarea( $value )
 		);
 	} else {
 		printf(
 			'<input type="text" class="widefat" name="simple_seo[%1$s]" aria-label="%2$s" value="%3$s" />',
 			esc_attr( $name ),
-			esc_attr( $label ),
+			esc_attr( $input_label ),
 			esc_attr( $value )
 		);
 	}

@@ -15,7 +15,6 @@ import { useState } from '@wordpress/element';
 import {
 	CheckboxControl,
 	Flex,
-	Notice,
 	TextControl,
 	TextareaControl,
 } from '@wordpress/components';
@@ -29,17 +28,36 @@ const { otherPlugin } = window.simpleSeoEditor || {};
  *
  * @param {Object}                                             props
  * @param {string}                                             props.label       Checkbox label.
+ * @param {string}                                             props.inputLabel  Label of the text field, for screen readers.
  * @param {string}                                             props.help        Help text below the field.
  * @param {string}                                             props.text        The text.
  * @param {boolean}                                            props.disabled    The stored "disabled" flag.
  * @param {(value: {text: string, disabled: boolean}) => void} props.onChange    Called with the new text and flag.
  * @param {boolean}                                            [props.multiline] A textarea instead of one line.
  */
-function Field( { label, help, text, disabled, onChange, multiline } ) {
-	// Ticking an empty field is allowed (it means "use the default"), but the
-	// stored meta can't tell that apart from never ticked, so keep it locally.
-	const [ on, setOn ] = useState( ! disabled && text !== '' );
-	const Input = multiline ? TextareaControl : TextControl;
+function Field( {
+	label,
+	inputLabel,
+	help,
+	text,
+	disabled,
+	onChange,
+	multiline,
+} ) {
+	// The meta can't tell "ticked but empty" (use the default) from never ticked,
+	// so only that case lives in local state. Everything else follows the meta,
+	// which keeps undo and redo right.
+	const [ tickedEmpty, setTickedEmpty ] = useState( false );
+	const on = ! disabled && ( text !== '' || tickedEmpty );
+
+	const inputProps = {
+		__nextHasNoMarginBottom: true,
+		hideLabelFromVision: true,
+		label: inputLabel,
+		help,
+		value: text,
+		onChange: ( value ) => onChange( { text: value, disabled: ! on } ),
+	};
 
 	return (
 		<Flex direction="column" gap={ 2 }>
@@ -48,22 +66,15 @@ function Field( { label, help, text, disabled, onChange, multiline } ) {
 				label={ label }
 				checked={ on }
 				onChange={ ( checked ) => {
-					setOn( checked );
+					setTickedEmpty( checked );
 					onChange( { text, disabled: ! checked } );
 				} }
 			/>
-			<Input
-				__nextHasNoMarginBottom
-				__next40pxDefaultSize
-				hideLabelFromVision
-				label={ label }
-				help={ help }
-				value={ text }
-				rows={ multiline ? 3 : undefined }
-				onChange={ ( value ) =>
-					onChange( { text: value, disabled: ! on } )
-				}
-			/>
+			{ multiline ? (
+				<TextareaControl { ...inputProps } rows={ 2 } />
+			) : (
+				<TextControl { ...inputProps } __next40pxDefaultSize />
+			) }
 		</Flex>
 	);
 }
@@ -76,18 +87,15 @@ function SimpleSeoPanel() {
 	const [ meta, setMeta ] = useEntityProp( 'postType', postType, 'meta' );
 
 	// Post types without 'custom-fields' support have no meta in the REST API.
-	if ( ! meta || ! ( '_simple_seo_title' in meta ) ) {
+	if ( ! meta ) {
 		return null;
 	}
 
+	// Meta edits are merged, so pass only the changed keys.
 	const update =
 		( key ) =>
 		( { text, disabled } ) =>
-			setMeta( {
-				...meta,
-				[ key ]: text,
-				[ `${ key }_disabled` ]: disabled,
-			} );
+			setMeta( { [ key ]: text, [ `${ key }_disabled` ]: disabled } );
 
 	return (
 		<PluginDocumentSettingPanel
@@ -96,22 +104,23 @@ function SimpleSeoPanel() {
 		>
 			<Flex direction="column" gap={ 4 }>
 				{ otherPlugin && (
-					<Notice status="info" isDismissible={ false }>
+					<p className="components-base-control__help">
 						{ sprintf(
 							/* translators: %s: name of another SEO plugin, like Yoast SEO. */
 							__(
-								'%s is active, so it handles titles, descriptions and search engines, and these fields aren’t used.',
+								'%s is active and handles SEO, so these fields aren’t used.',
 								'simple-seo'
 							),
 							otherPlugin
 						) }
-					</Notice>
+					</p>
 				) }
 
 				<Field
 					label={ __( 'Use a custom SEO title', 'simple-seo' ) }
+					inputLabel={ __( 'SEO title', 'simple-seo' ) }
 					help={ __(
-						'Shown in search results and browser tabs instead of the post title. The site name is added after it.',
+						'The site name is added after it.',
 						'simple-seo'
 					) }
 					text={ meta._simple_seo_title }
@@ -124,8 +133,9 @@ function SimpleSeoPanel() {
 						'Use a custom meta description',
 						'simple-seo'
 					) }
+					inputLabel={ __( 'Meta description', 'simple-seo' ) }
 					help={ __(
-						'Short summary shown under the title in search results. Without it, search engines pick text from the page.',
+						'Shown under the title in search results.',
 						'simple-seo'
 					) }
 					text={ meta._simple_seo_description }
@@ -138,12 +148,12 @@ function SimpleSeoPanel() {
 					__nextHasNoMarginBottom
 					label={ __( 'Hide from search engines', 'simple-seo' ) }
 					help={ __(
-						'Search engines won’t list this page. Anyone with the link can still open it.',
+						'Anyone with the link can still open it.',
 						'simple-seo'
 					) }
 					checked={ !! meta._simple_seo_noindex }
 					onChange={ ( checked ) =>
-						setMeta( { ...meta, _simple_seo_noindex: checked } )
+						setMeta( { _simple_seo_noindex: checked } )
 					}
 				/>
 			</Flex>
