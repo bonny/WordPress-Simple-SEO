@@ -53,7 +53,7 @@ Steps:
    npx wp-env run cli wp eval-file wp-content/plugins/simple-seo/.claude/skills/visual-check/seed.php
    (cd ../_docker-compose-to-run-on-system-boot && docker compose run --rm -T wpcli_classiceditor eval-file wp-content/plugins/simple-seo/.claude/skills/visual-check/seed.php)
    ```
-   Reseed wp-env before every capture: shot 1 edits the description and saves, which is the change shot 4 shows, and an unchanged description leaves the Save button disabled.
+   Reseed wp-env before every capture: shot 1 edits the SEO title and description and saves, which is the change shot 4 shows, and unchanged fields leave the Save button disabled.
 3. Put the two IDs into `capture-screenshots.js` (`WP_ENV_PAGE`, `CLASSIC_PAGE`) and run it: Playwright MCP `browser_run_code_unsafe` with `filename: .claude/skills/visual-check/capture-screenshots.js`. It uses its own 2x context.
 4. Compress, same pipeline as Simple History's `code.md` "Images" (never commit a PNG straight out of Playwright):
    ```bash

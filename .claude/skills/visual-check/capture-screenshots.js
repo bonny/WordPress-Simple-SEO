@@ -6,14 +6,14 @@
  * 1. Block editor SEO panel (wp-env dev site, localhost:8315, admin / password)
  * 2. Classic Editor box (Classic Editor site, :8314, admin / admin)
  * 3. Settings → General, Simple SEO section (wp-env)
- * 4. Simple History entry for an SEO change made in shot 1 (wp-env)
+ * 4. Simple History entry for the title and description change made in shot 1 (wp-env)
  *
  * Writes .wordpress-org/screenshot-1.png … -4.png, uncompressed. Compress after.
  */
 async ( page ) => {
 	const WP_ENV = 'http://localhost:8315';
 	const CLASSIC = 'http://wp-playground-classiceditor.test:8314';
-	const WP_ENV_PAGE = 27; // "About us" from seed.php on wp-env.
+	const WP_ENV_PAGE = 31; // "About us" from seed.php on wp-env.
 	const CLASSIC_PAGE = 63; // "About us" from seed.php on the Classic Editor site.
 
 	const context = await page
@@ -56,7 +56,8 @@ async ( page ) => {
 		await tab.click();
 	}
 	await p.waitForTimeout( 500 );
-	// A change for the Simple History shot.
+	// A change to the title and description, for the Simple History shot.
+	await p.getByRole( 'textbox', { name: 'SEO title' } ).fill( 'Our story – coffee from a shed in Stockholm' );
 	await p
 		.getByRole( 'textbox', { name: 'Meta description' } )
 		.fill( 'Small batch coffee, roasted to order in a shed in Stockholm since 1998.' );
