@@ -75,6 +75,7 @@ npm run lint:js                    # ESLint + Prettier, WordPress config
 composer install                   # once
 composer check                     # PHPCS (WPCS + PHPCompatibilityWP) and PHPStan level 5; both must be clean
 PHP_CLI_VERSION=74 docker compose run --rm php-lint composer check   # same, on PHP 7.4
+npm run env:start && npm run test:php   # PHPUnit integration tests in wp-env (ports 8315/8316), tests/php/. CI runs them too (.github/workflows/tests.yml)
 scripts/smoke-test.sh classic      # Classic Editor save + front end, on the Classic Editor site
 scripts/smoke-test.sh stable       # same on the stable site, PHP 8.3
 scripts/smoke-test.sh php74        # same on PHP 7.4
@@ -82,6 +83,8 @@ scripts/plugin-check.sh            # WordPress.org Plugin Check on the .distigno
 ```
 
 `scripts/old-wp/compose.yaml` is a throwaway WordPress 4.9 / PHP 5.6 stack for checking the bootstrap's too-old notice: activate the plugin there, and the dashboard must show the notice with no fatal error (checked 2026-09-25). Run `php -l simple-seo.php` with a `php:5.6-cli` container after touching the bootstrap.
+
+PHPUnit tests (`tests/php/`, same setup as CMS Tree Page View: wp-env + PHPUnit 9.6 + Yoast polyfills) cover storage and the pre-1.0 title, REST access, front-end output, the sitemap, link previews and the share image, other-plugin detection and every filter. Extend `SimpleSEO_TestCase` (in `tests/php/bootstrap.php`): the test framework unregisters all meta keys after each test, so it registers ours again. Add a test for every bug fixed.
 
 The smoke test needs Simple SEO and Classic Editor active on the site; only the `classic` site keeps them on, so activate them on `stable`/`php74` first and switch back after. For screenshots and a browser check, use the `visual-check` skill (`.claude/skills/visual-check/`). Floors are PHP 7.4 and WP 6.6, set in the plugin header, `readme.txt`, `phpcs.xml.dist` and `phpstan.neon.dist` (wp-compat). There is no baseline; any new PHPCS or PHPStan error is a regression. CI (`.github/workflows/lint.yml`) runs `composer check` on PHP 7.4 for every push and PR.
 

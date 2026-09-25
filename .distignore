@@ -23,6 +23,9 @@ CLAUDE.local.md
 README.md
 
 # Dev tooling
+tests
+phpunit.xml.dist
+.wp-env.json
 .github
 vendor
 node_modules

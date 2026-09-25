@@ -15,6 +15,7 @@ Do **not** bump, tag or push a release unless Pär asks for it in this conversat
 
 - [ ] On `main`, working tree clean, pushed.
 - [ ] `composer check` clean (PHPCS + PHPStan, no baseline). CI runs the same on PHP 7.4.
+- [ ] `npm run test:php` passes (PHPUnit in wp-env; CI runs it too).
 - [ ] `scripts/plugin-check.sh` says "No errors found". It checks the `.distignore` build, like WordPress.org sees it.
 - [ ] `scripts/smoke-test.sh classic`, `php74` and `stable` pass (the last two need Simple SEO + Classic Editor activated first; see CLAUDE.md).
 - [ ] On WordPress 4.9 / PHP 5.6 (`scripts/old-wp/compose.yaml`, see CLAUDE.md) the plugin shows its too-old notice and nothing breaks.

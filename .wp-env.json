@@ -1,0 +1,12 @@
+{
+	"core": null,
+	"port": 8315,
+	"testsPort": 8316,
+	"testsEnvironment": true,
+	"mappings": {
+		"wp-content/plugins/simple-seo": "."
+	},
+	"config": {
+		"WP_DEBUG": true
+	}
+}
