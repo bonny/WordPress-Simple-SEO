@@ -1,5 +1,6 @@
-# docs
+# Docs
 
-Not shipped (see `.distignore`).
+Background and research for Simple SEO. Not shipped with the plugin (`.distignore`).
 
-- `wordpress-org-page-2026-09-24.png`: full-page screenshot of https://wordpress.org/plugins/simple-seo/ on the day the revival started, before any 0.3.5 changes: 0.3.4, last updated 14 years ago, 300+ installs, tested up to 3.4.2, with the "hasn't been tested with the latest 3 major releases" warning and the 2010 screenshots.
+- [`seo-2026-research.md`](seo-2026-research.md): how search works in 2026 (SEO, GEO, AI crawlers, llms.txt, sitemaps) and what it means for 1.0.
+- [`seo-plugin-history.md`](seo-plugin-history.md): how old the WordPress SEO plugins are, which are still alive, and their installs and downloads. Simple SEO (2010-08-22) is seven weeks older than Yoast SEO.
