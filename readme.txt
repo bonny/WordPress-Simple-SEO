@@ -28,10 +28,10 @@ Change the title and menu label of any page or post, without touching the headli
 - Uses WordPress own custom fields, so **no extra database tables**.
 - Works with most themes and plugins. (Well.. at least that's what I hope for... ;)
 
-#### Why yet another SEO-plugin for WordPress?
-I felt that the existing plugins for WordPress Search Engine Optimization were a bit too complex
-and difficult to use, especially for new users of WordPress.
-Simple SEO aims to be a simple and unobtrusive alternative.
+#### Why does this plugin exist?
+Back in 2010 I wanted two small things: a better page title for Google, and a shorter name in the menu. So I wrote a plugin that does exactly that.
+
+Fun fact: Simple SEO arrived on WordPress.org in August 2010, seven weeks before Yoast SEO. Not the first SEO plugin (All in One SEO Pack beat us by three years), but one of the old-timers.
 
 Honest bit: I build Simple SEO for my own sites, like [simple-history.com](https://simple-history.com/). It does what they need and not much more. But sharing is caring, so here it is for you too. Feature requests are welcome, just know that the answer is often "that's a bit much for a plugin called Simple".
 
