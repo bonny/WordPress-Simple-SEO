@@ -84,6 +84,19 @@ function meta_box( WP_Post $post ): void {
 		esc_html__( 'Hide from search engines', 'simple-seo' ),
 		esc_html__( 'Anyone with the link can still open it.', 'simple-seo' )
 	);
+
+	$tip_url = simple_history_tip_url();
+
+	if ( $tip_url ) {
+		printf(
+			'<p class="description">%s</p>',
+			sprintf(
+				/* translators: %s: link to the Simple History plugin. */
+				esc_html__( 'Tip: %s logs every change to these fields.', 'simple-seo' ),
+				'<a href="' . esc_url( $tip_url ) . '">Simple History</a>'
+			)
+		);
+	}
 }
 
 /**

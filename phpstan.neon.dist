@@ -1,5 +1,7 @@
 parameters:
 	level: 5
+	scanFiles:
+		- tests/phpstan/simple-history-stubs.php
 	paths:
 		- simple-seo.php
 		- src

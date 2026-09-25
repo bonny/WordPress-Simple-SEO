@@ -8,5 +8,8 @@
 	},
 	"config": {
 		"WP_DEBUG": true
-	}
+	},
+	"plugins": [
+		"https://downloads.wordpress.org/plugin/simple-history.zip"
+	]
 }

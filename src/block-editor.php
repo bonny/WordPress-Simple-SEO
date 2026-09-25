@@ -34,7 +34,12 @@ function enqueue_editor_panel(): void {
 
 	wp_add_inline_script(
 		'simple-seo-editor-panel',
-		'window.simpleSeoEditor = ' . wp_json_encode( [ 'otherPlugin' => active_seo_plugin() ] ) . ';',
+		'window.simpleSeoEditor = ' . wp_json_encode(
+			[
+				'otherPlugin'      => active_seo_plugin(),
+				'simpleHistoryUrl' => simple_history_tip_url(),
+			]
+		) . ';',
 		'before'
 	);
 

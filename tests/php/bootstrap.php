@@ -20,6 +20,11 @@ require_once $_tests_dir . '/includes/functions.php';
 tests_add_filter(
 	'muplugins_loaded',
 	function () {
+		// Simple History, from .wp-env.json, for the logger tests.
+		if ( file_exists( WP_PLUGIN_DIR . '/simple-history/index.php' ) ) {
+			require WP_PLUGIN_DIR . '/simple-history/index.php';
+		}
+
 		require dirname( __DIR__, 2 ) . '/simple-seo.php';
 	}
 );

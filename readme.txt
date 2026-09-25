@@ -64,6 +64,7 @@ Now go and edit a page and you should have two new options: "Custom Page Title" 
 - Changed: in the Classic Editor the fields moved from below the title into a "Simple SEO" box below the editor, with two new ones: a meta description and "Hide from search engines". Each field has a checkbox, so you can switch a value off without losing it.
 - New: link previews. Open Graph and Twitter card tags, so links shared in Slack, iMessage, LinkedIn, Facebook and X show the right title, description and featured image. Developers can turn them off with the `simple_seo_link_previews` filter.
 - New: a default share image for link previews, in Settings → General → Simple SEO. Used when a post has no featured image.
+- New: with Simple History active, changes to the SEO fields show up in its log, with the old and new values.
 - New: filters for developers to change the title, description, noindex and link preview tags. See the FAQ.
 - New: posts hidden from search engines are left out of the WordPress sitemap (`/wp-sitemap.xml`).
 - New: when Yoast SEO, Rank Math, All in One SEO, SEOPress or The SEO Framework is active, Simple SEO leaves the page head to it, so there are no duplicate tags. The edit screen tells you which plugin is in charge.

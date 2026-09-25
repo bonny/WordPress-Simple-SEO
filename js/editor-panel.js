@@ -11,7 +11,7 @@ import {
 } from '@wordpress/editor';
 import { useEntityProp } from '@wordpress/core-data';
 import { useSelect } from '@wordpress/data';
-import { useState } from '@wordpress/element';
+import { createInterpolateElement, useState } from '@wordpress/element';
 import {
 	CheckboxControl,
 	Flex,
@@ -20,7 +20,7 @@ import {
 } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
 
-const { otherPlugin } = window.simpleSeoEditor || {};
+const { otherPlugin, simpleHistoryUrl } = window.simpleSeoEditor || {};
 
 /**
  * One field: a checkbox that switches the value on or off, and the text.
@@ -156,6 +156,19 @@ function SimpleSeoPanel() {
 						setMeta( { _simple_seo_noindex: checked } )
 					}
 				/>
+
+				{ simpleHistoryUrl && (
+					<p className="components-base-control__help">
+						{ createInterpolateElement(
+							__(
+								'Tip: <a>Simple History</a> logs every change to these fields.',
+								'simple-seo'
+							),
+							// eslint-disable-next-line jsx-a11y/anchor-has-content -- The text comes from the translation.
+							{ a: <a href={ simpleHistoryUrl } /> }
+						) }
+					</p>
+				) }
 			</Flex>
 		</PluginDocumentSettingPanel>
 	);
