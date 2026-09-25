@@ -46,6 +46,9 @@
 		</properties>
 	</rule>
 
+	<!-- Braces, never `if (): ... endif;`. Same rule as Simple History; see the php-code-style skill. -->
+	<rule ref="Universal.ControlStructures.DisallowAlternativeSyntax"/>
+
 	<!-- PHP cross-version compatibility, scoped to supported WordPress versions. -->
 	<rule ref="PHPCompatibilityWP"/>
 </ruleset>

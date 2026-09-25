@@ -83,21 +83,27 @@ function fields( WP_Post $post ): void {
 	$simple_seo_use_custom_menu_label   = (bool) get_post_meta( $post_id, '_simple_seo_use_custom_menu_label', true );
 	$simple_seo_custom_menu_label_value = (string) get_post_meta( $post_id, '_simple_seo_custom_menu_label_value', true );
 
+	echo '<div id="simple_seo_edit_wrapper">';
+
 	$other_plugin = active_seo_plugin();
 
+	if ( $other_plugin ) {
+		printf(
+			'<p class="description">%s</p>',
+			esc_html(
+				sprintf(
+					/* translators: %s: name of another SEO plugin, like Yoast SEO. */
+					__( '%s is active, so it handles the page title and Simple SEO\'s title isn\'t used. The menu label still works.', 'simple-seo' ),
+					$other_plugin
+				)
+			)
+		);
+	}
+
 	?>
-	<div id="simple_seo_edit_wrapper">
-		<?php if ( $other_plugin ) : ?>
-			<p class="description">
-				<?php
-				/* translators: %s: name of another SEO plugin, like Yoast SEO. */
-				echo esc_html( sprintf( __( '%s is active, so it handles the page title and Simple SEO\'s title isn\'t used. The menu label still works.', 'simple-seo' ), $other_plugin ) );
-				?>
-			</p>
-		<?php endif; ?>
 		<div class="simple_seo_row">
 			<div class="simle_seo_row_checkbox_and_label">
-				<input type="checkbox" name="simple_seo_custom_page_title" id="simple_seo_custom_page_title" value="1" <?php echo ( $simple_seo_use_custom_page_title ) ? " checked='checked' " : ''; ?> />
+				<input type="checkbox" name="simple_seo_custom_page_title" id="simple_seo_custom_page_title" value="1" <?php checked( $simple_seo_use_custom_page_title ); ?> />
 				<label for="simple_seo_custom_page_title"><?php esc_html_e( 'Custom Page Title', 'simple-seo' ); ?></label>
 			</div>
 			<div class="simple_seo_row_edit <?php echo ( $simple_seo_use_custom_page_title ) ? '' : 'hidden'; ?>">
@@ -107,7 +113,7 @@ function fields( WP_Post $post ): void {
 		</div>
 		<div class="simple_seo_row">
 			<div class="simle_seo_row_checkbox_and_label">
-				<input type="checkbox" name="simple_seo_custom_menu_label" id="simple_seo_custom_menu_label" value="1" <?php echo ( $simple_seo_use_custom_menu_label ) ? " checked='checked' " : ''; ?> />
+				<input type="checkbox" name="simple_seo_custom_menu_label" id="simple_seo_custom_menu_label" value="1" <?php checked( $simple_seo_use_custom_menu_label ); ?> />
 				<label for="simple_seo_custom_menu_label"><?php esc_html_e( 'Custom Menu Label', 'simple-seo' ); ?></label>
 			</div>
 			<div class="simple_seo_row_edit <?php echo ( $simple_seo_use_custom_menu_label ) ? '' : 'hidden'; ?>">
