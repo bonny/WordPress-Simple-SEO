@@ -13,12 +13,46 @@ use WP_Post;
 
 defined( 'ABSPATH' ) || exit;
 
-add_filter( 'single_post_title', __NAMESPACE__ . '\\post_title', 10, 2 );
-add_filter( 'document_title_parts', __NAMESPACE__ . '\\front_page_title' );
-add_filter( 'wp_title', __NAMESPACE__ . '\\wp_title_front_page', 10, 2 );
-add_action( 'wp_head', __NAMESPACE__ . '\\meta_description', 1 );
-add_filter( 'wp_robots', __NAMESPACE__ . '\\robots' );
+add_action( 'plugins_loaded', __NAMESPACE__ . '\\add_head_hooks' );
 add_filter( 'get_pages', __NAMESPACE__ . '\\menu_labels' );
+
+/**
+ * Output title, description and robots tags, unless another SEO plugin does.
+ * On plugins_loaded, because the other plugins may load after this one.
+ */
+function add_head_hooks(): void {
+	if ( active_seo_plugin() ) {
+		return;
+	}
+
+	add_filter( 'single_post_title', __NAMESPACE__ . '\\post_title', 10, 2 );
+	add_filter( 'document_title_parts', __NAMESPACE__ . '\\front_page_title' );
+	add_filter( 'wp_title', __NAMESPACE__ . '\\wp_title_front_page', 10, 2 );
+	add_action( 'wp_head', __NAMESPACE__ . '\\meta_description', 1 );
+	add_filter( 'wp_robots', __NAMESPACE__ . '\\robots' );
+}
+
+/**
+ * The name of another active SEO plugin, or '' when there is none.
+ * Checks constants they define while loading, so no queries.
+ */
+function active_seo_plugin(): string {
+	$plugins = [
+		'WPSEO_VERSION'             => 'Yoast SEO',
+		'RANK_MATH_VERSION'         => 'Rank Math',
+		'AIOSEO_FILE'               => 'All in One SEO',
+		'SEOPRESS_VERSION'          => 'SEOPress',
+		'THE_SEO_FRAMEWORK_VERSION' => 'The SEO Framework',
+	];
+
+	foreach ( $plugins as $constant => $name ) {
+		if ( defined( $constant ) ) {
+			return $name;
+		}
+	}
+
+	return '';
+}
 
 /**
  * The post the current page is about: a single post or page, the static front page or the blog page.
