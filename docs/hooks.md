@@ -8,7 +8,7 @@ Filters for developers, all prefixed `simple_seo_`. Each is documented where it'
 | `simple_seo_description` | `string $description`, `int $post_id` (0 on a latest-posts front page) | Change the meta description, also used as `og:description`. Return `''` for none. |
 | `simple_seo_noindex` | `bool $noindex`, `int $post_id` | Hide or show a post to search engines in the robots tag. The sitemap follows the stored setting. |
 | `simple_seo_link_previews` | `bool $enabled` | Return `false` to output no Open Graph or Twitter tags (Jetpack's come back then). |
-| `simple_seo_link_preview_image` | `array\|null $image` (`url`, `width`, `height`, `alt`), `int $post_id` | Set a default share image for posts without a featured image. |
+| `simple_seo_link_preview_image` | `array\|null $image` (`url`, `width`, `height`, `alt`), `int $post_id` | Change the preview image. By default the featured image, else the default share image from Settings → General. |
 | `simple_seo_link_preview_tags` | `array $tags` (property => content), `int $post_id` | Change, add (`og:locale`, `twitter:site`) or remove any link preview tag. `og:*` print as `property`, the rest as `name`. |
 | `simple_seo_active_seo_plugin` | `string $name` | Return a name to make Simple SEO step aside for an SEO plugin it doesn't know, or `''` to output anyway. Runs on `plugins_loaded`, so add it from a plugin. |
 
@@ -17,10 +17,12 @@ No actions of our own: extra head tags go on `wp_head`, and saves can be followe
 Examples:
 
 ```php
-// A default share image (simple-history.com).
-add_filter( 'simple_seo_link_preview_image', function ( $image ) {
-	return $image ?: [ 'url' => 'https://simple-history.com/share.png', 'width' => 1200, 'height' => 630, 'alt' => 'Simple History' ];
-} );
+// A different image for one post type (the default share image is set in Settings → General).
+add_filter( 'simple_seo_link_preview_image', function ( $image, $post_id ) {
+	return 'product' === get_post_type( $post_id )
+		? [ 'url' => 'https://example.com/product-share.png', 'width' => 1200, 'height' => 630, 'alt' => '' ]
+		: $image;
+}, 10, 2 );
 
 // Add the X account.
 add_filter( 'simple_seo_link_preview_tags', function ( $tags ) {

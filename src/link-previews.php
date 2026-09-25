@@ -53,9 +53,14 @@ function link_preview_tags(): void {
 		$image = featured_image( $post_id );
 	}
 
+	// The default share image from Settings → General, when there's no featured image.
+	if ( ! $image && share_image() ) {
+		$image = share_image();
+	}
+
 	/**
 	 * The link preview image: [ 'url', 'width', 'height', 'alt' ], or null for none.
-	 * Use it for a default image when a post has no featured image.
+	 * By default the featured image, else the default share image from Settings → General.
 	 *
 	 * @param array{url: string, width: int, height: int, alt: string}|null $image   The featured image, if any.
 	 * @param int                                                           $post_id The post, 0 on a front page with the latest posts.
