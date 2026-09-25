@@ -6,9 +6,9 @@ async (page) => {
 	const root = 'file:///path/to/WordPress-Simple-SEO';
 	const browser = page.context().browser();
 	const out = [];
-	// The banner isn't approved yet (2026-09-24), so it renders to the gitignored drafts
-	// folder. Set this to '.wordpress-org' once Pär approves a banner.
-	const bannerDir = '.design-drafts';
+	// Where the banner goes. '.design-drafts' (gitignored) while trying out a new banner
+	// that isn't approved: everything in .wordpress-org/ gets published.
+	const bannerDir = '.wordpress-org';
 
 	for ( const scale of [ 1, 2 ] ) {
 		const ctx = await browser.newContext( { viewport: { width: 772, height: 250 }, deviceScaleFactor: scale } );
