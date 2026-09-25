@@ -6,6 +6,9 @@
 
 # Composer / static-analysis tooling
 /vendor/
+
+# npm (build/ is committed, node_modules is not)
+/node_modules/
 .phpcs.cache
 
 # Playwright MCP browser-session artifacts

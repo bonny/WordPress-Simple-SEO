@@ -27,7 +27,7 @@ How old the SEO plugins are, which still live, and their installs and downloads:
 Released: 0.3.5. `main` holds unreleased 1.0 work.
 
 - `simple-seo.php` is a bootstrap that must stay parseable by PHP 5.6 (WordPress before 5.2 ignores "Requires PHP" and installs updates anyway). Below WordPress 6.6 or PHP 7.4 it shows an admin notice linking the 0.3.5 zip and loads nothing else. Otherwise it requires the files in `src/`.
-- `src/` is namespaced (`SimpleSEO\`; no other plugin on WordPress.org declares it, checked 2026-09-25 with a case-insensitive regex search of all 76,734 plugins on veloria.dev, API in `PeterBooker/veloria` `docs/api.md`), PHP 7.4 syntax, one file per concern: `meta.php` (fields and getters), `frontend.php` (head output, menu label), `classic-editor.php` (the meta box, saving). Keep it tight: functions, no classes or containers until something needs them. YAGNI for features. Style rules (braces not `if (): endif;`, how to output HTML) are in the `php-code-style` skill.
+- `src/` is namespaced (`SimpleSEO\`; no other plugin on WordPress.org declares it, checked 2026-09-25 with a case-insensitive regex search of all 76,734 plugins on veloria.dev, API in `PeterBooker/veloria` `docs/api.md`), PHP 7.4 syntax, one file per concern: `meta.php` (fields and getters), `frontend.php` (head output, menu label), `classic-editor.php` (the meta box, saving), `block-editor.php` (loads the panel). Keep it tight: functions, no classes or containers until something needs them. YAGNI for features. Style rules (braces not `if (): endif;`, how to output HTML) are in the `php-code-style` skill.
 - Post meta keys:
   - `_simple_seo_title`, `_simple_seo_description` (strings), their `_simple_seo_title_disabled` / `_simple_seo_description_disabled` flags (boolean, missing = on) and `_simple_seo_noindex` (boolean), registered with `register_post_meta()` and shown in REST in the `edit` context only (Pär, 2026-09-25: "leak as little as possible"). Anonymous requests see none of them; use `?context=edit` with an application password to read them. REST writes need `edit_post`. Read them through `SimpleSEO\get_title()`, `get_description()` and `is_noindex()`, never with raw `get_post_meta()`.
   - Pre-1.0 title: `_simple_seo_use_custom_page_title` (0/1) and `_simple_seo_custom_page_title_value`. Existing sites depend on it, so `get_title()` falls back to it. Any write to `_simple_seo_title` (editor, REST, WP-CLI) deletes the old pair. No bulk migration, no option to track one.
@@ -39,6 +39,8 @@ Released: 0.3.5. `main` holds unreleased 1.0 work.
   - noindex via `wp_robots`.
   - Sitemap: noindexed posts are left out of core's `wp-sitemap.xml` (`wp_sitemaps_posts_query_args`). The noindex meta's sanitize callback stores it as `'1'` or `''`, which the query relies on.
   - The menu label only affects `get_pages()` / `wp_list_pages()`. That includes the Page List block (`wp-includes/blocks/page-list.php` calls `get_pages()`), which an empty Navigation block falls back to: WordPress creates a `wp_navigation` post containing `<!-- wp:page-list /-->` (verified in Twenty Twenty-Three on the php74 site). It does not reach classic menus or Navigation blocks with hand-picked Page Link blocks, which store their own labels.
+- Block editor: `src/block-editor.php` loads `build/editor-panel.js` (source `js/editor-panel.js`) on the post edit screen only. A "SEO" `PluginDocumentSettingPanel` made of core components, reading and writing the meta with `useEntityProp`, so it saves with the post. Same checkbox + text pattern as the Classic box. It renders nothing for post types without `custom-fields` support. Keep it looking like core: stable `@wordpress/components` only (`__experimental*` fails lint), core wording and spacing.
+- Old 0.3.5 titles reach the REST API and the panel through `legacy_title_default()` (`default_post_metadata`). `migrate_legacy_title()` moves them to the new keys on any write of the title or its flag. Moving matters: the REST API skips values equal to the (legacy) default, so ticking the box writes only the flag.
 - Classic Editor: a plain meta box (`src/classic-editor.php`) on every viewable post type, hidden in the block editor with `__back_compat_meta_box`. Each text field is a checkbox + text, both always visible (Pär: as simple as possible, no dimming or auto-ticking); ticked = used, unticking keeps the text. Stored as the text plus a `_disabled` flag (`save_field()`); `title_field()` / `description_field()` return `[ on, text ]`. The block editor panel is still to come.
 - Posts saved before 1.0 have an unchecked-but-kept title as the old flag + value; `title_field()` reads that until the post is saved.
 
@@ -64,6 +66,8 @@ Jetpack and Rank Math were deactivated on the stable site (2026-09-24) because t
 ## Checks
 
 ```bash
+npm install && npm run build      # the block editor panel; commit build/. Needs Node ^22.22.2, ^24.15.0 or >=26 (@wordpress/scripts 36); .nvmrc says 24. On the Mac mini nvm's Node 20 is too old, use Homebrew's: PATH=/opt/homebrew/bin:$PATH
+npm run lint:js                    # ESLint + Prettier, WordPress config
 composer install                   # once
 composer check                     # PHPCS (WPCS + PHPCompatibilityWP) and PHPStan level 5; both must be clean
 PHP_CLI_VERSION=74 docker compose run --rm php-lint composer check   # same, on PHP 7.4

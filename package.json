@@ -1,0 +1,17 @@
+{
+	"name": "simple-seo",
+	"private": true,
+	"description": "Build for the Simple SEO block editor panel.",
+	"scripts": {
+		"build": "wp-scripts build js/editor-panel.js --output-path=build",
+		"start": "wp-scripts start js/editor-panel.js --output-path=build",
+		"lint:js": "wp-scripts lint-js js",
+		"format:js": "wp-scripts format js"
+	},
+	"devDependencies": {
+		"@wordpress/scripts": "^36.0.0"
+	},
+	"engines": {
+		"node": "^22.22.2 || ^24.15.0 || >=26.0.0"
+	}
+}

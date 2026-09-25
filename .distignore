@@ -25,6 +25,10 @@ README.md
 # Dev tooling
 .github
 vendor
+node_modules
+package.json
+package-lock.json
+.nvmrc
 composer.json
 composer.lock
 phpcs.xml.dist
@@ -36,3 +40,4 @@ scripts
 # WordPress.org assets (screenshots/banners/icons), synced to SVN assets/ by the
 # deploy action, not shipped inside the plugin zip
 .wordpress-org
+eslint.config.js

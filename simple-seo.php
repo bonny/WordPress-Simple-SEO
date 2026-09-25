@@ -48,6 +48,7 @@ const SIMPLE_SEO_PLUGIN_FILE = __FILE__;
 require __DIR__ . '/src/meta.php';
 require __DIR__ . '/src/frontend.php';
 require __DIR__ . '/src/classic-editor.php';
+require __DIR__ . '/src/block-editor.php';
 
 /**
  * Tell admins that this version doesn't run here, and how to get back to one that does.

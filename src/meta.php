@@ -26,9 +26,10 @@ const LEGACY_USE_TITLE_KEY = '_simple_seo_use_custom_page_title';
 const LEGACY_TITLE_KEY     = '_simple_seo_custom_page_title_value';
 
 add_action( 'init', __NAMESPACE__ . '\\register_meta' );
-add_action( 'added_post_meta', __NAMESPACE__ . '\\forget_legacy_title', 10, 3 );
-add_action( 'updated_post_meta', __NAMESPACE__ . '\\forget_legacy_title', 10, 3 );
-add_action( 'deleted_post_meta', __NAMESPACE__ . '\\forget_legacy_title', 10, 3 );
+add_action( 'added_post_meta', __NAMESPACE__ . '\\migrate_legacy_title', 10, 3 );
+add_action( 'updated_post_meta', __NAMESPACE__ . '\\migrate_legacy_title', 10, 3 );
+add_action( 'deleted_post_meta', __NAMESPACE__ . '\\migrate_legacy_title', 10, 3 );
+add_filter( 'default_post_metadata', __NAMESPACE__ . '\\legacy_title_default', 20, 4 );
 
 /**
  * Register the fields for all post types.
@@ -134,6 +135,32 @@ function get_description( int $post_id ): string {
 }
 
 /**
+ * For posts not saved since before 1.0, serve the old title as the default of the new keys,
+ * so the REST API and the block editor panel show it. Saving then moves it to the new keys.
+ *
+ * @param mixed  $value     Default value.
+ * @param int    $object_id Post ID.
+ * @param string $meta_key  Meta key.
+ * @param bool   $single    Whether a single value is asked for.
+ * @return mixed
+ */
+function legacy_title_default( $value, $object_id, $meta_key, $single ) {
+	if ( TITLE_KEY !== $meta_key && TITLE_DISABLED_KEY !== $meta_key ) {
+		return $value;
+	}
+
+	if ( ! metadata_exists( 'post', $object_id, LEGACY_TITLE_KEY ) ) {
+		return $value;
+	}
+
+	$legacy = TITLE_KEY === $meta_key
+		? trim( (string) get_post_meta( $object_id, LEGACY_TITLE_KEY, true ) )
+		: ! get_post_meta( $object_id, LEGACY_USE_TITLE_KEY, true );
+
+	return $single ? $legacy : [ $legacy ];
+}
+
+/**
  * Whether a post is hidden from search engines.
  *
  * @param int $post_id Post ID.
@@ -158,18 +185,36 @@ function save_field( int $post_id, string $key, string $disabled_key, bool $on, 
 }
 
 /**
- * Once the SEO title or its flag is written in any way (editor, REST API, WP-CLI), drop the pre-1.0 title,
- * so clearing the new title doesn't bring the old one back.
+ * Once the SEO title or its flag is written in any way (editor, REST API, WP-CLI), move the pre-1.0
+ * title to the new keys that weren't written, and delete the old keys. Moving matters: the REST API
+ * skips values equal to the legacy default, so toggling the box in the block editor writes only
+ * the flag.
  *
  * @param int|int[] $meta_id   Meta ID(s), unused.
  * @param int       $object_id Post ID.
  * @param string    $meta_key  Meta key.
  */
-function forget_legacy_title( $meta_id, $object_id, $meta_key ): void {
+function migrate_legacy_title( $meta_id, $object_id, $meta_key ): void {
 	if ( TITLE_KEY !== $meta_key && TITLE_DISABLED_KEY !== $meta_key ) {
 		return;
 	}
 
+	if ( ! metadata_exists( 'post', $object_id, LEGACY_TITLE_KEY ) ) {
+		return;
+	}
+
+	$text = trim( (string) get_post_meta( $object_id, LEGACY_TITLE_KEY, true ) );
+	$on   = (bool) get_post_meta( $object_id, LEGACY_USE_TITLE_KEY, true );
+
+	// Delete first: adding the new keys below runs this hook again, which must then stop above.
 	delete_post_meta( $object_id, LEGACY_USE_TITLE_KEY );
 	delete_post_meta( $object_id, LEGACY_TITLE_KEY );
+
+	if ( ! metadata_exists( 'post', $object_id, TITLE_KEY ) ) {
+		add_post_meta( $object_id, TITLE_KEY, $text, true );
+	}
+
+	if ( ! metadata_exists( 'post', $object_id, TITLE_DISABLED_KEY ) ) {
+		add_post_meta( $object_id, TITLE_DISABLED_KEY, ! $on, true );
+	}
 }
