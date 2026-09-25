@@ -65,6 +65,8 @@ The smoke test needs Simple SEO and Classic Editor active on the site. For scree
 
 Use the `cutting-a-release` skill; it's Pär's call, so never bump or tag unless asked. In short: `.github/workflows/deploy.yml` deploys trunk + tag to WordPress.org SVN with the 10up action when a semver tag is pushed, and syncs `.wordpress-org/` (screenshots, Live Preview blueprint) to SVN `assets/`. It needs the `SVN_USERNAME` and `SVN_PASSWORD` repo secrets (set, username `eskapism`). Readme or asset changes between releases go out with the manual `readme-assets.yml` workflow; see the skill. `.distignore` decides what ships.
 
+The last line of `readme.txt` is a Wordfence verification string (`ysaetf7ruhjnm3e2x4tbtletpc35ckeb`, added 2026-09-25). Keep it there, also when the readme is rewritten.
+
 Between releases the version stays at the last released one (`bumping-version` skill changes it) and changelog lines go under `= Unreleased =` in `readme.txt`, written for users.
 
 ## Conventions

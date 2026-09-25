@@ -19,6 +19,7 @@ Do **not** bump, tag or push a release unless Pär asks for it in this conversat
 - [ ] `scripts/smoke-test.sh php74` and `scripts/smoke-test.sh stable` pass (needs Simple SEO + Classic Editor active; see CLAUDE.md).
 - [ ] Still works on WordPress 4.9 / PHP 5.6 (`scripts/old-wp/compose.yaml`, see CLAUDE.md), because the changelog promises old sites keep working.
 - [ ] `= Unreleased =` in `readme.txt` lists everything, in plain user-facing language.
+- [ ] The Wordfence verification string is still the last line of `readme.txt` (see CLAUDE.md).
 - [ ] `Tested up to:` is the current WordPress major. `Requires at least:` / `Requires PHP:` still match `phpcs.xml.dist` and `phpstan.neon.dist`.
 - [ ] Screenshots current if the UI changed (`visual-check` skill).
 - [ ] Repo secrets `SVN_USERNAME` and `SVN_PASSWORD` exist (`gh secret list -R bonny/simple-seo`). Without them the deploy fails at the SVN step.
