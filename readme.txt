@@ -33,6 +33,8 @@ I felt that the existing plugins for WordPress Search Engine Optimization were a
 and difficult to use, especially for new users of WordPress.
 Simple SEO aims to be a simple and unobtrusive alternative.
 
+Honest bit: I build Simple SEO for my own sites, like [simple-history.com](https://simple-history.com/). It does what they need and not much more. But sharing is caring, so here it is for you too. Feature requests are welcome, just know that the answer is often "that's a bit much for a plugin called Simple".
+
 #### Donation and more plugins
 * If you like this plugin don't forget to [donate to support further development](https://eskapism.se/sida/donate/).
 * Check out some [more WordPress plugins by me](https://profiles.wordpress.org/eskapism/#content-plugins).
