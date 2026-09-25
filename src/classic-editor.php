@@ -17,12 +17,13 @@ add_action( 'add_meta_boxes', __NAMESPACE__ . '\\register_meta_box' );
 add_action( 'save_post', __NAMESPACE__ . '\\save_post', 10, 2 );
 
 /**
- * Add the box to every post type that has pages on the front end.
+ * Add the box to every post type that has pages on the front end, except attachments.
  *
  * @param string $post_type Post type of the post being edited.
  */
 function register_meta_box( string $post_type ): void {
-	if ( ! is_post_type_viewable( $post_type ) ) {
+	// Attachment pages are off by default since WordPress 6.4, so not on the media screen.
+	if ( 'attachment' === $post_type || ! is_post_type_viewable( $post_type ) ) {
 		return;
 	}
 
