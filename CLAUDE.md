@@ -8,6 +8,13 @@ Simple SEO is a small WordPress plugin by Pär (eskapism), on WordPress.org at h
 
 Goals for the revival: a deliberately tiny SEO plugin (a few fields per post, no settings maze, no upsells), working on modern WordPress and PHP, and a friendly home for existing users.
 
+Principles for everything we build (Pär, 2026-09-25):
+
+- **Fast.** No extra SQL queries on the front end: read post meta only for the queried object (the main `WP_Query` already primes the meta cache), prime caches in bulk where lists are involved (as `get_pages` does), no autoloaded options, no settings page. Load admin CSS/JS only on the editor screens.
+- **Not in the way.** No nags, notices, dashboards, or upsells. Nothing on screens where the fields aren't needed.
+- **Nice to use.** Few fields, clear labels, sensible defaults.
+- **AI friendly, not AI first.** Fields are registered post meta exposed over REST, so WP-CLI, the REST API and AI tools can read and write them. No AI-specific features that cost anything for people who don't use them.
+
 ## History
 
 This git repo was created on 2026-09-24 by replaying the WordPress.org SVN trunk history (r279243 to r607674) into git with the original authors, dates, and messages. Git tags `0.1` and `0.3.1` to `0.3.4` point at the matching trunk commits. SVN is still the release channel; GitHub (`bonny/simple-seo`, private for now) is the source of truth for development.
