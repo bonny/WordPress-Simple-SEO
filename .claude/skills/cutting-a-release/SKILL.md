@@ -39,7 +39,7 @@ Do **not** bump, tag or push a release unless Pär asks for it in this conversat
 ## After the deploy
 
 - WordPress.org holds plugin updates for about 24 hours before sites get them. The plugin page shows the new version right away; users get it a day later. For an urgent security fix, email plugins@wordpress.org to ask for an expedited release (Pär does this).
-- The Live Preview button uses `.wordpress-org/blueprints/blueprint.json`, which installs the released version from WordPress.org. It may need turning on in the plugin's Advanced view on WordPress.org.
+- The Live Preview button uses `.wordpress-org/blueprints/blueprint.json`, which installs the released version from WordPress.org. It showed up by itself for 0.3.5 (no Advanced view toggle needed); check that the button still opens the demo after a release.
 - The WordPress.org changelog is cut off at 5,000 characters. When Plugin Check warns, move the oldest entries to a `changelog.txt`. Not needed yet.
 
 ## Readme or assets only, between releases
