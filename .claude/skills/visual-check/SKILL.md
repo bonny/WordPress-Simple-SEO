@@ -58,7 +58,6 @@ Don't send WP-CLI stderr to `/dev/null` while setting up; an activation once fai
 ## Gotchas
 
 - Playwright can only write inside the repo. Throwaway screenshots go to `.playwright-mcp/` (gitignored); only the compressed `.wordpress-org/` shots get committed.
-- `styles.css` is enqueued with the plugin version as `ver`, so the browser caches it across CSS edits. Call `page.route('**/*', r => r.continue())` first; routing turns the cache off.
 - On the stable site `?page_id=<id>` redirects to the pretty permalink; that's fine.
 - Expected console noise: `JQMIGRATE: Migrate is installed` and WooCommerce's "Dependency detection enabled" info. Anything else is worth a look.
 - Delete the test pages afterwards (`wp post delete <id> --force`).

@@ -1,6 +1,8 @@
 <?php
 /**
- * Classic Editor: the fields below the title, and saving them.
+ * Classic Editor: a plain meta box with the fields, and saving them.
+ *
+ * Hidden in the block editor, which gets its own panel.
  *
  * @package SimpleSEO
  */
@@ -11,79 +13,37 @@ use WP_Post;
 
 defined( 'ABSPATH' ) || exit;
 
-add_action( 'dbx_post_sidebar', __NAMESPACE__ . '\\fields' );
-add_action( 'save_post', __NAMESPACE__ . '\\save_post' );
-add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\\enqueue_styles' );
+add_action( 'add_meta_boxes', __NAMESPACE__ . '\\register_meta_box' );
+add_action( 'save_post', __NAMESPACE__ . '\\save_post', 10, 2 );
 
 /**
- * When saving a post: update custom page title and menu label.
+ * Add the box to every post type that has pages on the front end.
  *
- * @param int $post_id Post ID.
+ * @param string $post_type Post type of the post being edited.
  */
-function save_post( $post_id ): void {
-	if ( ! isset( $_POST['simple_seo_save'] ) ) {
-		// No nonce. That can't be right, right?
+function register_meta_box( string $post_type ): void {
+	if ( ! is_post_type_viewable( $post_type ) ) {
 		return;
 	}
 
-	if ( ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['simple_seo_save'] ) ), 'simple_seo_save' ) ) {
-		return;
-	}
-
-	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-		return;
-	}
-
-	if ( wp_is_post_revision( $post_id ) || ! current_user_can( 'edit_post', $post_id ) ) {
-		return;
-	}
-
-	// Only save to the post the form belongs to, not to other posts saved in the same request.
-	if ( ! isset( $_POST['post_ID'] ) || absint( $_POST['post_ID'] ) !== $post_id ) {
-		return;
-	}
-
-	// Unchecking the box removes the title.
-	$title_value = isset( $_POST['simple_seo_custom_page_title'], $_POST['simple_seo_custom_page_title_value'] ) ? sanitize_text_field( wp_unslash( $_POST['simple_seo_custom_page_title_value'] ) ) : '';
-	update_title( $post_id, $title_value );
-
-	update_post_meta( $post_id, '_simple_seo_use_custom_menu_label', isset( $_POST['simple_seo_custom_menu_label'] ) ? 1 : 0 );
-	$label_value = isset( $_POST['simple_seo_custom_menu_label_value'] ) ? sanitize_text_field( wp_unslash( $_POST['simple_seo_custom_menu_label_value'] ) ) : '';
-	update_post_meta( $post_id, '_simple_seo_custom_menu_label_value', $label_value );
+	\add_meta_box(
+		'simple-seo',
+		__( 'Simple SEO', 'simple-seo' ),
+		__NAMESPACE__ . '\\meta_box',
+		null,
+		'normal',
+		'high',
+		[ '__back_compat_meta_box' => true ]
+	);
 }
 
 /**
- * Load our CSS on the edit post screens only.
- *
- * @param string $hook_suffix The current admin page.
- */
-function enqueue_styles( $hook_suffix ): void {
-	if ( ! in_array( $hook_suffix, [ 'post.php', 'post-new.php' ], true ) ) {
-		return;
-	}
-
-	wp_enqueue_style( 'simple_seo_styles', plugins_url( 'styles.css', \SIMPLE_SEO_PLUGIN_FILE ), [], SIMPLE_SEO_VERSION );
-}
-
-/**
- * Output HTML for our stuff, on edit post screen.
- * We're outputting it at the wrong place, but then we move it
- * into place with JS.
+ * The box: a checkbox and a text field per value, both always visible. Ticked means used.
  *
  * @param WP_Post $post The post being edited.
  */
-function fields( WP_Post $post ): void {
-	$post_id = (int) $post->ID;
-
-	echo '<input type="hidden" name="simple_seo_save" value="' . esc_attr( wp_create_nonce( 'simple_seo_save' ) ) . '" />';
-
-	$simple_seo_custom_page_title_value = get_title( $post_id );
-	$simple_seo_use_custom_page_title   = '' !== $simple_seo_custom_page_title_value;
-
-	$simple_seo_use_custom_menu_label   = (bool) get_post_meta( $post_id, '_simple_seo_use_custom_menu_label', true );
-	$simple_seo_custom_menu_label_value = (string) get_post_meta( $post_id, '_simple_seo_custom_menu_label_value', true );
-
-	echo '<div id="simple_seo_edit_wrapper">';
+function meta_box( WP_Post $post ): void {
+	wp_nonce_field( 'simple_seo_save', 'simple_seo_nonce' );
 
 	$other_plugin = active_seo_plugin();
 
@@ -93,45 +53,104 @@ function fields( WP_Post $post ): void {
 			esc_html(
 				sprintf(
 					/* translators: %s: name of another SEO plugin, like Yoast SEO. */
-					__( '%s is active, so it handles the page title and Simple SEO\'s title isn\'t used. The menu label still works.', 'simple-seo' ),
+					__( '%s is active, so it handles titles, descriptions and search engines, and these fields aren\'t used. The menu label still works.', 'simple-seo' ),
 					$other_plugin
 				)
 			)
 		);
 	}
 
-	?>
-		<div class="simple_seo_row">
-			<div class="simle_seo_row_checkbox_and_label">
-				<input type="checkbox" name="simple_seo_custom_page_title" id="simple_seo_custom_page_title" value="1" <?php checked( $simple_seo_use_custom_page_title ); ?> />
-				<label for="simple_seo_custom_page_title"><?php esc_html_e( 'Custom Page Title', 'simple-seo' ); ?></label>
-			</div>
-			<div class="simple_seo_row_edit <?php echo ( $simple_seo_use_custom_page_title ) ? '' : 'hidden'; ?>">
-				<input class="text" type="text" name="simple_seo_custom_page_title_value" value="<?php echo esc_attr( $simple_seo_custom_page_title_value ); ?>" />
-				<div class="hidden simple_seo_row_edit_help"><?php esc_html_e( 'The Page Title is shown in search engines and in the title bar of web browsers', 'simple-seo' ); ?></div>
-			</div>
-		</div>
-		<div class="simple_seo_row">
-			<div class="simle_seo_row_checkbox_and_label">
-				<input type="checkbox" name="simple_seo_custom_menu_label" id="simple_seo_custom_menu_label" value="1" <?php checked( $simple_seo_use_custom_menu_label ); ?> />
-				<label for="simple_seo_custom_menu_label"><?php esc_html_e( 'Custom Menu Label', 'simple-seo' ); ?></label>
-			</div>
-			<div class="simple_seo_row_edit <?php echo ( $simple_seo_use_custom_menu_label ) ? '' : 'hidden'; ?>">
-				<input class="text" type="text" name="simple_seo_custom_menu_label_value" value="<?php echo esc_attr( $simple_seo_custom_menu_label_value ); ?>" />
-				<div class="hidden simple_seo_row_edit_help"><?php esc_html_e( 'The Menu Label is the text shown for a page in for example menus.', 'simple-seo' ); ?></div>
-			</div>
-		</div>
-	</div>
+	[ $title_on, $title ] = title_field( $post->ID );
+	text_field( 'title', __( 'Use a custom SEO title', 'simple-seo' ), $title_on, $title, __( 'Shown in search results and browser tabs instead of the post title. The site name is added after it.', 'simple-seo' ) );
 
-	<script type="text/javascript">
-		// append our html to the title/permalink-area, where it look so much better
-		// it seems to work when doing it direct here, without waiting for DOMReady
-		// (which sometimes make the fields "disappear" for a while, before the page is fully loaded.
-		jQuery("#simple_seo_edit_wrapper").appendTo("#titlediv");
-		jQuery("#simple_seo_custom_page_title,#simple_seo_custom_menu_label").click(function() {
-			jQuery(this).closest(".simple_seo_row").find(".simple_seo_row_edit").toggle().find("input[type=text]").focus();
-		});
-	</script>
+	[ $description_on, $description ] = description_field( $post->ID );
+	text_field( 'description', __( 'Use a custom meta description', 'simple-seo' ), $description_on, $description, __( 'Short summary shown under the title in search results. Without it, search engines pick text from the page.', 'simple-seo' ), true );
 
-	<?php
+	if ( 'page' === $post->post_type ) {
+		text_field(
+			'menu_label',
+			__( 'Use a custom menu label', 'simple-seo' ),
+			(bool) get_post_meta( $post->ID, USE_MENU_LABEL_KEY, true ),
+			(string) get_post_meta( $post->ID, MENU_LABEL_KEY, true ),
+			__( 'Shorter name for this page in automatic page lists (not hand-made menus).', 'simple-seo' )
+		);
+	}
+
+	printf(
+		'<p><label><input type="checkbox" name="simple_seo[noindex_on]" value="1" %1$s /> %2$s</label><br /><span class="description">%3$s</span></p>',
+		checked( is_noindex( $post->ID ), true, false ),
+		esc_html__( 'Hide from search engines', 'simple-seo' ),
+		esc_html__( 'Search engines won\'t list this page. Anyone with the link can still open it.', 'simple-seo' )
+	);
+}
+
+/**
+ * One checkbox + text field row.
+ *
+ * @param string $name     Field name.
+ * @param string $label    Checkbox label.
+ * @param bool   $on       Whether the box is ticked.
+ * @param string $value    The text.
+ * @param string $help     Help text below the field.
+ * @param bool   $textarea A textarea instead of a one-line input.
+ */
+function text_field( string $name, string $label, bool $on, string $value, string $help, bool $textarea = false ): void {
+	printf(
+		'<p><label><input type="checkbox" name="simple_seo[%1$s_on]" value="1" %2$s /> %3$s</label><br />',
+		esc_attr( $name ),
+		checked( $on, true, false ),
+		esc_html( $label )
+	);
+
+	if ( $textarea ) {
+		printf(
+			'<textarea class="widefat" rows="2" name="simple_seo[%1$s]" aria-label="%2$s">%3$s</textarea>',
+			esc_attr( $name ),
+			esc_attr( $label ),
+			esc_textarea( $value )
+		);
+	} else {
+		printf(
+			'<input type="text" class="widefat" name="simple_seo[%1$s]" aria-label="%2$s" value="%3$s" />',
+			esc_attr( $name ),
+			esc_attr( $label ),
+			esc_attr( $value )
+		);
+	}
+
+	printf( '<span class="description">%s</span></p>', esc_html( $help ) );
+}
+
+/**
+ * Save the box.
+ *
+ * @param int     $post_id Post ID.
+ * @param WP_Post $post    The post being saved.
+ */
+function save_post( int $post_id, WP_Post $post ): void {
+	if ( ! isset( $_POST['simple_seo_nonce'], $_POST['simple_seo'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['simple_seo_nonce'] ) ), 'simple_seo_save' ) ) {
+		return;
+	}
+
+	if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || wp_is_post_revision( $post_id ) || ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+
+	// Only save to the post the form belongs to, not to other posts saved in the same request.
+	if ( ! isset( $_POST['post_ID'] ) || absint( $_POST['post_ID'] ) !== $post_id ) {
+		return;
+	}
+
+	$fields = map_deep( wp_unslash( (array) $_POST['simple_seo'] ), 'sanitize_text_field' );
+	$on     = fn( string $name ): bool => ! empty( $fields[ "{$name}_on" ] );
+	$text   = fn( string $name ): string => (string) ( $fields[ $name ] ?? '' );
+
+	save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, $on( 'title' ), $text( 'title' ) );
+	save_field( $post_id, DESCRIPTION_KEY, DESCRIPTION_DISABLED_KEY, $on( 'description' ), $text( 'description' ) );
+	update_post_meta( $post_id, NOINDEX_KEY, $on( 'noindex' ) );
+
+	if ( 'page' === $post->post_type ) {
+		update_post_meta( $post_id, USE_MENU_LABEL_KEY, $on( 'menu_label' ) ? 1 : 0 );
+		update_post_meta( $post_id, MENU_LABEL_KEY, $text( 'menu_label' ) );
+	}
 }

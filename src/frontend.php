@@ -196,10 +196,10 @@ function menu_labels( $pages ) {
 	update_postmeta_cache( wp_list_pluck( $pages, 'ID' ) );
 
 	foreach ( $pages as $page ) {
-		$label = trim( (string) get_post_meta( $page->ID, '_simple_seo_custom_menu_label_value', true ) );
+		$label = trim( (string) get_post_meta( $page->ID, MENU_LABEL_KEY, true ) );
 
 		// Checked but left empty: keep the page title instead of an empty link.
-		if ( '' !== $label && get_post_meta( $page->ID, '_simple_seo_use_custom_menu_label', true ) ) {
+		if ( '' !== $label && get_post_meta( $page->ID, USE_MENU_LABEL_KEY, true ) ) {
 			$page->post_title = $label;
 		}
 	}

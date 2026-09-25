@@ -3,9 +3,10 @@
 # docker stack (../_docker-compose-to-run-on-system-boot).
 #
 # Needs Simple SEO and the Classic Editor plugin active on the site. Creates a
-# page, loads its edit screen as an admin, saves the form with the Simple SEO
-# fields filled in, then prints the stored meta, the front-end <title>, the
-# wp_list_pages() output, and any new debug.log lines. Deletes the page after.
+# page, loads its edit screen as an admin, saves the Simple SEO meta box with
+# every field filled in and ticked, then prints the stored meta, the front-end
+# <title>, meta description and robots tags, the wp_list_pages() output, and
+# any new debug.log lines. Deletes the page after.
 #
 # Usage: scripts/smoke-test.sh <classic|stable|php74> [title_value] [menu_value]
 #   classic = wordpress_playground_classiceditor (current WP, Classic Editor always on)
@@ -55,14 +56,13 @@ echo AUTH_COOKIE . "=" . wp_generate_auth_cookie( $u->ID, $exp, "auth" ) . "; " 
 COOKIE=$(cat $JAR)
 
 EDIT=$(curl -s -b "$COOKIE" "$BASE/wp-admin/post.php?post=$ID&action=edit")
-echo "edit screen has wrapper: $(echo "$EDIT" | grep -c simple_seo_edit_wrapper)"
+echo "edit screen has meta box: $(echo "$EDIT" | grep -c 'id="simple-seo"')"
 echo "edit screen is classic (#titlediv): $(echo "$EDIT" | grep -c 'id="titlediv"')"
-echo "stylesheet enqueued: $(echo "$EDIT" | grep -c 'simple-seo/styles.css')"
 echo "php messages in edit html: $(echo "$EDIT" | grep -c -E '<b>(Warning|Notice|Deprecated|Fatal error)</b>')"
 
 field() { echo "$EDIT" | grep -o -E "name=['\"]$1['\"][^>]*value=['\"][^'\"]*" | head -1 | sed -E 's/.*value=.//'; }
 WPNONCE=$(echo "$EDIT" | grep -o -E 'id="_wpnonce" name="_wpnonce" value="[^"]*' | sed -E 's/.*value="//')
-SEONONCE=$(field simple_seo_save)
+SEONONCE=$(field simple_seo_nonce)
 USERID=$(field user_ID)
 echo "nonces: wp=$WPNONCE seo=$SEONONCE user=$USERID"
 
@@ -82,18 +82,21 @@ CODE=$(curl -s -o /dev/null -w '%{http_code}' -b "$COOKIE" "$BASE/wp-admin/post.
 	--data-urlencode "hidden_post_status=publish" \
 	--data-urlencode "visibility=public" \
 	--data-urlencode "save=Update" \
-	--data-urlencode "simple_seo_save=$SEONONCE" \
-	--data-urlencode "simple_seo_custom_page_title=1" \
-	--data-urlencode "simple_seo_custom_page_title_value=$TITLE_VALUE" \
-	--data-urlencode "simple_seo_custom_menu_label=1" \
-	--data-urlencode "simple_seo_custom_menu_label_value=$MENU_VALUE")
+	--data-urlencode "simple_seo_nonce=$SEONONCE" \
+	--data-urlencode "simple_seo[title_on]=1" \
+	--data-urlencode "simple_seo[title]=$TITLE_VALUE" \
+	--data-urlencode "simple_seo[description_on]=1" \
+	--data-urlencode "simple_seo[description]=Smoke <i>description</i> & more" \
+	--data-urlencode "simple_seo[noindex_on]=1" \
+	--data-urlencode "simple_seo[menu_label_on]=1" \
+	--data-urlencode "simple_seo[menu_label]=$MENU_VALUE")
 echo "save http: $CODE"
 
 echo "--- stored meta"
-wp post meta list $ID --keys=_simple_seo_title,_simple_seo_use_custom_page_title,_simple_seo_custom_page_title_value,_simple_seo_use_custom_menu_label,_simple_seo_custom_menu_label_value --format=csv
+wp post meta list $ID --keys=_simple_seo_title,_simple_seo_title_disabled,_simple_seo_description,_simple_seo_description_disabled,_simple_seo_noindex,_simple_seo_use_custom_page_title,_simple_seo_custom_page_title_value,_simple_seo_use_custom_menu_label,_simple_seo_custom_menu_label_value --format=csv
 
-echo "--- front end <title>"
-curl -sL "$BASE/?page_id=$ID" | grep -o -E '<title>[^<]*</title>'
+echo "--- front end <title>, description, robots"
+curl -sL "$BASE/?page_id=$ID" | grep -o -E "<title>[^<]*</title>|<meta name=.(description|robots).[^>]*>"
 
 echo "--- wp_list_pages"
 wp eval "wp_list_pages( array( 'include' => $ID, 'title_li' => '' ) );"
