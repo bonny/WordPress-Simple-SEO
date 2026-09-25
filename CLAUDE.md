@@ -37,6 +37,7 @@ Released: 0.3.5. `main` holds unreleased 1.0 work.
   - Title: the `single_post_title` filter replaces the post's part, and core adds " – Site name" (this also covers old themes calling `wp_title()`). A static front page never calls `single_post_title`, so `document_title_parts` makes its SEO title the whole title (tagline dropped), and a `wp_title` filter does the same for old themes.
   - Meta description in `wp_head`. A front page with the latest posts uses the tagline.
   - noindex via `wp_robots`.
+  - Sitemap: noindexed posts are left out of core's `wp-sitemap.xml` (`wp_sitemaps_posts_query_args`). The noindex meta's sanitize callback stores it as `'1'` or `''`, which the query relies on.
   - The menu label only affects `get_pages()` / `wp_list_pages()`. That includes the Page List block (`wp-includes/blocks/page-list.php` calls `get_pages()`), which an empty Navigation block falls back to: WordPress creates a `wp_navigation` post containing `<!-- wp:page-list /-->` (verified in Twenty Twenty-Three on the php74 site). It does not reach classic menus or Navigation blocks with hand-picked Page Link blocks, which store their own labels.
 - The Classic Editor fields are printed on `dbx_post_sidebar` and moved into `#titlediv` with jQuery. The block editor panel is still to come.
 

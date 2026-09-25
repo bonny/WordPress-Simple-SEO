@@ -1,6 +1,6 @@
 <?php
 /**
- * Front end: the title, meta description and robots tag, and the menu label in page lists.
+ * Front end: the title, meta description and robots tag, the sitemap, and the menu label in page lists.
  *
  * Reads meta only for the queried post, which the main query has already cached. No extra queries.
  *
@@ -13,14 +13,14 @@ use WP_Post;
 
 defined( 'ABSPATH' ) || exit;
 
-add_action( 'plugins_loaded', __NAMESPACE__ . '\\add_head_hooks' );
+add_action( 'plugins_loaded', __NAMESPACE__ . '\\add_seo_hooks' );
 add_filter( 'get_pages', __NAMESPACE__ . '\\menu_labels' );
 
 /**
- * Output title, description and robots tags, unless another SEO plugin does.
- * On plugins_loaded, because the other plugins may load after this one.
+ * Output title, description and robots tags and filter the sitemap, unless another SEO plugin
+ * does that. On plugins_loaded, because the other plugins may load after this one.
  */
-function add_head_hooks(): void {
+function add_seo_hooks(): void {
 	if ( active_seo_plugin() ) {
 		return;
 	}
@@ -30,6 +30,7 @@ function add_head_hooks(): void {
 	add_filter( 'wp_title', __NAMESPACE__ . '\\wp_title_front_page', 10, 2 );
 	add_action( 'wp_head', __NAMESPACE__ . '\\meta_description', 1 );
 	add_filter( 'wp_robots', __NAMESPACE__ . '\\robots' );
+	add_filter( 'wp_sitemaps_posts_query_args', __NAMESPACE__ . '\\sitemap_skip_noindex' );
 }
 
 /**
@@ -152,6 +153,31 @@ function robots( array $robots ): array {
 	}
 
 	return $robots;
+}
+
+/**
+ * Leave posts hidden from search engines out of core's sitemap. The page count uses the same
+ * arguments, so it stays right. Noindex is stored as '1' (the meta's sanitize callback makes it so).
+ *
+ * @param array<string, mixed> $args WP_Query arguments for one post type's sitemap page.
+ * @return array<string, mixed>
+ */
+function sitemap_skip_noindex( array $args ): array {
+	$args['meta_query']   = $args['meta_query'] ?? []; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Only runs for sitemap requests.
+	$args['meta_query'][] = [
+		'relation' => 'OR',
+		[
+			'key'     => NOINDEX_KEY,
+			'compare' => 'NOT EXISTS',
+		],
+		[
+			'key'     => NOINDEX_KEY,
+			'value'   => '1',
+			'compare' => '!=',
+		],
+	];
+
+	return $args;
 }
 
 /**
