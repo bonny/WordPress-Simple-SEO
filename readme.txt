@@ -86,3 +86,5 @@ Now go and edit a page and you should have two new options: "Custom Page Title" 
 
 = 0.1 (August 2010) =
 - It's kinda the first version. Works fine for me. Let me know if it works for you!
+
+ysaetf7ruhjnm3e2x4tbtletpc35ckeb
