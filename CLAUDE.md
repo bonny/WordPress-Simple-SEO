@@ -41,6 +41,8 @@ cd ../_docker-compose-to-run-on-system-boot
 docker compose run --rm wpcli_mariadb plugin list --name=simple-seo
 ```
 
+The main test site is `http://wp-playground-classiceditor.test:8314` (service `wordpress_playground_classiceditor`, WP-CLI `wpcli_classiceditor`, added 2026-09-25): current WordPress with Classic Editor always active and Simple SEO active, `blog_public` = 1 so sitemap and robots output work, pretty permalinks. Keep Classic Editor active there. Logins and a REST application password for the `claude` user are in the gitignored `CLAUDE.local.md`.
+
 The `wordpress_php74` site has no paired wpcli service; `scripts/smoke-test.sh` shows how to run a one-off `wordpress:cli` container against it. It was installed on 2026-09-24 (admin / admin) and updated to current WordPress.
 
 The local sites have "Discourage search engines" on (`blog_public` = 0), so core's `/wp-sitemap.xml` returns 404 and WordPress adds its own noindex. To test sitemap or robots output, run `option update blog_public 1` through WP-CLI and set it back to 0 afterwards.
@@ -53,14 +55,15 @@ Jetpack and Rank Math were deactivated on the stable site (2026-09-24) because t
 composer install                   # once
 composer check                     # PHPCS (WPCS + PHPCompatibilityWP) and PHPStan level 5; both must be clean
 PHP_CLI_VERSION=74 docker compose run --rm php-lint composer check   # same, on PHP 7.4
-scripts/smoke-test.sh stable       # Classic Editor save + front end, WP 7.x on PHP 8.3
+scripts/smoke-test.sh classic      # Classic Editor save + front end, on the Classic Editor site
+scripts/smoke-test.sh stable       # same on the stable site, PHP 8.3
 scripts/smoke-test.sh php74        # same on PHP 7.4
 scripts/plugin-check.sh            # WordPress.org Plugin Check on the .distignore build
 ```
 
 `scripts/old-wp/compose.yaml` is a throwaway WordPress 4.9 / PHP 5.6 stack. WordPress before 5.2 ignores `Requires at least` / `Requires PHP` and installs updates anyway, and the 0.3.5 changelog promises old sites keep working, so keep the code runnable there (no PHP 7 syntax, no WordPress functions newer than about 3.6) until that promise is dropped. Checked on 2026-09-24: activate, save and front end all fine.
 
-The smoke test needs Simple SEO and Classic Editor active on the site. For screenshots and a browser check, use the `visual-check` skill (`.claude/skills/visual-check/`). Floors are PHP 7.4 and WP 6.6, set in the plugin header, `readme.txt`, `phpcs.xml.dist` and `phpstan.neon.dist` (wp-compat). There is no baseline; any new PHPCS or PHPStan error is a regression. CI (`.github/workflows/lint.yml`) runs `composer check` on PHP 7.4 for every push and PR.
+The smoke test needs Simple SEO and Classic Editor active on the site; only the `classic` site keeps them on, so activate them on `stable`/`php74` first and switch back after. For screenshots and a browser check, use the `visual-check` skill (`.claude/skills/visual-check/`). Floors are PHP 7.4 and WP 6.6, set in the plugin header, `readme.txt`, `phpcs.xml.dist` and `phpstan.neon.dist` (wp-compat). There is no baseline; any new PHPCS or PHPStan error is a regression. CI (`.github/workflows/lint.yml`) runs `composer check` on PHP 7.4 for every push and PR.
 
 ## Releasing
 

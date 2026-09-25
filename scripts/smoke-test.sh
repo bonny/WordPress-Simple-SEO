@@ -7,8 +7,9 @@
 # fields filled in, then prints the stored meta, the front-end <title>, the
 # wp_list_pages() output, and any new debug.log lines. Deletes the page after.
 #
-# Usage: scripts/smoke-test.sh <stable|php74> [title_value] [menu_value]
-#   stable = wordpress_mariadb (PHP 8.3), php74 = wordpress_php74 (PHP 7.4)
+# Usage: scripts/smoke-test.sh <classic|stable|php74> [title_value] [menu_value]
+#   classic = wordpress_playground_classiceditor (current WP, Classic Editor always on)
+#   stable  = wordpress_mariadb (PHP 8.3), php74 = wordpress_php74 (PHP 7.4)
 set -u
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
@@ -17,7 +18,11 @@ TITLE_VALUE=${2-'Custom <b>SEO</b> title & "quotes"'}
 MENU_VALUE=${3-'Short menu label'}
 DC=$(cd "$(dirname "$0")/../../_docker-compose-to-run-on-system-boot" && pwd)
 
-if [ "$SITE" = stable ]; then
+if [ "$SITE" = classic ]; then
+	BASE=http://wp-playground-classiceditor.test:8314
+	SVC=wordpress_playground_classiceditor
+	wp() { (cd $DC && docker compose run --rm -T wpcli_classiceditor "$@" 2>/dev/null); }
+elif [ "$SITE" = stable ]; then
 	BASE=http://wordpress-stable-docker-mariadb.test:8282
 	SVC=wordpress_mariadb
 	wp() { (cd $DC && docker compose run --rm -T wpcli_mariadb "$@" 2>/dev/null); }
