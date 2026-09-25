@@ -17,7 +17,7 @@ Do **not** bump, tag or push a release unless Pär asks for it in this conversat
 - [ ] `composer check` clean (PHPCS + PHPStan, no baseline). CI runs the same on PHP 7.4.
 - [ ] `scripts/plugin-check.sh` says "No errors found". It checks the `.distignore` build, like WordPress.org sees it.
 - [ ] `scripts/smoke-test.sh classic`, `php74` and `stable` pass (the last two need Simple SEO + Classic Editor activated first; see CLAUDE.md).
-- [ ] Still works on WordPress 4.9 / PHP 5.6 (`scripts/old-wp/compose.yaml`, see CLAUDE.md), because the changelog promises old sites keep working.
+- [ ] On WordPress 4.9 / PHP 5.6 (`scripts/old-wp/compose.yaml`, see CLAUDE.md) the plugin shows its too-old notice and nothing breaks.
 - [ ] `= Unreleased =` in `readme.txt` lists everything, in plain user-facing language.
 - [ ] The Wordfence verification string is still the last line of `readme.txt` (see CLAUDE.md).
 - [ ] `Tested up to:` is the current WordPress major. `Requires at least:` / `Requires PHP:` still match `phpcs.xml.dist` and `phpstan.neon.dist`.

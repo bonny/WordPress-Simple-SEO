@@ -22,15 +22,22 @@ This git repo was created on 2026-09-24 by replaying the WordPress.org SVN trunk
 
 How old the SEO plugins are, which still live, and their installs and downloads: [`docs/seo-plugin-history.md`](docs/seo-plugin-history.md). The readme's "seven weeks before Yoast SEO" line rests on it.
 
-## Current code (0.3.5)
+## Code
 
-- `simple-seo.php` holds everything: two optional fields per post, a custom page title and a custom menu label.
-- Post meta keys (unreleased 1.0 work):
-  - `_simple_seo_title`, `_simple_seo_description` (strings) and `_simple_seo_noindex` (boolean), registered with `register_post_meta()` and `show_in_rest`. REST writes need `edit_post`. Read them through `simple_seo_get_title()`, `simple_seo_get_description()` and `simple_seo_is_noindex()`, never with raw `get_post_meta()`.
-  - Pre-1.0 title: `_simple_seo_use_custom_page_title` (0/1) and `_simple_seo_custom_page_title_value`. Existing sites depend on it, so `simple_seo_get_title()` falls back to it. Any write to `_simple_seo_title` (editor, REST, WP-CLI) deletes the old pair. No bulk migration, no option to track one.
+Released: 0.3.5. `main` holds unreleased 1.0 work.
+
+- `simple-seo.php` is a bootstrap that must stay parseable by PHP 5.6 (WordPress before 5.2 ignores "Requires PHP" and installs updates anyway). Below WordPress 6.6 or PHP 7.4 it shows an admin notice linking the 0.3.5 zip and loads nothing else. Otherwise it requires the files in `src/`.
+- `src/` is namespaced (`SimpleSEO\`), PHP 7.4 syntax, one file per concern: `meta.php` (fields and getters), `frontend.php` (head output, menu label), `classic-editor.php` (the old fields below the title, saving). Keep it tight: functions, no classes or containers until something needs them. YAGNI for features.
+- Post meta keys:
+  - `_simple_seo_title`, `_simple_seo_description` (strings) and `_simple_seo_noindex` (boolean), registered with `register_post_meta()` and `show_in_rest`. REST writes need `edit_post`. Read them through `SimpleSEO\get_title()`, `get_description()` and `is_noindex()`, never with raw `get_post_meta()`.
+  - Pre-1.0 title: `_simple_seo_use_custom_page_title` (0/1) and `_simple_seo_custom_page_title_value`. Existing sites depend on it, so `get_title()` falls back to it. Any write to `_simple_seo_title` (editor, REST, WP-CLI) deletes the old pair. No bulk migration, no option to track one.
   - Menu label: `_simple_seo_use_custom_menu_label` (0/1) and `_simple_seo_custom_menu_label_value`, unchanged. Kept for existing users, pages only, Classic meta box only (Pär, 2026-09-25).
-- The fields are printed on `dbx_post_sidebar` and moved into `#titlediv` with jQuery, so they only appear in the Classic Editor. Gutenberg support is planned for 1.0.
-- The title reaches the front end through the `single_post_title` filter, which `wp_get_document_title()` still uses. The menu label only affects `get_pages()` / `wp_list_pages()`. That includes the Page List block (`wp-includes/blocks/page-list.php` calls `get_pages()`), which an empty Navigation block falls back to: WordPress creates a `wp_navigation` post containing `<!-- wp:page-list /-->` (verified in Twenty Twenty-Three on the php74 site). It does not reach classic menus or Navigation blocks with hand-picked Page Link blocks, which store their own labels.
+- Front end, reading meta only for the queried post (already cached by the main query):
+  - Title: the `single_post_title` filter replaces the post's part, and core adds " – Site name" (this also covers old themes calling `wp_title()`). A static front page never calls `single_post_title`, so `document_title_parts` makes its SEO title the whole title (tagline dropped), and a `wp_title` filter does the same for old themes.
+  - Meta description in `wp_head`. A front page with the latest posts uses the tagline.
+  - noindex via `wp_robots`.
+  - The menu label only affects `get_pages()` / `wp_list_pages()`. That includes the Page List block (`wp-includes/blocks/page-list.php` calls `get_pages()`), which an empty Navigation block falls back to: WordPress creates a `wp_navigation` post containing `<!-- wp:page-list /-->` (verified in Twenty Twenty-Three on the php74 site). It does not reach classic menus or Navigation blocks with hand-picked Page Link blocks, which store their own labels.
+- The Classic Editor fields are printed on `dbx_post_sidebar` and moved into `#titlediv` with jQuery. The block editor panel is still to come.
 
 ## Local development
 
@@ -63,7 +70,7 @@ scripts/smoke-test.sh php74        # same on PHP 7.4
 scripts/plugin-check.sh            # WordPress.org Plugin Check on the .distignore build
 ```
 
-`scripts/old-wp/compose.yaml` is a throwaway WordPress 4.9 / PHP 5.6 stack. WordPress before 5.2 ignores `Requires at least` / `Requires PHP` and installs updates anyway, and the 0.3.5 changelog promises old sites keep working, so keep the code runnable there (no PHP 7 syntax, no WordPress functions newer than about 3.6) until that promise is dropped. Checked on 2026-09-24: activate, save and front end all fine.
+`scripts/old-wp/compose.yaml` is a throwaway WordPress 4.9 / PHP 5.6 stack for checking the bootstrap's too-old notice: activate the plugin there, and the dashboard must show the notice with no fatal error (checked 2026-09-25). Run `php -l simple-seo.php` with a `php:5.6-cli` container after touching the bootstrap.
 
 The smoke test needs Simple SEO and Classic Editor active on the site; only the `classic` site keeps them on, so activate them on `stable`/`php74` first and switch back after. For screenshots and a browser check, use the `visual-check` skill (`.claude/skills/visual-check/`). Floors are PHP 7.4 and WP 6.6, set in the plugin header, `readme.txt`, `phpcs.xml.dist` and `phpstan.neon.dist` (wp-compat). There is no baseline; any new PHPCS or PHPStan error is a regression. CI (`.github/workflows/lint.yml`) runs `composer check` on PHP 7.4 for every push and PR.
 

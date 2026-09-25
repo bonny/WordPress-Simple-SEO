@@ -58,6 +58,9 @@ Now go and edit a page and you should have two new options: "Custom Page Title" 
 
 = Unreleased =
 - The custom page title, a new meta description and a new "hide from search engines" setting are now stored as post meta that the REST API and WP-CLI can read and write (`_simple_seo_title`, `_simple_seo_description`, `_simple_seo_noindex`). Existing custom page titles keep working and move to the new field the next time the post is saved.
+- New: the meta description and "hide from search engines" (noindex) are output in the page head. With "Your latest posts" as the front page, the tagline is the meta description.
+- Fixed: a custom page title on a static front page was ignored by current themes. It is now the whole title of the front page.
+- On a site older than WordPress 6.6 or PHP 7.4, Simple SEO now pauses and shows a notice with a link to 0.3.5, instead of possibly breaking the site.
 
 = 0.3.5 (September 2026) =
 - Back from the dead! The first update in fourteen years. Everything below is what the plugin needed after its long nap.

@@ -2,6 +2,7 @@ parameters:
 	level: 5
 	paths:
 		- simple-seo.php
+		- src
 	# WordPress function/constant stubs come from szepeviktor/phpstan-wordpress, and
 	# johnbillion/wp-compat flags anything newer than the "Requires at least" floor.
 	# Both are auto-registered via phpstan/extension-installer.
