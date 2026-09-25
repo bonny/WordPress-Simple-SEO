@@ -52,6 +52,9 @@ Now go and edit a page and you should have two new options: "Custom Page Title" 
 
 == Changelog ==
 
+= Unreleased =
+- The custom page title, a new meta description and a new "hide from search engines" setting are now stored as post meta that the REST API and WP-CLI can read and write (`_simple_seo_title`, `_simple_seo_description`, `_simple_seo_noindex`). Existing custom page titles keep working and move to the new field the next time the post is saved.
+
 = 0.3.5 (September 2026) =
 - Back from the dead! The first update in fourteen years. Everything below is what the plugin needed after its long nap.
 - Tested with WordPress 7.1 and PHP 7.4 to 8.3.

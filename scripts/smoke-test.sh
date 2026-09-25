@@ -85,7 +85,7 @@ CODE=$(curl -s -o /dev/null -w '%{http_code}' -b "$COOKIE" "$BASE/wp-admin/post.
 echo "save http: $CODE"
 
 echo "--- stored meta"
-wp post meta list $ID --keys=_simple_seo_use_custom_page_title,_simple_seo_custom_page_title_value,_simple_seo_use_custom_menu_label,_simple_seo_custom_menu_label_value --format=csv
+wp post meta list $ID --keys=_simple_seo_title,_simple_seo_use_custom_page_title,_simple_seo_custom_page_title_value,_simple_seo_use_custom_menu_label,_simple_seo_custom_menu_label_value --format=csv
 
 echo "--- front end <title>"
 curl -sL "$BASE/?page_id=$ID" | grep -o -E '<title>[^<]*</title>'

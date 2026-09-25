@@ -36,6 +36,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'SIMPLE_SEO_VERSION', '0.3.5' );
 
+add_action( 'init', 'simple_seo_register_meta' );
+add_action( 'added_post_meta', 'simple_seo_forget_legacy_title', 10, 3 );
+add_action( 'updated_post_meta', 'simple_seo_forget_legacy_title', 10, 3 );
+add_action( 'deleted_post_meta', 'simple_seo_forget_legacy_title', 10, 3 );
 add_action( 'admin_init', 'simple_seo_admin_init' );
 add_action( 'admin_enqueue_scripts', 'simple_seo_admin_enqueue_scripts' );
 add_action( 'save_post', 'simple_seo_save_post' );
@@ -78,17 +82,148 @@ function simple_seo_get_pages( $pages ) {
 }
 
 /**
- * The custom page title of a post, or '' when it's not turned on or left empty.
+ * Register the fields as post meta, so the REST API, WP-CLI and AI tools can read and write them.
+ *
+ * Meta is only in the REST API for post types that support 'custom-fields'.
+ */
+function simple_seo_register_meta() {
+	// Added in WordPress 4.9.8. Older sites keep working, just without REST access.
+	if ( ! function_exists( 'register_post_meta' ) ) {
+		return;
+	}
+
+	$auth_callback = 'simple_seo_meta_auth_callback';
+
+	register_post_meta(
+		'',
+		'_simple_seo_title',
+		array(
+			'type'              => 'string',
+			'description'       => __( 'SEO title. Replaces the post title in the <title> tag. Empty uses the post title.', 'simple-seo' ),
+			'single'            => true,
+			'default'           => '',
+			'show_in_rest'      => true,
+			'sanitize_callback' => 'sanitize_text_field',
+			'auth_callback'     => $auth_callback,
+		)
+	);
+
+	register_post_meta(
+		'',
+		'_simple_seo_description',
+		array(
+			'type'              => 'string',
+			'description'       => __( 'Meta description. Empty outputs none, and search engines pick their own snippet.', 'simple-seo' ),
+			'single'            => true,
+			'default'           => '',
+			'show_in_rest'      => true,
+			'sanitize_callback' => 'sanitize_text_field',
+			'auth_callback'     => $auth_callback,
+		)
+	);
+
+	register_post_meta(
+		'',
+		'_simple_seo_noindex',
+		array(
+			'type'          => 'boolean',
+			'description'   => __( 'Hide from search engines (noindex).', 'simple-seo' ),
+			'single'        => true,
+			'default'       => false,
+			'show_in_rest'  => true,
+			'auth_callback' => $auth_callback,
+		)
+	);
+}
+
+/**
+ * Who may write our meta over the REST API: anyone who can edit the post.
+ *
+ * @param bool   $allowed  Whether the user can add the meta. Default false for protected keys.
+ * @param string $meta_key The meta key.
+ * @param int    $post_id  Post ID.
+ * @return bool
+ */
+function simple_seo_meta_auth_callback( $allowed, $meta_key, $post_id ) {
+	return current_user_can( 'edit_post', $post_id );
+}
+
+/**
+ * The SEO title of a post, or '' when there is none.
+ *
+ * Falls back to the custom page title from before 1.0 until the post is saved again.
  *
  * @param int $post_id Post ID.
  * @return string
  */
-function simple_seo_get_custom_page_title( $post_id ) {
+function simple_seo_get_title( $post_id ) {
+	$title = trim( (string) get_post_meta( $post_id, '_simple_seo_title', true ) );
+	if ( $title !== '' ) {
+		return $title;
+	}
+
 	if ( ! get_post_meta( $post_id, '_simple_seo_use_custom_page_title', true ) ) {
 		return '';
 	}
 
 	return trim( (string) get_post_meta( $post_id, '_simple_seo_custom_page_title_value', true ) );
+}
+
+/**
+ * The meta description of a post, or '' when there is none.
+ *
+ * @param int $post_id Post ID.
+ * @return string
+ */
+function simple_seo_get_description( $post_id ) {
+	return trim( (string) get_post_meta( $post_id, '_simple_seo_description', true ) );
+}
+
+/**
+ * Whether a post is hidden from search engines.
+ *
+ * @param int $post_id Post ID.
+ * @return bool
+ */
+function simple_seo_is_noindex( $post_id ) {
+	// Values written with WP-CLI are strings, so "false" and "0" must mean false.
+	return rest_sanitize_boolean( get_post_meta( $post_id, '_simple_seo_noindex', true ) );
+}
+
+/**
+ * Once the SEO title is written in any way (editor, REST API, WP-CLI), drop the pre-1.0 title,
+ * so clearing the new title doesn't bring the old one back.
+ *
+ * @param int|int[] $meta_id   Meta ID(s), unused.
+ * @param int       $object_id Post ID.
+ * @param string    $meta_key  Meta key.
+ */
+function simple_seo_forget_legacy_title( $meta_id, $object_id, $meta_key ) {
+	if ( $meta_key !== '_simple_seo_title' ) {
+		return;
+	}
+
+	delete_post_meta( $object_id, '_simple_seo_use_custom_page_title' );
+	delete_post_meta( $object_id, '_simple_seo_custom_page_title_value' );
+}
+
+/**
+ * Save the SEO title and drop the pre-1.0 title keys, so the old value can't come back.
+ *
+ * @param int    $post_id Post ID.
+ * @param string $title   SEO title, '' to remove it.
+ */
+function simple_seo_update_title( $post_id, $title ) {
+	$title = sanitize_text_field( $title );
+
+	if ( $title === '' ) {
+		delete_post_meta( $post_id, '_simple_seo_title' );
+	} else {
+		update_post_meta( $post_id, '_simple_seo_title', $title );
+	}
+
+	delete_post_meta( $post_id, '_simple_seo_use_custom_page_title' );
+	delete_post_meta( $post_id, '_simple_seo_custom_page_title_value' );
 }
 
 /**
@@ -105,7 +240,7 @@ function simple_seo_wp_title( $post_title, $sep ) {
 		return $post_title;
 	}
 
-	$custom_page_title = simple_seo_get_custom_page_title( get_queried_object_id() );
+	$custom_page_title = simple_seo_get_title( get_queried_object_id() );
 	if ( $custom_page_title === '' ) {
 		return $post_title;
 	}
@@ -126,7 +261,7 @@ function simple_seo_single_post_title( $title, $_post = null ) {
 		return $title;
 	}
 
-	$custom_page_title = simple_seo_get_custom_page_title( $_post->ID );
+	$custom_page_title = simple_seo_get_title( $_post->ID );
 
 	return $custom_page_title !== '' ? $custom_page_title : $title;
 }
@@ -159,12 +294,12 @@ function simple_seo_save_post( $post_id ) {
 		return;
 	}
 
-	update_post_meta( $post_id, '_simple_seo_use_custom_page_title', isset( $_POST['simple_seo_custom_page_title'] ) ? 1 : 0 );
-	update_post_meta( $post_id, '_simple_seo_use_custom_menu_label', isset( $_POST['simple_seo_custom_menu_label'] ) ? 1 : 0 );
+	// Unchecking the box removes the title.
+	$title_value = isset( $_POST['simple_seo_custom_page_title'], $_POST['simple_seo_custom_page_title_value'] ) ? sanitize_text_field( wp_unslash( $_POST['simple_seo_custom_page_title_value'] ) ) : '';
+	simple_seo_update_title( $post_id, $title_value );
 
-	$title_value = isset( $_POST['simple_seo_custom_page_title_value'] ) ? sanitize_text_field( wp_unslash( $_POST['simple_seo_custom_page_title_value'] ) ) : '';
+	update_post_meta( $post_id, '_simple_seo_use_custom_menu_label', isset( $_POST['simple_seo_custom_menu_label'] ) ? 1 : 0 );
 	$label_value = isset( $_POST['simple_seo_custom_menu_label_value'] ) ? sanitize_text_field( wp_unslash( $_POST['simple_seo_custom_menu_label_value'] ) ) : '';
-	update_post_meta( $post_id, '_simple_seo_custom_page_title_value', $title_value );
 	update_post_meta( $post_id, '_simple_seo_custom_menu_label_value', $label_value );
 }
 
@@ -201,8 +336,8 @@ function simple_seo_dbs_post_sidebar( $post ) {
 
 	echo '<input type="hidden" name="simple_seo_save" value="' . esc_attr( wp_create_nonce( 'simple_seo_save' ) ) . '" />';
 
-	$simple_seo_use_custom_page_title   = (bool) get_post_meta( $post_id, '_simple_seo_use_custom_page_title', true );
-	$simple_seo_custom_page_title_value = (string) get_post_meta( $post_id, '_simple_seo_custom_page_title_value', true );
+	$simple_seo_custom_page_title_value = simple_seo_get_title( $post_id );
+	$simple_seo_use_custom_page_title   = $simple_seo_custom_page_title_value !== '';
 
 	$simple_seo_use_custom_menu_label   = (bool) get_post_meta( $post_id, '_simple_seo_use_custom_menu_label', true );
 	$simple_seo_custom_menu_label_value = (string) get_post_meta( $post_id, '_simple_seo_custom_menu_label_value', true );
