@@ -66,6 +66,17 @@ function register_meta(): void {
 }
 
 /**
+ * Whether a post type gets the fields: it has pages on the front end, and isn't attachments
+ * (attachment pages are off by default since WordPress 6.4).
+ * Used by the Classic box, the block editor panel and the posts lists.
+ *
+ * @param string $post_type Post type.
+ */
+function has_seo_fields( string $post_type ): bool {
+	return 'attachment' !== $post_type && is_post_type_viewable( $post_type );
+}
+
+/**
  * The SEO title field of a post: whether it's on, and its text (also when off).
  *
  * Before 1.0 the title was a "use" flag plus a value. Posts not saved since read from that.

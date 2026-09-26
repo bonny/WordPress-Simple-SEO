@@ -22,8 +22,7 @@ add_action( 'save_post', __NAMESPACE__ . '\\save_post', 10, 2 );
  * @param string $post_type Post type of the post being edited.
  */
 function register_meta_box( string $post_type ): void {
-	// Attachment pages are off by default since WordPress 6.4, so not on the media screen.
-	if ( 'attachment' === $post_type || ! is_post_type_viewable( $post_type ) ) {
+	if ( ! has_seo_fields( $post_type ) ) {
 		return;
 	}
 

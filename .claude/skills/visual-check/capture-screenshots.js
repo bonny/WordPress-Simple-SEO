@@ -14,7 +14,7 @@ async ( page ) => {
 	const WP_ENV = 'http://localhost:8315';
 	const CLASSIC = 'http://wp-playground-classiceditor.test:8314';
 	const WP_ENV_PAGE = 31; // "About us" from seed.php on wp-env.
-	const CLASSIC_PAGE = 63; // "About us" from seed.php on the Classic Editor site.
+	const CLASSIC_PAGE = 67; // "About us" from seed.php on the Classic Editor site.
 
 	const context = await page
 		.context()

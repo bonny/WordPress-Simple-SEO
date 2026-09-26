@@ -52,6 +52,7 @@ require __DIR__ . '/src/settings.php';
 require __DIR__ . '/src/simple-history.php';
 require __DIR__ . '/src/classic-editor.php';
 require __DIR__ . '/src/block-editor.php';
+require __DIR__ . '/src/list-table.php';
 
 /**
  * Tell admins that this version doesn't run here, and how to get back to one that does.

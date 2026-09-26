@@ -3,8 +3,8 @@
 	"private": true,
 	"description": "Build for the Simple SEO block editor panel.",
 	"scripts": {
-		"build": "wp-scripts build js/editor-panel.js js/share-image-field.js --output-path=build",
-		"start": "wp-scripts start js/editor-panel.js js/share-image-field.js --output-path=build",
+		"build": "wp-scripts build js/editor-panel.js js/share-image-field.js js/quick-edit.js --output-path=build",
+		"start": "wp-scripts start js/editor-panel.js js/share-image-field.js js/quick-edit.js --output-path=build",
 		"lint:js": "wp-scripts lint-js js",
 		"format:js": "wp-scripts format js",
 		"env:start": "wp-env start",

@@ -18,7 +18,7 @@ add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\enqueue_editor_pan
 function enqueue_editor_panel(): void {
 	$screen = get_current_screen();
 
-	if ( ! $screen || 'post' !== $screen->base || 'attachment' === $screen->post_type || ! is_post_type_viewable( $screen->post_type ) ) {
+	if ( ! $screen || 'post' !== $screen->base || ! has_seo_fields( $screen->post_type ) ) {
 		return;
 	}
 
