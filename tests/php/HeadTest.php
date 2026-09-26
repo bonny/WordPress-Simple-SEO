@@ -86,9 +86,8 @@ class HeadTest extends SimpleSEO_TestCase {
 		// Undo what plugins_loaded added, then run it again with another plugin "active".
 		remove_filter( 'document_title_parts', 'SimpleSEO\\document_title' );
 		remove_filter( 'wp_title', 'SimpleSEO\\old_theme_title', 9 );
-		remove_action( 'wp_head', 'SimpleSEO\\meta_description', 1 );
+		remove_action( 'wp_head', 'SimpleSEO\\head_tags', 1 );
 		remove_filter( 'wp_robots', 'SimpleSEO\\robots' );
-		remove_action( 'wp_head', 'SimpleSEO\\link_preview_tags', 2 );
 		add_filter( 'simple_seo_active_seo_plugin', fn() => 'Other SEO' );
 		SimpleSEO\add_seo_hooks();
 
@@ -103,8 +102,23 @@ class HeadTest extends SimpleSEO_TestCase {
 	public function test_no_html_comment() {
 		$post_id = self::factory()->post->create();
 		update_post_meta( $post_id, TITLE_KEY, 'SEO title' );
+		// What a site that isn't 'local' gets.
+		add_filter( 'simple_seo_debug_comments', '__return_false' );
 
 		// No "optimized with Simple SEO" advert in every page's source (2026-09-26).
 		$this->assertStringNotContainsStringIgnoringCase( 'simple seo', $this->head( $post_id ) );
+	}
+
+	public function test_debug_comments_wrap_our_tags() {
+		// What a 'local' site gets.
+		add_filter( 'simple_seo_debug_comments', '__return_true' );
+		$post_id = self::factory()->post->create();
+		update_post_meta( $post_id, DESCRIPTION_KEY, 'SEO description' );
+
+		$head = $this->head( $post_id );
+
+		$start = '<!-- Simple SEO start (local sites only, not on live sites). Title and robots tags: printed by WordPress above, filtered by Simple SEO. -->';
+		$this->assertSame( 1, substr_count( $head, $start ) );
+		$this->assertMatchesRegularExpression( '/' . preg_quote( $start, '/' ) . '\n<meta name="description" content="SEO description" \/>\n(<meta [^>]+>\n)+' . preg_quote( '<!-- Simple SEO end -->', '/' ) . '/', $head );
 	}
 }

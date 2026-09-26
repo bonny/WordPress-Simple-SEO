@@ -159,9 +159,8 @@ class FrontendTest extends SimpleSEO_TestCase {
 		// Undo what plugins_loaded added, then run it again with another plugin "active".
 		remove_filter( 'document_title_parts', 'SimpleSEO\\document_title' );
 		remove_filter( 'wp_title', 'SimpleSEO\\old_theme_title', 9 );
-		remove_action( 'wp_head', 'SimpleSEO\\meta_description', 1 );
+		remove_action( 'wp_head', 'SimpleSEO\\head_tags', 1 );
 		remove_filter( 'wp_robots', 'SimpleSEO\\robots' );
-		remove_action( 'wp_head', 'SimpleSEO\\link_preview_tags', 2 );
 		add_filter( 'simple_seo_active_seo_plugin', fn() => 'Other SEO' );
 
 		SimpleSEO\add_seo_hooks();
@@ -169,8 +168,7 @@ class FrontendTest extends SimpleSEO_TestCase {
 		$this->assertSame( 'Other SEO', SimpleSEO\active_seo_plugin() );
 		$this->assertFalse( has_filter( 'document_title_parts', 'SimpleSEO\\document_title' ) );
 		$this->assertFalse( has_filter( 'wp_title', 'SimpleSEO\\old_theme_title' ) );
-		$this->assertFalse( has_action( 'wp_head', 'SimpleSEO\\meta_description' ) );
-		$this->assertFalse( has_action( 'wp_head', 'SimpleSEO\\link_preview_tags' ) );
+		$this->assertFalse( has_action( 'wp_head', 'SimpleSEO\\head_tags' ) );
 		$this->assertFalse( has_filter( 'wp_robots', 'SimpleSEO\\robots' ) );
 	}
 

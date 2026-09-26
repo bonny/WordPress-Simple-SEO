@@ -130,6 +130,9 @@ It's still there for pages, in the Classic Editor box, and in Quick Edit on page
 
 == Changelog ==
 
+= Unreleased =
+- New: on a local development site (environment type `local`), HTML comments mark where Simple SEO's tags start and end in the page head, for easier debugging. Never on live sites.
+
 = 1.1.0 (September 2026) =
 - Changed: no more checkboxes next to the SEO title, meta description and menu label. Fill in a field to use it, empty it to go back to the default. Only "Discourage search engines" is still a checkbox. Text you had switched off with a checkbox stays off.
 - Changed: Quick Edit shows the menu label only on pages that have one.

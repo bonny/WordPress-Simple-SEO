@@ -29,10 +29,9 @@ function add_seo_hooks(): void {
 	add_filter( 'document_title_parts', __NAMESPACE__ . '\\document_title' );
 	// Before core's escaping and texturizing at 10, so they run on our title too.
 	add_filter( 'wp_title', __NAMESPACE__ . '\\old_theme_title', 9, 3 );
-	add_action( 'wp_head', __NAMESPACE__ . '\\meta_description', 1 );
+	add_action( 'wp_head', __NAMESPACE__ . '\\head_tags', 1 );
 	add_filter( 'wp_robots', __NAMESPACE__ . '\\robots' );
 	add_filter( 'wp_sitemaps_posts_query_args', __NAMESPACE__ . '\\sitemap_skip_noindex' );
-	add_action( 'wp_head', __NAMESPACE__ . '\\link_preview_tags', 2 );
 	add_filter( 'jetpack_enable_open_graph', __NAMESPACE__ . '\\jetpack_open_graph' );
 }
 
@@ -174,6 +173,36 @@ function current_description(): string {
 	 * @param int    $post_id     The post, 0 on a front page with the latest posts.
 	 */
 	return trim( (string) apply_filters( 'simple_seo_description', $description, $post_id ) );
+}
+
+/**
+ * Print our tags in the head, together: the meta description and the link previews. WordPress
+ * prints the <title> and robots tags itself, through the filters above.
+ *
+ * On a local site, comments mark where our tags start and end, for debugging. Nowhere else: in
+ * every page's source they'd be an advert and, with a version, help fingerprint the site.
+ */
+function head_tags(): void {
+	ob_start();
+	meta_description();
+	link_preview_tags();
+	$tags = (string) ob_get_clean();
+
+	if ( '' === $tags ) {
+		return;
+	}
+
+	/**
+	 * Filters whether comments mark the start and end of Simple SEO's tags in the head.
+	 * On by default only when wp_get_environment_type() is 'local'.
+	 *
+	 * @param bool $comments Whether to print the comments.
+	 */
+	if ( apply_filters( 'simple_seo_debug_comments', 'local' === wp_get_environment_type() ) ) {
+		$tags = "<!-- Simple SEO start (local sites only, not on live sites). Title and robots tags: printed by WordPress above, filtered by Simple SEO. -->\n{$tags}<!-- Simple SEO end -->\n";
+	}
+
+	echo $tags; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Each tag is escaped where it's built.
 }
 
 /**
