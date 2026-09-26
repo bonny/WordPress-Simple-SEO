@@ -41,6 +41,18 @@ class ListTableTest extends SimpleSEO_TestCase {
 		$this->assertStringContainsString( 'Kept but off', $html );
 	}
 
+	public function test_quick_edit_data_keeps_stored_entities() {
+		// Regression: esc_attr() doesn't double-encode, so "&amp;" came back from Quick Edit as "&".
+		$post_id = self::factory()->post->create();
+		update_post_meta( $post_id, TITLE_KEY, 'Q&amp;A' );
+
+		$html = get_echo( 'SimpleSEO\\column_content', [ 'simple_seo', $post_id ] );
+		preg_match( '/data-values="([^"]*)"/', $html, $match );
+		$values = json_decode( html_entity_decode( $match[1], ENT_QUOTES ), true );
+
+		$this->assertSame( 'Q&amp;A', $values['title'] );
+	}
+
 	public function test_column_dash_when_nothing_is_set() {
 		$html = get_echo( 'SimpleSEO\\column_content', [ 'simple_seo', self::factory()->post->create() ] );
 

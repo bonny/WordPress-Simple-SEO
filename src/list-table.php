@@ -90,9 +90,11 @@ function column_content( $column, $post_id ): void {
 		printf( '<span aria-hidden="true">&#8212;</span><span class="screen-reader-text">%s</span>', esc_html__( 'Default', 'simple-seo' ) );
 	}
 
+	// esc_textarea() re-encodes entities already in the text, like core's Quick Edit data does.
+	// esc_attr() wouldn't, and "&amp;" stored in a field would come back from Quick Edit as "&".
 	printf(
 		'<div class="hidden simple-seo-data" data-values="%s"></div>',
-		esc_attr(
+		esc_textarea(
 			(string) wp_json_encode(
 				[
 					'title_on'       => $title_on,
