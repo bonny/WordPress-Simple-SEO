@@ -5,10 +5,7 @@
  * @package SimpleSEO
  */
 
-use function SimpleSEO\save_field;
-use const SimpleSEO\DESCRIPTION_DISABLED_KEY;
 use const SimpleSEO\DESCRIPTION_KEY;
-use const SimpleSEO\TITLE_DISABLED_KEY;
 use const SimpleSEO\TITLE_KEY;
 
 class FrontendTest extends SimpleSEO_TestCase {
@@ -26,8 +23,8 @@ class FrontendTest extends SimpleSEO_TestCase {
 	 */
 	private function page( array $args = [] ): int {
 		$post_id = self::factory()->post->create( $args + [ 'post_type' => 'page', 'post_title' => 'Post title' ] );
-		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, true, 'SEO title' );
-		save_field( $post_id, DESCRIPTION_KEY, DESCRIPTION_DISABLED_KEY, true, 'SEO description' );
+		update_post_meta( $post_id, TITLE_KEY, 'SEO title' );
+		update_post_meta( $post_id, DESCRIPTION_KEY, 'SEO description' );
 
 		return $post_id;
 	}

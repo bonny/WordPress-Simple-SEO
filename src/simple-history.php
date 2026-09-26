@@ -45,26 +45,17 @@ function simple_history_ignore_meta_keys( $keys ): array {
 }
 
 /**
- * The values Simple History logs for a post: each checkbox and its text separately, as the user
- * sees them in the editor, so ticking a box on kept text logs as "No → Yes", not as new text.
+ * The values Simple History logs for a post, as the user sees them in the editor.
  *
  * @param int $post_id Post ID.
  * @return array<string, string>
  */
 function logged_values( int $post_id ): array {
-	$yes_no = fn( bool $on ): string => $on ? __( 'Yes', 'simple-seo' ) : __( 'No', 'simple-seo' );
-
-	[ $title_on, $title ]             = title_field( $post_id );
-	[ $description_on, $description ] = description_field( $post_id );
-
 	return [
-		'seo_title_on'        => $yes_no( $title_on ),
-		'seo_title'           => $title,
-		'meta_description_on' => $yes_no( $description_on ),
-		'meta_description'    => $description,
-		'noindex'             => $yes_no( is_noindex( $post_id ) ),
-		'menu_label_on'       => $yes_no( (bool) get_post_meta( $post_id, USE_MENU_LABEL_KEY, true ) ),
-		'menu_label'          => trim( (string) get_post_meta( $post_id, MENU_LABEL_KEY, true ) ),
+		'seo_title'        => get_title( $post_id ),
+		'meta_description' => get_description( $post_id ),
+		'noindex'          => is_noindex( $post_id ) ? __( 'Yes', 'simple-seo' ) : __( 'No', 'simple-seo' ),
+		'menu_label'       => get_menu_label( $post_id ),
 	];
 }
 

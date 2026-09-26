@@ -38,7 +38,7 @@ function register_meta_box( string $post_type ): void {
 }
 
 /**
- * The box: a checkbox and a text field per value, both always visible. Ticked means used.
+ * The box: a text field per value, used when it isn't empty, and the noindex checkbox.
  *
  * @param WP_Post $post The post being edited.
  */
@@ -60,21 +60,11 @@ function meta_box( WP_Post $post ): void {
 		);
 	}
 
-	[ $title_on, $title ] = title_field( $post->ID );
-	text_field( 'title', __( 'Use a custom SEO title', 'simple-seo' ), __( 'SEO title', 'simple-seo' ), $title_on, $title, title_help( $post->ID ) );
-
-	[ $description_on, $description ] = description_field( $post->ID );
-	text_field( 'description', __( 'Use a custom meta description', 'simple-seo' ), __( 'Meta description', 'simple-seo' ), $description_on, $description, __( 'Often shown under the title in search results.', 'simple-seo' ), true );
+	text_field( 'title', __( 'SEO title', 'simple-seo' ), get_title( $post->ID ), title_help( $post->ID ) );
+	text_field( 'description', __( 'Meta description', 'simple-seo' ), get_description( $post->ID ), __( 'Often shown under the title in search results.', 'simple-seo' ), true );
 
 	if ( 'page' === $post->post_type ) {
-		text_field(
-			'menu_label',
-			__( 'Use a custom menu label', 'simple-seo' ),
-			__( 'Menu label', 'simple-seo' ),
-			(bool) get_post_meta( $post->ID, USE_MENU_LABEL_KEY, true ),
-			(string) get_post_meta( $post->ID, MENU_LABEL_KEY, true ),
-			__( 'Used in automatic page lists, not in hand-made menus.', 'simple-seo' )
-		);
+		text_field( 'menu_label', __( 'Menu label', 'simple-seo' ), get_menu_label( $post->ID ), __( 'Used in automatic page lists, not in hand-made menus.', 'simple-seo' ) );
 	}
 
 	printf(
@@ -107,36 +97,27 @@ function meta_box( WP_Post $post ): void {
 }
 
 /**
- * One checkbox + text field row.
+ * One labeled text field, with help text under it.
  *
- * @param string $name        Field name.
- * @param string $label       Checkbox label.
- * @param string $input_label Label of the text field, for screen readers.
- * @param bool   $on          Whether the box is ticked.
- * @param string $value       The text.
- * @param string $help        Help text below the field.
- * @param bool   $textarea    A textarea instead of a one-line input.
+ * @param string $name     Field name.
+ * @param string $label    Label.
+ * @param string $value    The text.
+ * @param string $help     Help text below the field.
+ * @param bool   $textarea A textarea instead of a one-line input.
  */
-function text_field( string $name, string $label, string $input_label, bool $on, string $value, string $help, bool $textarea = false ): void {
-	printf(
-		'<p><label><input type="checkbox" name="simple_seo[%1$s_on]" value="1" aria-describedby="simple-seo-%1$s-help" %2$s /> %3$s</label><br />',
-		esc_attr( $name ),
-		checked( $on, true, false ),
-		esc_html( $label )
-	);
+function text_field( string $name, string $label, string $value, string $help, bool $textarea = false ): void {
+	printf( '<p><label for="simple-seo-%1$s">%2$s</label>', esc_attr( $name ), esc_html( $label ) );
 
 	if ( $textarea ) {
 		printf(
-			'<textarea class="widefat" rows="2" name="simple_seo[%1$s]" aria-label="%2$s" aria-describedby="simple-seo-%1$s-help">%3$s</textarea>',
+			'<textarea class="widefat" rows="2" id="simple-seo-%1$s" name="simple_seo[%1$s]" aria-describedby="simple-seo-%1$s-help">%2$s</textarea>',
 			esc_attr( $name ),
-			esc_attr( $input_label ),
 			esc_textarea( $value )
 		);
 	} else {
 		printf(
-			'<input type="text" class="widefat" name="simple_seo[%1$s]" aria-label="%2$s" aria-describedby="simple-seo-%1$s-help" value="%3$s" />',
+			'<input type="text" class="widefat" id="simple-seo-%1$s" name="simple_seo[%1$s]" aria-describedby="simple-seo-%1$s-help" value="%2$s" />',
 			esc_attr( $name ),
-			esc_attr( $input_label ),
 			esc_attr( $value )
 		);
 	}
@@ -165,15 +146,13 @@ function save_post( int $post_id, WP_Post $post ): void {
 	}
 
 	$fields = map_deep( wp_unslash( (array) $_POST['simple_seo'] ), 'sanitize_text_field' );
-	$on     = fn( string $name ): bool => ! empty( $fields[ "{$name}_on" ] );
 	$text   = fn( string $name ): string => (string) ( $fields[ $name ] ?? '' );
 
-	save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, $on( 'title' ), $text( 'title' ) );
-	save_field( $post_id, DESCRIPTION_KEY, DESCRIPTION_DISABLED_KEY, $on( 'description' ), $text( 'description' ) );
-	update_post_meta( $post_id, NOINDEX_KEY, $on( 'noindex' ) );
+	save_text( $post_id, TITLE_KEY, $text( 'title' ) );
+	save_text( $post_id, DESCRIPTION_KEY, $text( 'description' ) );
+	update_post_meta( $post_id, NOINDEX_KEY, ! empty( $fields['noindex_on'] ) );
 
 	if ( 'page' === $post->post_type ) {
-		update_post_meta( $post_id, USE_MENU_LABEL_KEY, $on( 'menu_label' ) ? 1 : 0 );
-		update_post_meta( $post_id, MENU_LABEL_KEY, $text( 'menu_label' ) );
+		save_menu_label( $post_id, $text( 'menu_label' ) );
 	}
 }

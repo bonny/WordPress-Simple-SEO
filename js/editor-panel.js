@@ -3,6 +3,7 @@
  *
  * Reads and writes the registered post meta through the post entity, so the
  * values save with the post, like the core Excerpt and Discussion panels.
+ * A text field is used when it isn't empty.
  */
 import { registerPlugin } from '@wordpress/plugins';
 import {
@@ -11,7 +12,7 @@ import {
 } from '@wordpress/editor';
 import { useEntityProp } from '@wordpress/core-data';
 import { useSelect } from '@wordpress/data';
-import { createInterpolateElement, useState } from '@wordpress/element';
+import { createInterpolateElement } from '@wordpress/element';
 import {
 	CheckboxControl,
 	ExternalLink,
@@ -23,67 +24,6 @@ import { __, sprintf } from '@wordpress/i18n';
 
 const { otherPlugin, simpleHistoryUrl, frontPageId, faqUrl } =
 	window.simpleSeoEditor || {};
-
-/**
- * One field: a checkbox that switches the value on or off, and the text.
- * Unticking keeps the text. Ticked means used.
- *
- * @param {Object}                                             props
- * @param {string}                                             props.label       Checkbox label.
- * @param {string}                                             props.inputLabel  Label of the text field, for screen readers.
- * @param {string}                                             props.help        Help text under the text field.
- * @param {string}                                             props.text        The text.
- * @param {boolean}                                            props.disabled    The stored "disabled" flag.
- * @param {(value: {text: string, disabled: boolean}) => void} props.onChange    Called with the new text and flag.
- * @param {boolean}                                            [props.multiline] A textarea instead of one line.
- */
-function Field( {
-	label,
-	inputLabel,
-	help,
-	text,
-	disabled,
-	onChange,
-	multiline,
-} ) {
-	// The meta can't tell "ticked but empty" (use the default) from never ticked,
-	// so only that case lives in local state. Everything else follows the meta,
-	// which keeps undo and redo right.
-	const [ tickedEmpty, setTickedEmpty ] = useState( false );
-	const on = ! disabled && ( text !== '' || tickedEmpty );
-
-	const inputProps = {
-		__nextHasNoMarginBottom: true,
-		hideLabelFromVision: true,
-		label: inputLabel,
-		help,
-		value: text,
-		onChange: ( value ) => onChange( { text: value, disabled: ! on } ),
-	};
-
-	return (
-		<Flex direction="column" gap={ 2 }>
-			<CheckboxControl
-				__nextHasNoMarginBottom
-				label={ label }
-				checked={ on }
-				onChange={ ( checked ) => {
-					setTickedEmpty( checked );
-					onChange( { text, disabled: ! checked } );
-				} }
-			/>
-			{ multiline ? (
-				<TextareaControl
-					{ ...inputProps }
-					className="simple-seo-autogrow"
-					rows={ 2 }
-				/>
-			) : (
-				<TextControl { ...inputProps } __next40pxDefaultSize />
-			) }
-		</Flex>
-	);
-}
 
 function SimpleSeoPanel() {
 	const postType = useSelect(
@@ -103,17 +43,12 @@ function SimpleSeoPanel() {
 
 	// The Simple History tip only shows on posts that use the fields.
 	const usesFields =
-		( ! meta._simple_seo_title_disabled &&
-			meta._simple_seo_title !== '' ) ||
-		( ! meta._simple_seo_description_disabled &&
-			meta._simple_seo_description !== '' ) ||
+		meta._simple_seo_title.trim() !== '' ||
+		meta._simple_seo_description.trim() !== '' ||
 		!! meta._simple_seo_noindex;
 
-	// Meta edits are merged, so pass only the changed keys.
-	const update =
-		( key ) =>
-		( { text, disabled } ) =>
-			setMeta( { [ key ]: text, [ `${ key }_disabled` ]: disabled } );
+	// Meta edits are merged, so pass only the changed key.
+	const update = ( key ) => ( value ) => setMeta( { [ key ]: value } );
 
 	return (
 		<PluginDocumentSettingPanel
@@ -134,9 +69,10 @@ function SimpleSeoPanel() {
 					</p>
 				) }
 
-				<Field
-					label={ __( 'Use a custom SEO title', 'simple-seo' ) }
-					inputLabel={ __( 'SEO title', 'simple-seo' ) }
+				<TextControl
+					__next40pxDefaultSize
+					__nextHasNoMarginBottom
+					label={ __( 'SEO title', 'simple-seo' ) }
 					help={
 						postId === frontPageId
 							? __(
@@ -148,25 +84,21 @@ function SimpleSeoPanel() {
 									'simple-seo'
 								)
 					}
-					text={ meta._simple_seo_title }
-					disabled={ meta._simple_seo_title_disabled }
+					value={ meta._simple_seo_title }
 					onChange={ update( '_simple_seo_title' ) }
 				/>
 
-				<Field
-					label={ __(
-						'Use a custom meta description',
-						'simple-seo'
-					) }
-					inputLabel={ __( 'Meta description', 'simple-seo' ) }
+				<TextareaControl
+					__nextHasNoMarginBottom
+					className="simple-seo-autogrow"
+					rows={ 2 }
+					label={ __( 'Meta description', 'simple-seo' ) }
 					help={ __(
 						'Often shown under the title in search results.',
 						'simple-seo'
 					) }
-					text={ meta._simple_seo_description }
-					disabled={ meta._simple_seo_description_disabled }
+					value={ meta._simple_seo_description }
 					onChange={ update( '_simple_seo_description' ) }
-					multiline
 				/>
 
 				<CheckboxControl

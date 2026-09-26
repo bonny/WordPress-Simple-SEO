@@ -62,8 +62,8 @@ $paragraphs = fn( string ...$texts ): string => implode(
 	array_map( fn( $t ) => 0 === strpos( $t, '## ' ) ? "<!-- wp:heading -->\n<h2 class=\"wp-block-heading\">" . substr( $t, 3 ) . "</h2>\n<!-- /wp:heading -->" : "<!-- wp:paragraph -->\n<p>{$t}</p>\n<!-- /wp:paragraph -->", $texts )
 );
 
-// Title, content, SEO title (and whether it's on), meta description, menu label, date, author,
-// and optional: parent title, status, noindex. "Wholesale" keeps a switched-off title.
+// Title, content, SEO title (and whether it's used; unused ones are saved empty), meta description,
+// menu label, date, author, and optional: parent title, status, noindex.
 $pages = [
 	[ 'Home', $paragraphs( 'Specialty coffee from small farms, roasted in small batches every Tuesday and Friday in Stockholm.', 'Free shipping in Sweden on orders over 400 kr.' ), 'Tallvik Coffee Roasters – specialty coffee from Stockholm', true, 'Specialty coffee roasted to order in Stockholm since 1998. Free shipping in Sweden on orders over 400 kr.', '', '2019-03-12 09:14', 1 ],
 	[ 'Our coffees', $paragraphs( 'Single origins and blends, from light and fruity to dark and chocolatey.', 'Every bag is roasted the week you order it and shipped the day after roasting.' ), 'Coffee beans – light, medium and dark roasts', true, 'Single origins and blends, roasted every Tuesday and Friday and shipped the day after.', 'Coffees', '2019-03-12 09:20', 1 ],
@@ -94,10 +94,9 @@ foreach ( $pages as $i => $p ) {
 		]
 	);
 	update_post_meta( $id, '_simple_seo_demo', 1 );
-	SimpleSEO\save_field( $id, SimpleSEO\TITLE_KEY, SimpleSEO\TITLE_DISABLED_KEY, $p[3] && '' !== $p[2], $p[2] );
-	SimpleSEO\save_field( $id, SimpleSEO\DESCRIPTION_KEY, SimpleSEO\DESCRIPTION_DISABLED_KEY, '' !== $p[4], $p[4] );
-	update_post_meta( $id, SimpleSEO\USE_MENU_LABEL_KEY, '' !== $p[5] ? 1 : 0 );
-	update_post_meta( $id, SimpleSEO\MENU_LABEL_KEY, $p[5] );
+	SimpleSEO\save_text( $id, SimpleSEO\TITLE_KEY, $p[3] ? $p[2] : '' );
+	SimpleSEO\save_text( $id, SimpleSEO\DESCRIPTION_KEY, $p[4] );
+	SimpleSEO\save_menu_label( $id, $p[5] );
 	update_post_meta( $id, SimpleSEO\NOINDEX_KEY, ! empty( $p[10] ) );
 	$ids[ $p[0] ] = $id;
 }
@@ -147,8 +146,8 @@ if ( $full ) {
 			]
 		);
 		update_post_meta( $id, '_simple_seo_demo', 1 );
-		SimpleSEO\save_field( $id, SimpleSEO\TITLE_KEY, SimpleSEO\TITLE_DISABLED_KEY, $p[5] && '' !== $p[4], $p[4] );
-		SimpleSEO\save_field( $id, SimpleSEO\DESCRIPTION_KEY, SimpleSEO\DESCRIPTION_DISABLED_KEY, '' !== $p[6], $p[6] );
+		SimpleSEO\save_text( $id, SimpleSEO\TITLE_KEY, $p[5] ? $p[4] : '' );
+		SimpleSEO\save_text( $id, SimpleSEO\DESCRIPTION_KEY, $p[6] );
 		update_post_meta( $id, SimpleSEO\NOINDEX_KEY, ! empty( $p[7] ) );
 	}
 

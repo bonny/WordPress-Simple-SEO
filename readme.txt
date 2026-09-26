@@ -21,7 +21,7 @@ What we've got: three fields on every post and page. Exactly what you need, and 
 - **Meta description.** The short summary search engines often show under the title.
 - **Discourage search engines.** Ask them not to index thank-you pages, test pages and anything else that doesn't belong in Google.
 
-Tick a box to use a field. Untick it to switch it off without losing what you wrote.
+Fill in a field to use it. Leave it empty, and WordPress does what it always did.
 
 And a few things that just happen:
 
@@ -103,7 +103,7 @@ WordPress has one built in, at /wp-sitemap.xml. Simple SEO leaves out the pages 
 
 = Can I edit the fields with WP-CLI, the REST API or an AI tool? =
 
-Yes. They're normal post meta: `_simple_seo_title`, `_simple_seo_description` and `_simple_seo_noindex`, plus `_simple_seo_title_disabled` and `_simple_seo_description_disabled` for the checkboxes. For example: `wp post meta update 123 _simple_seo_title "Our story"`. In the REST API they're under `meta` with `?context=edit`, for users who can edit the post.
+Yes. They're normal post meta: `_simple_seo_title`, `_simple_seo_description` and `_simple_seo_noindex`. A title or description is used when it isn't empty. For example: `wp post meta update 123 _simple_seo_title "Our story"`. In the REST API they're under `meta` with `?context=edit`, for users who can edit the post.
 
 = For developers: can I change what Simple SEO outputs? =
 
@@ -129,6 +129,9 @@ It's still there for pages, in the Classic Editor box and in Quick Edit in the P
 6. With Simple History, every SEO change is logged: who, when, and what it said before.
 
 == Changelog ==
+
+= Unreleased =
+- Changed: no more checkboxes next to the SEO title, meta description and menu label. Fill in a field to use it, empty it to go back to the default. Only "Discourage search engines" is still a checkbox. Text you had switched off with a checkbox stays off.
 
 = 1.0.0 (September 2026) =
 - The custom page title, a new meta description and a new "discourage search engines from indexing this page" setting are now stored as post meta that the REST API and WP-CLI can read and write (`_simple_seo_title`, `_simple_seo_description`, `_simple_seo_noindex`). Existing custom page titles keep working and move to the new field the next time the post is saved. Only logged-in users who can edit the post see the fields in the REST API.

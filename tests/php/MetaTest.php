@@ -1,19 +1,15 @@
 <?php
 /**
- * The fields: storage, the on/off flags, and the pre-1.0 title.
+ * The fields: storage, "used when not empty", and the pre-1.0 title and menu label.
  *
  * @package SimpleSEO
  */
 
-use function SimpleSEO\description_field;
 use function SimpleSEO\get_description;
+use function SimpleSEO\get_menu_label;
 use function SimpleSEO\get_title;
 use function SimpleSEO\is_noindex;
-use function SimpleSEO\save_field;
-use function SimpleSEO\title_field;
-use const SimpleSEO\DESCRIPTION_DISABLED_KEY;
-use const SimpleSEO\DESCRIPTION_KEY;
-use const SimpleSEO\TITLE_DISABLED_KEY;
+use function SimpleSEO\save_text;
 use const SimpleSEO\TITLE_KEY;
 
 class MetaTest extends SimpleSEO_TestCase {
@@ -34,44 +30,26 @@ class MetaTest extends SimpleSEO_TestCase {
 	public function test_no_fields_means_nothing_used() {
 		$post_id = self::factory()->post->create();
 
-		$this->assertSame( [ false, '' ], title_field( $post_id ) );
 		$this->assertSame( '', get_title( $post_id ) );
 		$this->assertSame( '', get_description( $post_id ) );
+		$this->assertSame( '', get_menu_label( $post_id ) );
 		$this->assertFalse( is_noindex( $post_id ) );
 	}
 
-	public function test_ticked_field_is_used() {
+	public function test_text_is_used() {
+		// Also what WP-CLI and the REST API do: set the text, and it's used.
 		$post_id = self::factory()->post->create();
-		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, true, 'SEO title' );
+		update_post_meta( $post_id, TITLE_KEY, 'SEO title' );
 
-		$this->assertSame( [ true, 'SEO title' ], title_field( $post_id ) );
 		$this->assertSame( 'SEO title', get_title( $post_id ) );
 	}
 
-	public function test_unticking_keeps_the_text_but_stops_using_it() {
+	public function test_whitespace_counts_as_empty() {
 		$post_id = self::factory()->post->create();
-		save_field( $post_id, DESCRIPTION_KEY, DESCRIPTION_DISABLED_KEY, false, 'Kept' );
+		save_text( $post_id, TITLE_KEY, "  \t " );
 
-		$this->assertSame( [ false, 'Kept' ], description_field( $post_id ) );
-		$this->assertSame( '', get_description( $post_id ) );
-	}
-
-	public function test_ticked_but_empty_counts_as_off() {
-		// Same as the block editor panel shows it after a reload, so the editors, the list and
-		// the Simple History log agree. The front end uses the default either way.
-		$post_id = self::factory()->post->create();
-		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, true, '' );
-
-		$this->assertSame( [ false, '' ], title_field( $post_id ) );
 		$this->assertSame( '', get_title( $post_id ) );
-	}
-
-	public function test_text_without_a_flag_is_on() {
-		// What WP-CLI or the REST API do when they set only the text.
-		$post_id = self::factory()->post->create();
-		update_post_meta( $post_id, TITLE_KEY, 'Set by WP-CLI' );
-
-		$this->assertSame( 'Set by WP-CLI', get_title( $post_id ) );
+		$this->assertFalse( metadata_exists( 'post', $post_id, TITLE_KEY ) );
 	}
 
 	public function test_noindex_strings_from_wp_cli() {
@@ -84,36 +62,44 @@ class MetaTest extends SimpleSEO_TestCase {
 		$this->assertFalse( is_noindex( $post_id ) );
 	}
 
-	public function test_legacy_title_is_read() {
+	public function test_legacy_title_is_used_only_when_ticked() {
 		$this->assertSame( 'Old title', get_title( $this->legacy_post( true ) ) );
-		$this->assertSame( [ false, 'Old title' ], title_field( $this->legacy_post( false ) ) );
+		// An unticked old title stays unused: nothing starts showing after the update.
+		$this->assertSame( '', get_title( $this->legacy_post( false ) ) );
 	}
 
-	public function test_legacy_title_is_the_default_of_the_new_keys() {
+	public function test_legacy_title_is_the_default_of_the_new_key() {
 		// So the REST API and the block editor panel show it.
-		$post_id = $this->legacy_post( false );
-
-		$this->assertSame( 'Old title', get_post_meta( $post_id, TITLE_KEY, true ) );
-		$this->assertTrue( get_post_meta( $post_id, TITLE_DISABLED_KEY, true ) );
+		$this->assertSame( 'Old title', get_post_meta( $this->legacy_post( true ), TITLE_KEY, true ) );
+		$this->assertSame( '', get_post_meta( $this->legacy_post( false ), TITLE_KEY, true ) );
 	}
 
-	public function test_writing_only_the_flag_keeps_the_legacy_text() {
-		// The block editor panel does this when the box is ticked: the text equals the
-		// legacy default, so the REST API writes only the flag.
-		$post_id = $this->legacy_post( false );
-		update_post_meta( $post_id, TITLE_DISABLED_KEY, false );
-
-		$this->assertSame( [ true, 'Old title' ], title_field( $post_id ) );
-		$this->assertFalse( metadata_exists( 'post', $post_id, '_simple_seo_custom_page_title_value' ) );
-	}
-
-	public function test_saving_moves_the_legacy_title() {
+	public function test_saving_replaces_the_legacy_title() {
 		$post_id = $this->legacy_post( true );
-		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, true, 'New title' );
+		save_text( $post_id, TITLE_KEY, 'New title' );
 
 		$this->assertSame( 'New title', get_title( $post_id ) );
 		$this->assertFalse( metadata_exists( 'post', $post_id, '_simple_seo_use_custom_page_title' ) );
 		$this->assertFalse( metadata_exists( 'post', $post_id, '_simple_seo_custom_page_title_value' ) );
+	}
+
+	public function test_emptying_removes_the_legacy_title() {
+		// Nothing stored under the new key, so deleting it fires no hook; the old title must still go.
+		$post_id = $this->legacy_post( true );
+		save_text( $post_id, TITLE_KEY, '' );
+
+		$this->assertSame( '', get_title( $post_id ) );
+		$this->assertFalse( metadata_exists( 'post', $post_id, '_simple_seo_custom_page_title_value' ) );
+	}
+
+	public function test_legacy_menu_label_is_used_only_when_ticked() {
+		$page_id = self::factory()->post->create( [ 'post_type' => 'page' ] );
+		update_post_meta( $page_id, '_simple_seo_custom_menu_label_value', 'Short' );
+		update_post_meta( $page_id, '_simple_seo_use_custom_menu_label', 0 );
+		$this->assertSame( '', get_menu_label( $page_id ) );
+
+		update_post_meta( $page_id, '_simple_seo_use_custom_menu_label', 1 );
+		$this->assertSame( 'Short', get_menu_label( $page_id ) );
 	}
 
 	public function test_text_is_sanitized() {

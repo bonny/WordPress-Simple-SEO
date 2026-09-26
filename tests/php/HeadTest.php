@@ -7,10 +7,7 @@
  * @package SimpleSEO
  */
 
-use function SimpleSEO\save_field;
-use const SimpleSEO\DESCRIPTION_DISABLED_KEY;
 use const SimpleSEO\DESCRIPTION_KEY;
-use const SimpleSEO\TITLE_DISABLED_KEY;
 use const SimpleSEO\TITLE_KEY;
 
 class HeadTest extends SimpleSEO_TestCase {
@@ -51,8 +48,8 @@ class HeadTest extends SimpleSEO_TestCase {
 
 	public function test_every_field_once() {
 		$post_id = self::factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Post title' ] );
-		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, true, 'SEO title' );
-		save_field( $post_id, DESCRIPTION_KEY, DESCRIPTION_DISABLED_KEY, true, 'SEO description' );
+		update_post_meta( $post_id, TITLE_KEY, 'SEO title' );
+		update_post_meta( $post_id, DESCRIPTION_KEY, 'SEO description' );
 		update_post_meta( $post_id, '_simple_seo_noindex', true );
 
 		$head = $this->head( $post_id );
@@ -82,8 +79,8 @@ class HeadTest extends SimpleSEO_TestCase {
 
 	public function test_nothing_of_ours_when_another_seo_plugin_is_active() {
 		$post_id = self::factory()->post->create( [ 'post_title' => 'Post title' ] );
-		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, true, 'SEO title' );
-		save_field( $post_id, DESCRIPTION_KEY, DESCRIPTION_DISABLED_KEY, true, 'SEO description' );
+		update_post_meta( $post_id, TITLE_KEY, 'SEO title' );
+		update_post_meta( $post_id, DESCRIPTION_KEY, 'SEO description' );
 		update_post_meta( $post_id, '_simple_seo_noindex', true );
 
 		// Undo what plugins_loaded added, then run it again with another plugin "active".
@@ -105,7 +102,7 @@ class HeadTest extends SimpleSEO_TestCase {
 
 	public function test_no_html_comment() {
 		$post_id = self::factory()->post->create();
-		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, true, 'SEO title' );
+		update_post_meta( $post_id, TITLE_KEY, 'SEO title' );
 
 		// No "optimized with Simple SEO" advert in every page's source (2026-09-26).
 		$this->assertStringNotContainsStringIgnoringCase( 'simple seo', $this->head( $post_id ) );

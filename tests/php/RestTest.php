@@ -14,7 +14,6 @@ class RestTest extends SimpleSEO_TestCase {
 
 		$this->post_id = self::factory()->post->create();
 		update_post_meta( $this->post_id, '_simple_seo_title', 'Secret draft title' );
-		update_post_meta( $this->post_id, '_simple_seo_title_disabled', true );
 	}
 
 	/**
@@ -41,7 +40,6 @@ class RestTest extends SimpleSEO_TestCase {
 
 		$meta = $this->get_meta( 'edit' );
 		$this->assertSame( 'Secret draft title', $meta['_simple_seo_title'] );
-		$this->assertTrue( $meta['_simple_seo_title_disabled'] );
 		$this->assertFalse( $meta['_simple_seo_noindex'] );
 	}
 
@@ -53,6 +51,21 @@ class RestTest extends SimpleSEO_TestCase {
 
 		$this->assertSame( 200, rest_do_request( $request )->get_status() );
 		$this->assertTrue( SimpleSEO\is_noindex( $this->post_id ) );
+	}
+
+	public function test_clearing_an_old_title_in_the_block_editor() {
+		// The panel shows a pre-1.0 title as the key's default; emptying the field must stop it being used.
+		$post_id = self::factory()->post->create();
+		add_post_meta( $post_id, '_simple_seo_use_custom_page_title', 1 );
+		add_post_meta( $post_id, '_simple_seo_custom_page_title_value', 'Old title' );
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'editor' ] ) );
+
+		$request = new WP_REST_Request( 'POST', "/wp/v2/posts/{$post_id}" );
+		$request->set_body_params( [ 'meta' => [ '_simple_seo_title' => '' ] ] );
+
+		$this->assertSame( 200, rest_do_request( $request )->get_status() );
+		$this->assertSame( '', SimpleSEO\get_title( $post_id ) );
+		$this->assertFalse( metadata_exists( 'post', $post_id, '_simple_seo_custom_page_title_value' ) );
 	}
 
 	public function test_subscribers_cannot_write() {

@@ -74,11 +74,11 @@ function column_content( $column, $post_id ): void {
 		return;
 	}
 
-	$post_id                               = (int) $post_id;
-	$noindex                               = is_noindex( $post_id );
-	[ $title_on, $title_text ]             = title_field( $post_id );
-	[ $description_on, $description_text ] = description_field( $post_id );
-	$has_values                            = $noindex || '' !== $title_text || '' !== $description_text;
+	$post_id     = (int) $post_id;
+	$noindex     = is_noindex( $post_id );
+	$title       = get_title( $post_id );
+	$description = get_description( $post_id );
+	$has_values  = $noindex || '' !== $title || '' !== $description;
 
 	$other_plugin = active_seo_plugin();
 
@@ -94,14 +94,13 @@ function column_content( $column, $post_id ): void {
 		printf( '<span class="dashicons dashicons-hidden" aria-hidden="true"></span> %s<br />', esc_html__( 'Search engines discouraged', 'simple-seo' ) );
 	}
 
-	// A short label on each line, so a row reads on its own. Switched-off text is still saved,
-	// so it shows greyed out with "(off)" by its label instead of being hidden.
-	if ( '' !== $title_text ) {
-		column_line( $title_on ? __( 'Title:', 'simple-seo' ) : __( 'Title (off):', 'simple-seo' ), $title_text, $title_on, 'simple-seo-title' );
+	// A short label on each line, so a row reads on its own.
+	if ( '' !== $title ) {
+		column_line( __( 'Title:', 'simple-seo' ), $title, 'simple-seo-title' );
 	}
 
-	if ( '' !== $description_text ) {
-		column_line( $description_on ? __( 'Description:', 'simple-seo' ) : __( 'Description (off):', 'simple-seo' ), wp_trim_words( $description_text, 12 ), $description_on, 'simple-seo-description' );
+	if ( '' !== $description ) {
+		column_line( __( 'Description:', 'simple-seo' ), wp_trim_words( $description, 12 ), 'simple-seo-description' );
 	}
 
 	if ( $other_plugin && $has_values ) {
@@ -119,13 +118,10 @@ function column_content( $column, $post_id ): void {
 		esc_textarea(
 			(string) wp_json_encode(
 				[
-					'title_on'       => $title_on,
-					'title'          => $title_text,
-					'description_on' => $description_on,
-					'description'    => $description_text,
-					'noindex_on'     => $noindex,
-					'menu_label_on'  => (bool) get_post_meta( $post_id, USE_MENU_LABEL_KEY, true ),
-					'menu_label'     => (string) get_post_meta( $post_id, MENU_LABEL_KEY, true ),
+					'title'       => $title,
+					'description' => $description,
+					'noindex_on'  => $noindex,
+					'menu_label'  => get_menu_label( $post_id ),
 				]
 			)
 		)
@@ -137,13 +133,11 @@ function column_content( $column, $post_id ): void {
  *
  * @param string $label      Label, like "Title:".
  * @param string $text       The field's text.
- * @param bool   $on         Whether the field is used; greyed out if not.
  * @param string $text_class Class of the text.
  */
-function column_line( string $label, string $text, bool $on, string $text_class ): void {
+function column_line( string $label, string $text, string $text_class ): void {
 	printf(
-		'<div%s><span class="simple-seo-label">%s</span> <span class="%s">%s</span></div>',
-		$on ? '' : ' class="simple-seo-off"',
+		'<div><span class="simple-seo-label">%s</span> <span class="%s">%s</span></div>',
 		esc_html( $label ),
 		esc_attr( $text_class ),
 		esc_html( $text )
@@ -151,7 +145,7 @@ function column_line( string $label, string $text, bool $on, string $text_class 
 }
 
 /**
- * The fields in Quick Edit, filled in by build/quick-edit.js: a checkbox, then a full-width
+ * The fields in Quick Edit, filled in by build/quick-edit.js: a label, then a full-width
  * text field under it, like core's Tags field.
  *
  * @param string $column    Column name.
@@ -163,7 +157,6 @@ function quick_edit_fields( $column, $post_type ): void {
 	}
 
 	echo '<fieldset class="inline-edit-col-left simple-seo-quick-edit"><div class="inline-edit-col">';
-	printf( '<span class="title">%s</span>', esc_html__( 'SEO', 'simple-seo' ) );
 	wp_nonce_field( 'simple_seo_save', 'simple_seo_nonce', false );
 
 	$other_plugin = active_seo_plugin();
@@ -176,11 +169,11 @@ function quick_edit_fields( $column, $post_type ): void {
 		);
 	}
 
-	quick_edit_field( 'title', __( 'Use a custom SEO title', 'simple-seo' ), __( 'SEO title', 'simple-seo' ) );
-	quick_edit_field( 'description', __( 'Use a custom meta description', 'simple-seo' ), __( 'Meta description', 'simple-seo' ) );
+	quick_edit_field( 'title', __( 'SEO title', 'simple-seo' ) );
+	quick_edit_field( 'description', __( 'Meta description', 'simple-seo' ) );
 
 	if ( 'page' === $post_type ) {
-		quick_edit_field( 'menu_label', __( 'Use a custom menu label', 'simple-seo' ), __( 'Menu label', 'simple-seo' ) );
+		quick_edit_field( 'menu_label', __( 'Menu label', 'simple-seo' ) );
 	}
 
 	printf(
@@ -192,23 +185,16 @@ function quick_edit_fields( $column, $post_type ): void {
 }
 
 /**
- * One checkbox + text field in Quick Edit.
+ * One labeled text field in Quick Edit.
  *
- * @param string $name        Field name.
- * @param string $label       Checkbox label.
- * @param string $input_label Label of the text field, for screen readers.
+ * @param string $name  Field name.
+ * @param string $label Label.
  */
-function quick_edit_field( string $name, string $label, string $input_label ): void {
+function quick_edit_field( string $name, string $label ): void {
 	printf(
-		'<label class="simple-seo-check"><input type="checkbox" name="simple_seo[%1$s_on]" value="1" /> %2$s</label>',
+		'<label class="simple-seo-field"><span class="simple-seo-label">%2$s</span><input type="text" name="simple_seo[%1$s]" /></label>',
 		esc_attr( $name ),
 		esc_html( $label )
-	);
-
-	printf(
-		'<input type="text" name="simple_seo[%1$s]" aria-label="%2$s" />',
-		esc_attr( $name ),
-		esc_attr( $input_label )
 	);
 }
 

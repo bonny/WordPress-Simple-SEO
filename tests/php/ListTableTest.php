@@ -6,10 +6,7 @@
  * @package SimpleSEO
  */
 
-use function SimpleSEO\save_field;
-use const SimpleSEO\DESCRIPTION_DISABLED_KEY;
 use const SimpleSEO\DESCRIPTION_KEY;
-use const SimpleSEO\TITLE_DISABLED_KEY;
 use const SimpleSEO\TITLE_KEY;
 
 class ListTableTest extends SimpleSEO_TestCase {
@@ -29,16 +26,14 @@ class ListTableTest extends SimpleSEO_TestCase {
 
 	public function test_column_shows_what_is_used() {
 		$post_id = self::factory()->post->create();
-		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, true, 'Our story' );
-		save_field( $post_id, DESCRIPTION_KEY, DESCRIPTION_DISABLED_KEY, false, 'Kept but off' );
+		update_post_meta( $post_id, TITLE_KEY, 'Our story' );
 		update_post_meta( $post_id, '_simple_seo_noindex', true );
 
 		$html = get_echo( 'SimpleSEO\\column_content', [ 'simple_seo', $post_id ] );
 
 		$this->assertStringContainsString( '<div><span class="simple-seo-label">Title:</span> <span class="simple-seo-title">Our story</span></div>', $html );
 		$this->assertStringContainsString( 'Search engines discouraged', $html );
-		// Switched-off text shows greyed out with "(off)" by its label, not as used.
-		$this->assertStringContainsString( '<div class="simple-seo-off"><span class="simple-seo-label">Description (off):</span> <span class="simple-seo-description">Kept but off</span></div>', $html );
+		$this->assertStringNotContainsString( 'Description:', $html );
 	}
 
 	public function test_quick_edit_data_keeps_stored_entities() {
@@ -67,20 +62,42 @@ class ListTableTest extends SimpleSEO_TestCase {
 			'post_ID'          => $page_id,
 			'simple_seo_nonce' => wp_create_nonce( 'simple_seo_save' ),
 			'simple_seo'       => [
-				'title_on'      => '1',
-				'title'         => 'Quick title',
-				'description'   => 'Kept but off',
-				'noindex_on'    => '1',
-				'menu_label_on' => '1',
-				'menu_label'    => 'Short',
+				'title'       => ' Quick title ',
+				'description' => '',
+				'noindex_on'  => '1',
+				'menu_label'  => 'Short',
 			],
 		];
 		SimpleSEO\save_post( $page_id, get_post( $page_id ) );
 
 		$this->assertSame( 'Quick title', SimpleSEO\get_title( $page_id ) );
-		$this->assertSame( [ false, 'Kept but off' ], SimpleSEO\description_field( $page_id ) );
 		$this->assertTrue( SimpleSEO\is_noindex( $page_id ) );
-		$this->assertSame( 'Short', get_post_meta( $page_id, '_simple_seo_custom_menu_label_value', true ) );
+		$this->assertSame( 'Short', SimpleSEO\get_menu_label( $page_id ) );
+		// Empty fields store nothing.
+		$this->assertFalse( metadata_exists( 'post', $page_id, DESCRIPTION_KEY ) );
+	}
+
+	public function test_emptying_a_field_removes_it() {
+		$page_id = self::factory()->post->create( [ 'post_type' => 'page' ] );
+		update_post_meta( $page_id, TITLE_KEY, 'Old' );
+		update_post_meta( $page_id, '_simple_seo_use_custom_menu_label', 1 );
+		update_post_meta( $page_id, '_simple_seo_custom_menu_label_value', 'Old label' );
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'editor' ] ) );
+
+		$_POST = [
+			'post_ID'          => $page_id,
+			'simple_seo_nonce' => wp_create_nonce( 'simple_seo_save' ),
+			'simple_seo'       => [
+				'title'      => '  ',
+				'menu_label' => '',
+			],
+		];
+		SimpleSEO\save_post( $page_id, get_post( $page_id ) );
+
+		$this->assertSame( '', SimpleSEO\get_title( $page_id ) );
+		$this->assertFalse( metadata_exists( 'post', $page_id, TITLE_KEY ) );
+		$this->assertFalse( metadata_exists( 'post', $page_id, '_simple_seo_use_custom_menu_label' ) );
+		$this->assertFalse( metadata_exists( 'post', $page_id, '_simple_seo_custom_menu_label_value' ) );
 	}
 
 	public function test_no_save_without_a_valid_nonce_or_for_another_post() {

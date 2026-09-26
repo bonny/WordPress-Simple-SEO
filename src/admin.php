@@ -53,7 +53,7 @@ function uses_seo_fields( int $post_id ): bool {
 	return '' !== get_title( $post_id )
 		|| '' !== get_description( $post_id )
 		|| is_noindex( $post_id )
-		|| (bool) get_post_meta( $post_id, USE_MENU_LABEL_KEY, true );
+		|| '' !== get_menu_label( $post_id );
 }
 
 /**
@@ -90,12 +90,12 @@ function enqueue_admin_css( string $hook_suffix ): void {
 	wp_enqueue_style( 'simple-seo-admin' );
 	wp_add_inline_style(
 		'simple-seo-admin',
-		'#simple-seo .description { display: block; margin-top: 4px; }
-		.simple-seo-quick-edit .title { display: block; }
-		.simple-seo-quick-edit .simple-seo-check { display: block; margin-top: 6px; }
-		.simple-seo-quick-edit input[type="text"] { width: 100%; }
+		'#simple-seo label { display: block; margin-bottom: 4px; font-weight: 600; }
+		#simple-seo .description { display: block; margin-top: 4px; }
+		.simple-seo-quick-edit .simple-seo-field, .simple-seo-quick-edit .simple-seo-check { display: block; margin-top: 6px; }
+		.simple-seo-quick-edit input[type="text"] { display: block; width: 100%; }
 		.simple-seo-quick-edit .simple-seo-note { margin: 4px 0; }
-		.column-simple_seo .simple-seo-not-used, .column-simple_seo .simple-seo-off { opacity: .6; }
+		.column-simple_seo .simple-seo-not-used { opacity: .6; }
 		.column-simple_seo .simple-seo-label { color: #646970; }
 		.column-simple_seo .simple-seo-title { font-weight: 600; }
 		.column-simple_seo .dashicons-hidden { font-size: 16px; width: 16px; height: 16px; vertical-align: text-bottom; }

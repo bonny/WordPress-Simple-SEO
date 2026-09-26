@@ -19,7 +19,7 @@ Three fields on every post, page and public custom post type:
 - **Meta description.** The short text search engines often show under the title.
 - **Discourage search engines.** For thank-you pages, test pages and anything else that doesn't belong in Google.
 
-Tick a box to use a field. Untick it to switch it off without losing what you wrote.
+Fill in a field to use it. Leave it empty, and WordPress does what it always did.
 
 And a few things that just happen:
 
@@ -82,7 +82,6 @@ The fields are plain, registered post meta, so WP-CLI, the REST API and AI tools
 |---|---|
 | `_simple_seo_title` | SEO title |
 | `_simple_seo_description` | Meta description |
-| `_simple_seo_title_disabled`, `_simple_seo_description_disabled` | The unticked checkboxes (missing means on) |
 | `_simple_seo_noindex` | Discourage search engines |
 
 ```bash

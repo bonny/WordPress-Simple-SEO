@@ -5,8 +5,6 @@
  * @package SimpleSEO
  */
 
-use function SimpleSEO\save_field;
-use const SimpleSEO\TITLE_DISABLED_KEY;
 use const SimpleSEO\TITLE_KEY;
 
 class SimpleHistoryTest extends SimpleSEO_TestCase {
@@ -46,7 +44,7 @@ class SimpleHistoryTest extends SimpleSEO_TestCase {
 		$post_id = self::factory()->post->create( [ 'post_title' => 'About us' ] );
 		wp_set_current_user( self::factory()->user->create( [ 'role' => 'editor' ] ) );
 
-		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, true, 'Our story' );
+		update_post_meta( $post_id, TITLE_KEY, 'Our story' );
 		update_post_meta( $post_id, '_simple_seo_noindex', true );
 		$this->logger()->log_changes();
 
@@ -54,8 +52,6 @@ class SimpleHistoryTest extends SimpleSEO_TestCase {
 		$this->assertCount( 1, $events );
 		$this->assertSame( 'seo_updated', $events[0]['_message_key'] );
 		$this->assertSame( 'About us', $events[0]['post_title'] );
-		$this->assertSame( 'No', $events[0]['seo_title_on_prev'] );
-		$this->assertSame( 'Yes', $events[0]['seo_title_on_new'] );
 		$this->assertSame( '', $events[0]['seo_title_prev'] );
 		$this->assertSame( 'Our story', $events[0]['seo_title_new'] );
 		$this->assertSame( 'Yes', $events[0]['noindex_new'] );
@@ -77,42 +73,26 @@ class SimpleHistoryTest extends SimpleSEO_TestCase {
 		$this->assertSame( [ 'All pages' ], wp_list_pluck( $this->logger()->get_action_links( $row ), 'label' ) );
 	}
 
-	public function test_ticking_a_box_logs_only_the_checkbox() {
+	public function test_clearing_the_text_is_logged() {
 		$post_id = self::factory()->post->create();
-		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, false, 'Kept but off' );
+		update_post_meta( $post_id, TITLE_KEY, 'Hi' );
 		$this->logger()->log_changes();
 
-		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, true, 'Kept but off' );
+		SimpleSEO\save_text( $post_id, TITLE_KEY, '' );
 		$this->logger()->log_changes();
 
 		$event = $this->events( $post_id )[0];
-		$this->assertSame( 'No', $event['seo_title_on_prev'] );
-		$this->assertSame( 'Yes', $event['seo_title_on_new'] );
-		$this->assertArrayNotHasKey( 'seo_title_new', $event );
-	}
-
-	public function test_clearing_the_text_logs_the_box_as_off() {
-		// Regression (code review): the log said the box stayed on while the block editor showed it off.
-		$post_id = self::factory()->post->create();
-		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, true, 'Hi' );
-		$this->logger()->log_changes();
-
-		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, true, '' );
-		$this->logger()->log_changes();
-
-		$event = $this->events( $post_id )[0];
-		$this->assertSame( 'Yes', $event['seo_title_on_prev'] );
-		$this->assertSame( 'No', $event['seo_title_on_new'] );
+		$this->assertSame( 'Hi', $event['seo_title_prev'] );
 		$this->assertSame( '', $event['seo_title_new'] );
 	}
 
 	public function test_no_event_when_nothing_changed() {
 		$post_id = self::factory()->post->create();
-		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, true, 'Same' );
+		update_post_meta( $post_id, TITLE_KEY, 'Same' );
 		$this->logger()->log_changes();
 		$before = count( $this->events( $post_id ) );
 
-		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, true, 'Same' );
+		SimpleSEO\save_text( $post_id, TITLE_KEY, ' Same ' );
 		$this->logger()->log_changes();
 
 		$this->assertCount( $before, $this->events( $post_id ) );
@@ -125,7 +105,7 @@ class SimpleHistoryTest extends SimpleSEO_TestCase {
 		$this->logger()->log_changes(); // Setting up the old keys is a write too; on real sites they already exist.
 		$before = count( $this->events( $post_id ) );
 
-		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, true, 'Old title' );
+		update_post_meta( $post_id, TITLE_KEY, 'Old title' );
 		$this->logger()->log_changes();
 
 		$this->assertCount( $before, $this->events( $post_id ) );

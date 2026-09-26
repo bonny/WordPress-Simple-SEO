@@ -36,5 +36,16 @@ if ( inlineEditPost ) {
 				input.value = value;
 			}
 		} );
+
+		// The menu label is a pre-1.0 feature the block editor doesn't have: only show it
+		// on pages that already have one, so it can still be changed or cleared.
+		const menuLabel = form.querySelector(
+			'[name="simple_seo[menu_label]"]'
+		);
+
+		if ( menuLabel ) {
+			menuLabel.closest( '.simple-seo-field' ).style.display =
+				values.menu_label ? '' : 'none';
+		}
 	};
 }
