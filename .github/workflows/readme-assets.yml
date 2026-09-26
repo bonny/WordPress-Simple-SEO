@@ -4,7 +4,7 @@ name: Update readme and assets on WordPress.org
 # stable tag's readme. Run by hand only: on every push it would publish readme
 # edits meant for the next release, like "= Unreleased =" changelog lines.
 #
-#   gh workflow run readme-assets.yml -R bonny/simple-seo
+#   gh workflow run readme-assets.yml -R bonny/WordPress-Simple-SEO
 on:
     workflow_dispatch:
 jobs:

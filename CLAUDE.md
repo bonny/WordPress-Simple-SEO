@@ -18,7 +18,7 @@ Principles for everything we build (Pär, 2026-09-25):
 
 ## History
 
-This git repo was created on 2026-09-24 by replaying the WordPress.org SVN trunk history (r279243 to r607674) into git with the original authors, dates, and messages. Git tags `0.1` and `0.3.1` to `0.3.4` point at the matching trunk commits. SVN is still the release channel; GitHub (`bonny/simple-seo`, private for now) is the source of truth for development.
+This git repo was created on 2026-09-24 by replaying the WordPress.org SVN trunk history (r279243 to r607674) into git with the original authors, dates, and messages. Git tags `0.1` and `0.3.1` to `0.3.4` point at the matching trunk commits. SVN is still the release channel; GitHub (`bonny/WordPress-Simple-SEO`, renamed from `simple-seo` on 2026-09-26 to match Pär's other plugin repos; private for now) is the source of truth for development.
 
 How old the SEO plugins are, which still live, and their installs and downloads: [`docs/seo-plugin-history.md`](docs/seo-plugin-history.md). The readme's "seven weeks before Yoast SEO" line rests on it.
 

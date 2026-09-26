@@ -23,7 +23,7 @@ Do **not** bump, tag or push a release unless Pär asks for it in this conversat
 - [ ] The Wordfence verification string is still the last line of `readme.txt` (see CLAUDE.md).
 - [ ] `Tested up to:` is the current WordPress major. `Requires at least:` / `Requires PHP:` still match `phpcs.xml.dist` and `phpstan.neon.dist`.
 - [ ] Screenshots current if the UI changed (`visual-check` skill).
-- [ ] Repo secrets `SVN_USERNAME` and `SVN_PASSWORD` exist (`gh secret list -R bonny/simple-seo`). Without them the deploy fails at the SVN step.
+- [ ] Repo secrets `SVN_USERNAME` and `SVN_PASSWORD` exist (`gh secret list -R bonny/WordPress-Simple-SEO`). Without them the deploy fails at the SVN step.
 
 ## Steps
 
@@ -35,7 +35,7 @@ Do **not** bump, tag or push a release unless Pär asks for it in this conversat
    git push origin main
    git tag X.Y.Z && git push origin X.Y.Z
    ```
-5. Watch the run: `gh run watch -R bonny/simple-seo` (or the Actions tab). Then check https://wordpress.org/plugins/simple-seo/.
+5. Watch the run: `gh run watch -R bonny/WordPress-Simple-SEO` (or the Actions tab). Then check https://wordpress.org/plugins/simple-seo/.
 
 ## After the deploy
 
@@ -48,8 +48,8 @@ Do **not** bump, tag or push a release unless Pär asks for it in this conversat
 `.github/workflows/readme-assets.yml` publishes `readme.txt` and `.wordpress-org/` from `main` without a new version (trunk, the stable tag's readme, and SVN `assets/`). Manual only, and it's Pär's call like a release:
 
 ```bash
-gh workflow run readme-assets.yml -R bonny/simple-seo
-gh run watch -R bonny/simple-seo $(gh run list -R bonny/simple-seo --workflow readme-assets.yml --limit 1 --json databaseId -q '.[0].databaseId')
+gh workflow run readme-assets.yml -R bonny/WordPress-Simple-SEO
+gh run watch -R bonny/WordPress-Simple-SEO $(gh run list -R bonny/WordPress-Simple-SEO --workflow readme-assets.yml --limit 1 --json databaseId -q '.[0].databaseId')
 ```
 
 It publishes the readme exactly as it is on `main`. If `= Unreleased =` has lines for work that isn't released yet, those go public too, so check the readme first.

@@ -6,7 +6,7 @@
 
 [![Version on WordPress.org](https://img.shields.io/wordpress/plugin/v/simple-seo?label=wordpress.org&color=FFD23F&labelColor=1e1b3a)](https://wordpress.org/plugins/simple-seo/)
 [![Active installs](https://img.shields.io/wordpress/plugin/installs/simple-seo?color=FFD23F&labelColor=1e1b3a)](https://wordpress.org/plugins/simple-seo/advanced/)
-[![Tests](https://github.com/bonny/simple-seo/actions/workflows/tests.yml/badge.svg)](https://github.com/bonny/simple-seo/actions/workflows/tests.yml)
+[![Tests](https://github.com/bonny/WordPress-Simple-SEO/actions/workflows/tests.yml/badge.svg)](https://github.com/bonny/WordPress-Simple-SEO/actions/workflows/tests.yml)
 [![License: GPL v2](https://img.shields.io/badge/license-GPLv2-1e1b3a)](https://www.gnu.org/licenses/gpl-2.0.html)
 
 A title, a description and a "don't index this" checkbox for every post and page. No AI scores, no traffic lights, no upsells, and no settings page to get lost in. Activate it, edit a page, done.
