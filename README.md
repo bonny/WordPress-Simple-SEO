@@ -18,19 +18,19 @@ A title, a description and a "don't index this" checkbox for every post and page
 
 Three fields on every post, page and public custom post type:
 
-- **SEO title.** What search results and the browser tab show. Your headline can say "About us" while Google says "Our story – small batch coffee".
-- **Meta description.** The short text under the title in search results.
+- **SEO title.** The title you give search engines and the browser tab. Your headline can say "About us" while search results say "Our story – small batch coffee".
+- **Meta description.** The short text search engines often show under the title.
 - **Discourage search engines.** For thank-you pages, test pages and anything else that doesn't belong in Google.
 
 Tick a box to use a field. Untick it to switch it off without losing what you wrote.
 
 And a few things that just happen:
 
-- 🔗 **Link previews.** Open Graph tags, so links in Slack, iMessage, LinkedIn, Mastodon, Bluesky and Facebook show the right title, description and image. Pick a default image in Settings → General.
+- 🔗 **Link previews.** Open Graph tags, so links shared in Slack, iMessage, LinkedIn, Mastodon, Bluesky and Facebook get the right title, description and image. Pick a default image in Settings → General.
 - 🗺️ **A cleaner sitemap.** WordPress's own `wp-sitemap.xml`, minus the pages you asked search engines to skip.
 - ✍️ **Both editors.** A panel in the block editor sidebar, a box in the Classic Editor.
 - ⚡ **Quick Edit.** An SEO column in the Posts and Pages lists, and the fields right in Quick Edit.
-- 🤝 **Plays nice.** Yoast SEO, Rank Math, All in One SEO, SEOPress or The SEO Framework active? Simple SEO steps aside and says so. No duplicate tags, ever.
+- 🤝 **Plays nice.** Yoast SEO, Rank Math, All in One SEO, SEOPress or The SEO Framework active? Simple SEO steps aside and says so, so you don't get duplicate tags.
 - 📜 **Remembers everything** with [Simple History](https://wordpress.org/plugins/simple-history/): who changed a title, when, and what it said before.
 
 <p align="center">
@@ -65,7 +65,7 @@ On purpose, and forever-ish:
 
 - ❌ A settings page. There's one setting, and it lives in Settings → General.
 - ❌ Readability scores, keyword density or green lights.
-- ❌ An `llms.txt` file. Search engines ignore it, and AI search runs on the same basics as normal search: a page that can be crawled, with a good title and description.
+- ❌ An `llms.txt` file, for now. As of 2026 Google doesn't use it and hardly any AI search engine fetches it. If that changes, so will we. Until then, AI search runs on the same basics as normal search: a page that can be crawled, with a good title and description.
 - ❌ Dashboard widgets, admin notices or "Go Pro" banners.
 - ❌ Extra database queries on the front end. It reads the post WordPress has already loaded.
 

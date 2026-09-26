@@ -1,6 +1,6 @@
 <?php
 /**
- * Simple History (https://simple-history.com/), Pär's other plugin: log changes to the SEO fields.
+ * Simple History (https://simple-history.com/), a plugin by the same author: log changes to the SEO fields.
  *
  * Nothing here runs unless Simple History is active. Without it, the editor fields show one
  * discreet tip to users who can install plugins.

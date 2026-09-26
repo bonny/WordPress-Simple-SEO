@@ -159,7 +159,7 @@ function SimpleSeoPanel() {
 					) }
 					inputLabel={ __( 'Meta description', 'simple-seo' ) }
 					help={ __(
-						'Shown under the title in search results.',
+						'Often shown under the title in search results.',
 						'simple-seo'
 					) }
 					text={ meta._simple_seo_description }
@@ -185,7 +185,7 @@ function SimpleSeoPanel() {
 				/>
 
 				{ simpleHistoryUrl && usesFields && (
-					<p className="components-base-control__help">
+					<p className="simple-seo-tip">
 						{ createInterpolateElement(
 							__(
 								'Tip: <a>Simple History</a> logs every change to these fields.',

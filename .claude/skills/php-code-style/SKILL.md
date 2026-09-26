@@ -1,11 +1,11 @@
 ---
 name: php-code-style
-description: Use when writing or reviewing PHP in Simple SEO, especially code that outputs HTML. Pär's style: namespaced functions, braces not `if (): endif;`, PHP on its own lines, printf for small markup, early returns, YAGNI.
+description: Use when writing or reviewing PHP in Simple SEO, especially code that outputs HTML. House style: namespaced functions, braces not `if (): endif;`, PHP on its own lines, printf for small markup, early returns, YAGNI.
 ---
 
 # PHP code style (Simple SEO)
 
-Pär's preferences, taken from Simple History's `code-quality` skill (`php-standards.md`) and CMS Tree Page View, plus what was decided for Simple SEO 1.0 (2026-09-25). PHPCS enforces the parts marked (lint).
+The house style, taken from Simple History's `code-quality` skill (`php-standards.md`) and CMS Tree Page View, plus what was decided for Simple SEO 1.0 (2026-09-25). PHPCS enforces the parts marked (lint).
 
 ## Structure
 

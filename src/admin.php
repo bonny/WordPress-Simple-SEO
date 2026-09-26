@@ -62,6 +62,16 @@ function autogrow_css( string $selector ): string {
 }
 
 /**
+ * CSS for the Simple History tip: small and grey like help text, with a grey link, so it
+ * doesn't compete with the fields.
+ *
+ * @param string $selector The tip's selector.
+ */
+function tip_css( string $selector ): string {
+	return "{$selector} { margin: 0; font-size: 12px; color: #757575; } {$selector} a { color: inherit; }";
+}
+
+/**
  * A few lines of CSS for the Classic box and Quick Edit, on the screens that have them.
  *
  * @param string $hook_suffix The current admin page.
@@ -84,6 +94,6 @@ function enqueue_admin_css( string $hook_suffix ): void {
 		.column-simple_seo .simple-seo-label { color: #646970; }
 		.column-simple_seo .simple-seo-title { font-weight: 600; }
 		.column-simple_seo .dashicons-hidden { font-size: 16px; width: 16px; height: 16px; vertical-align: text-bottom; }
-		' . autogrow_css( '#simple-seo textarea' )
+		' . autogrow_css( '#simple-seo textarea' ) . ' ' . tip_css( '#simple-seo .simple-seo-tip' )
 	);
 }

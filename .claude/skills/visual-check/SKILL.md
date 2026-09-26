@@ -5,14 +5,14 @@ description: Screenshot Simple SEO's editor fields (Classic box, block editor pa
 
 # Visual check in the local docker sites
 
-Use the Playwright MCP tools (headless, separate from Pär's Chrome). `scripts/smoke-test.sh` covers the save round trip over HTTP; this skill is for how it looks.
+Use the Playwright MCP tools (headless, separate from the maintainer's Chrome). `scripts/smoke-test.sh` covers the save round trip over HTTP; this skill is for how it looks.
 
 ## Sites
 
 | Site | Admin URL | PHP | Login |
 | --- | --- | --- | --- |
 | `wordpress_php74` | http://wordpress-php74.test:8299/wp-admin | 7.4 | `admin` / `admin` via wp-login.php |
-| `wordpress_mariadb` (stable) | http://wordpress-stable-docker-mariadb.test:8282/wp-admin | 8.3 | Pär's password is unknown: inject an auth cookie (below) |
+| `wordpress_mariadb` (stable) | http://wordpress-stable-docker-mariadb.test:8282/wp-admin | 8.3 | the admin password is unknown: inject an auth cookie (below) |
 
 Both need Simple SEO and Classic Editor active. The stable site is shared with Simple History work, so deactivate both plugins there when done:
 
@@ -47,7 +47,7 @@ Six shots, captions in `readme.txt` under `== Screenshots ==` (keep them in sync
 5. `screenshot-5.png`: the Simple SEO section in Settings → General with the demo share image (wp-env)
 6. `screenshot-6.png`: the Simple History entry for the title and description change made in shot 1 (wp-env, where Simple History is active)
 
-The demo company is Tallvik Coffee Roasters, a made-up Stockholm roastery, set up to look like a real company's site (Pär, 2026-09-26): named authors (Anna Lindberg, Erik Sjöberg), pages published over several years, a child page, a draft, a static front page, the Stockholm timezone. Its domain `tallvikcoffee.se` (unregistered when checked on 2026-09-26) is only shown: as Anna's email and, rewritten in the DOM, as the Classic shot's permalink. The demo share image `demo-share-image.png` (1200 × 630, rendered with Playwright from `demo-share-image.html`, which says how) lives next to the scripts; don't use the plugin banner, it reads as if the plugin brands your previews.
+The demo company is Tallvik Coffee Roasters, a made-up Stockholm roastery, set up to look like a real company's site (2026-09-26): named authors (Anna Lindberg, Erik Sjöberg), pages published over several years, a child page, a draft, a static front page, the Stockholm timezone. Its domain `tallvikcoffee.se` (unregistered when checked on 2026-09-26) is only shown: as Anna's email and, rewritten in the DOM, as the Classic shot's permalink. The demo share image `demo-share-image.png` (1200 × 630, rendered with Playwright from `demo-share-image.html`, which says how) lives next to the scripts; don't use the plugin banner, it reads as if the plugin brands your previews.
 
 Steps:
 

@@ -64,7 +64,7 @@ function meta_box( WP_Post $post ): void {
 	text_field( 'title', __( 'Use a custom SEO title', 'simple-seo' ), __( 'SEO title', 'simple-seo' ), $title_on, $title, title_help( $post->ID ) );
 
 	[ $description_on, $description ] = description_field( $post->ID );
-	text_field( 'description', __( 'Use a custom meta description', 'simple-seo' ), __( 'Meta description', 'simple-seo' ), $description_on, $description, __( 'Shown under the title in search results.', 'simple-seo' ), true );
+	text_field( 'description', __( 'Use a custom meta description', 'simple-seo' ), __( 'Meta description', 'simple-seo' ), $description_on, $description, __( 'Often shown under the title in search results.', 'simple-seo' ), true );
 
 	if ( 'page' === $post->post_type ) {
 		text_field(
@@ -88,7 +88,7 @@ function meta_box( WP_Post $post ): void {
 
 	if ( $tip_url && uses_seo_fields( $post->ID ) ) {
 		printf(
-			'<p class="description">%s</p>',
+			'<p class="description simple-seo-tip">%s</p>',
 			sprintf(
 				/* translators: %s: link to the Simple History plugin. */
 				esc_html__( 'Tip: %s logs every change to these fields.', 'simple-seo' ),
