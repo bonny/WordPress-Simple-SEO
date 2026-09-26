@@ -259,9 +259,12 @@ class Simple_History_Logger extends \Simple_History\Loggers\Logger {
 		$group->set_formatter( new Event_Details_Group_Diff_Table_Formatter() );
 		$group->add_items(
 			[
+				new Event_Details_Item( [ 'seo_title_on' ], __( 'Use a custom SEO title', 'simple-seo' ) ),
 				new Event_Details_Item( [ 'seo_title' ], __( 'SEO title', 'simple-seo' ) ),
+				new Event_Details_Item( [ 'meta_description_on' ], __( 'Use a custom meta description', 'simple-seo' ) ),
 				new Event_Details_Item( [ 'meta_description' ], __( 'Meta description', 'simple-seo' ) ),
 				new Event_Details_Item( [ 'noindex' ], __( 'Discourage search engines', 'simple-seo' ) ),
+				new Event_Details_Item( [ 'menu_label_on' ], __( 'Use a custom menu label', 'simple-seo' ) ),
 				new Event_Details_Item( [ 'menu_label' ], __( 'Menu label', 'simple-seo' ) ),
 			]
 		);

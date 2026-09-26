@@ -54,6 +54,8 @@ class SimpleHistoryTest extends SimpleSEO_TestCase {
 		$this->assertCount( 1, $events );
 		$this->assertSame( 'seo_updated', $events[0]['_message_key'] );
 		$this->assertSame( 'About us', $events[0]['post_title'] );
+		$this->assertSame( 'No', $events[0]['seo_title_on_prev'] );
+		$this->assertSame( 'Yes', $events[0]['seo_title_on_new'] );
 		$this->assertSame( '', $events[0]['seo_title_prev'] );
 		$this->assertSame( 'Our story', $events[0]['seo_title_new'] );
 		$this->assertSame( 'Yes', $events[0]['noindex_new'] );
@@ -75,12 +77,30 @@ class SimpleHistoryTest extends SimpleSEO_TestCase {
 		$this->assertSame( [ 'All pages' ], wp_list_pluck( $this->logger()->get_action_links( $row ), 'label' ) );
 	}
 
-	public function test_no_event_when_nothing_that_shows_changed() {
+	public function test_ticking_a_box_logs_only_the_checkbox() {
 		$post_id = self::factory()->post->create();
 		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, false, 'Kept but off' );
 		$this->logger()->log_changes();
 
-		$this->assertSame( [], $this->events( $post_id ) );
+		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, true, 'Kept but off' );
+		$this->logger()->log_changes();
+
+		$event = $this->events( $post_id )[0];
+		$this->assertSame( 'No', $event['seo_title_on_prev'] );
+		$this->assertSame( 'Yes', $event['seo_title_on_new'] );
+		$this->assertArrayNotHasKey( 'seo_title_new', $event );
+	}
+
+	public function test_no_event_when_nothing_changed() {
+		$post_id = self::factory()->post->create();
+		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, true, 'Same' );
+		$this->logger()->log_changes();
+		$before = count( $this->events( $post_id ) );
+
+		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, true, 'Same' );
+		$this->logger()->log_changes();
+
+		$this->assertCount( $before, $this->events( $post_id ) );
 	}
 
 	public function test_legacy_title_moving_is_not_a_change() {
