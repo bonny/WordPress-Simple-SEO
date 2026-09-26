@@ -31,7 +31,7 @@ And a few things that just happen:
 - **Quick Edit.** An SEO column in the Posts and Pages lists, and the fields right in Quick Edit, for fixing many pages fast.
 - **Plays nice.** Using Yoast SEO, Rank Math, All in One SEO, SEOPress or The SEO Framework? Simple SEO steps aside and says so, so you don't get duplicate tags.
 
-No settings page. No dashboard widgets. No "Go Pro" banners. No extra database tables. No "optimized by Simple SEO" comment in your page source either: your HTML is yours. Activate it, edit a page, done.
+No settings page. No dashboard widgets. No "Go Pro" banners. <del>No nags.</del> Okay, one small grey tip about Simple History. No extra database tables. No "optimized by Simple SEO" comment in your page source either: your HTML is yours. Activate it, edit a page, done.
 
 #### Built for search in 2026
 
@@ -134,7 +134,7 @@ It's still there for pages, in the Classic Editor box and in Quick Edit in the P
 - The custom page title, a new meta description and a new "discourage search engines from indexing this page" setting are now stored as post meta that the REST API and WP-CLI can read and write (`_simple_seo_title`, `_simple_seo_description`, `_simple_seo_noindex`). Existing custom page titles keep working and move to the new field the next time the post is saved. Only logged-in users who can edit the post see the fields in the REST API.
 - New: the meta description and "discourage search engines" (noindex) are output in the page head. With "Your latest posts" as the front page, the tagline is the meta description.
 - Fixed: a custom page title on a static front page was ignored by current themes. It is now the whole title of the front page.
-- New: an "SEO" panel in the block editor sidebar, with the same fields as the Classic Editor box. No more Classic Editor needed.
+- New: a "Simple SEO" panel in the block editor sidebar, with the same fields as the Classic Editor box. No more Classic Editor needed.
 - Changed: in the Classic Editor the fields moved from below the title into a "Simple SEO" box below the editor, with two new ones: a meta description and "Discourage search engines from indexing this page". Each field has a checkbox, so you can switch a value off without losing it.
 - New: link previews. Open Graph and Twitter card tags, so links shared in Slack, iMessage, LinkedIn, Mastodon, Bluesky and Facebook get the right title, description and featured image. Developers can turn them off with the `simple_seo_link_previews` filter.
 - New: a default share image for link previews, in Settings → General → Simple SEO. Used when a post has no featured image.

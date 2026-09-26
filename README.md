@@ -67,6 +67,7 @@ On purpose, and forever-ish:
 - ❌ Readability scores, keyword density or green lights.
 - ❌ An `llms.txt` file, for now. As of 2026 Google doesn't use it and hardly any AI search engine fetches it. If that changes, so will we. Until then, AI search runs on the same basics as normal search: a page that can be crawled, with a good title and description.
 - ❌ Dashboard widgets, admin notices or "Go Pro" banners.
+- ❌ ~~Nags of any kind.~~ Okay, one small grey tip about [Simple History](https://wordpress.org/plugins/simple-history/). A developer has to eat.
 - ❌ An "optimized by Simple SEO" comment in your page source. Your HTML is yours.
 - ❌ Extra database queries on the front end. It reads the post WordPress has already loaded.
 
