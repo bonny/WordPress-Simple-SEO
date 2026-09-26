@@ -24,7 +24,7 @@ How old the SEO plugins are, which still live, and their installs and downloads:
 
 ## Code
 
-Released: 0.3.5. `main` holds unreleased 1.0 work.
+Released: 1.0.0 (2026-09-26), the rewrite. Before it, 0.3.5 (2026-09-24), the first release of the revival.
 
 - `simple-seo.php` is a bootstrap that must stay parseable by PHP 5.6 (WordPress before 5.2 ignores "Requires PHP" and installs updates anyway). Below WordPress 6.6 or PHP 7.4 it shows an admin notice linking the 0.3.5 zip and loads nothing else. Otherwise it requires the files in `src/`.
 - `src/` is namespaced (`SimpleSEO\`; no other plugin on WordPress.org declares it, checked 2026-09-25 with a case-insensitive regex search of all 76,734 plugins on veloria.dev, API in `PeterBooker/veloria` `docs/api.md`), PHP 7.4 syntax, one file per concern: `meta.php` (fields and getters), `frontend.php` (head output, menu label), `classic-editor.php` (the meta box, saving), `block-editor.php` (loads the panel), `list-table.php` (column and Quick Edit). Keep it tight: functions, no classes or containers until something needs them. YAGNI for features. Style rules (braces not `if (): endif;`, how to output HTML) are in the `php-code-style` skill.
@@ -95,8 +95,6 @@ The smoke test needs Simple SEO and Classic Editor active on the site; only the 
 ## Releasing
 
 Use the `cutting-a-release` skill; it's the maintainer's call, so never bump or tag unless asked. In short: `.github/workflows/deploy.yml` deploys trunk + tag to WordPress.org SVN with the 10up action when a semver tag is pushed, and syncs `.wordpress-org/` (screenshots, Live Preview blueprint) to SVN `assets/`. It needs the `SVN_USERNAME` and `SVN_PASSWORD` repo secrets (set, username `eskapism`). Readme or asset changes between releases go out with the manual `readme-assets.yml` workflow; see the skill. `.distignore` decides what ships.
-
-Until 1.0 is released, don't run `readme-assets.yml`: `.wordpress-org/` already holds the 1.0 screenshots (2026-09-25), and it would publish them next to the live 0.3.5.
 
 The last line of `readme.txt` is a Wordfence verification string (`ysaetf7ruhjnm3e2x4tbtletpc35ckeb`, added 2026-09-25). Keep it there, also when the readme is rewritten.
 

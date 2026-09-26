@@ -11,9 +11,6 @@
 
 A title, a description and a "don't index this" checkbox for every post and page. No AI scores, no traffic lights, no upsells, and no settings page to get lost in. Activate it, edit a page, done.
 
-> [!NOTE]
-> `main` holds the upcoming **1.0**, a big rewrite. The version on WordPress.org is still 0.3.5.
-
 ## What you get
 
 Three fields on every post, page and public custom post type:

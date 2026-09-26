@@ -5,7 +5,7 @@ Tags: seo, meta description, open graph, noindex, simple
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.3.5
+Stable tag: 1.0.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -130,7 +130,7 @@ It's still there for pages, in the Classic Editor box and in Quick Edit in the P
 
 == Changelog ==
 
-= Unreleased =
+= 1.0.0 (September 2026) =
 - The custom page title, a new meta description and a new "discourage search engines from indexing this page" setting are now stored as post meta that the REST API and WP-CLI can read and write (`_simple_seo_title`, `_simple_seo_description`, `_simple_seo_noindex`). Existing custom page titles keep working and move to the new field the next time the post is saved. Only logged-in users who can edit the post see the fields in the REST API.
 - New: the meta description and "discourage search engines" (noindex) are output in the page head. With "Your latest posts" as the front page, the tagline is the meta description.
 - Fixed: a custom page title on a static front page was ignored by current themes. It is now the whole title of the front page.
