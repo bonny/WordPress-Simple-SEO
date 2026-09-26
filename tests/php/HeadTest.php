@@ -117,7 +117,7 @@ class HeadTest extends SimpleSEO_TestCase {
 
 		$head = $this->head( $post_id );
 
-		$start = '<!-- Simple SEO start (local sites only, not on live sites). Title and robots tags: printed by WordPress above, filtered by Simple SEO. -->';
+		$start = '<!-- Simple SEO start (local sites only, not on live sites). Title and robots tags: printed by WordPress, filtered by Simple SEO. -->';
 		$this->assertSame( 1, substr_count( $head, $start ) );
 		$this->assertMatchesRegularExpression( '/' . preg_quote( $start, '/' ) . '\n<meta name="description" content="SEO description" \/>\n(<meta [^>]+>\n)+' . preg_quote( '<!-- Simple SEO end -->', '/' ) . '/', $head );
 	}

@@ -199,7 +199,7 @@ function head_tags(): void {
 	 * @param bool $comments Whether to print the comments.
 	 */
 	if ( apply_filters( 'simple_seo_debug_comments', 'local' === wp_get_environment_type() ) ) {
-		$tags = "<!-- Simple SEO start (local sites only, not on live sites). Title and robots tags: printed by WordPress above, filtered by Simple SEO. -->\n{$tags}<!-- Simple SEO end -->\n";
+		$tags = "<!-- Simple SEO start (local sites only, not on live sites). Title and robots tags: printed by WordPress, filtered by Simple SEO. -->\n{$tags}<!-- Simple SEO end -->\n";
 	}
 
 	echo $tags; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Each tag is escaped where it's built.
