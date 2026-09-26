@@ -80,7 +80,7 @@ function enqueue_admin_css( string $hook_suffix ): void {
 		.simple-seo-quick-edit .simple-seo-check { display: block; margin-top: 6px; }
 		.simple-seo-quick-edit input[type="text"] { width: 100%; }
 		.simple-seo-quick-edit .simple-seo-note { margin: 4px 0; }
-		.column-simple_seo .simple-seo-not-used { opacity: .6; }
+		.column-simple_seo .simple-seo-not-used, .column-simple_seo .simple-seo-off { opacity: .6; }
 		.column-simple_seo .dashicons-hidden { font-size: 16px; width: 16px; height: 16px; vertical-align: text-bottom; }
 		' . autogrow_css( '#simple-seo textarea' )
 	);

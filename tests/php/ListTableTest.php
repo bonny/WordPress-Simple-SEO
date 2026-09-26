@@ -37,9 +37,9 @@ class ListTableTest extends SimpleSEO_TestCase {
 
 		$this->assertStringContainsString( '<strong>Our story</strong>', $html );
 		$this->assertStringContainsString( 'Search engines discouraged', $html );
+		// Switched-off text shows greyed out with "(off)", not as used.
 		$this->assertStringNotContainsString( '<span class="description">Kept but off', $html );
-		// The switched-off text is still there for Quick Edit.
-		$this->assertStringContainsString( 'Kept but off', $html );
+		$this->assertStringContainsString( '<span class="description simple-seo-off">Kept but off <em>(off)</em></span>', $html );
 	}
 
 	public function test_quick_edit_data_keeps_stored_entities() {

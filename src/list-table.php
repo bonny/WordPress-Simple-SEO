@@ -75,15 +75,14 @@ function column_content( $column, $post_id ): void {
 	}
 
 	$post_id                               = (int) $post_id;
-	$title                                 = get_title( $post_id );
-	$description                           = get_description( $post_id );
 	$noindex                               = is_noindex( $post_id );
 	[ $title_on, $title_text ]             = title_field( $post_id );
 	[ $description_on, $description_text ] = description_field( $post_id );
+	$has_values                            = $noindex || '' !== $title_text || '' !== $description_text;
 
 	$other_plugin = active_seo_plugin();
 
-	if ( $other_plugin && ( '' !== $title || '' !== $description || $noindex ) ) {
+	if ( $other_plugin && $has_values ) {
 		printf(
 			'<div class="simple-seo-not-used"><span class="screen-reader-text">%s</span>',
 			/* translators: %s: name of another SEO plugin, like Yoast SEO. */
@@ -95,19 +94,28 @@ function column_content( $column, $post_id ): void {
 		printf( '<span class="dashicons dashicons-hidden" aria-hidden="true"></span> %s<br />', esc_html__( 'Search engines discouraged', 'simple-seo' ) );
 	}
 
-	if ( '' !== $title ) {
-		printf( '<strong>%s</strong><br />', esc_html( $title ) );
+	// Switched-off text is still saved, so show it greyed out with "(off)" instead of hiding it.
+	if ( '' !== $title_text ) {
+		printf(
+			$title_on ? '<strong>%s</strong><br />' : '<span class="simple-seo-off">%s <em>%s</em></span><br />',
+			esc_html( $title_text ),
+			esc_html__( '(off)', 'simple-seo' )
+		);
 	}
 
-	if ( '' !== $description ) {
-		printf( '<span class="description">%s</span>', esc_html( wp_trim_words( $description, 12 ) ) );
+	if ( '' !== $description_text ) {
+		printf(
+			$description_on ? '<span class="description">%s</span>' : '<span class="description simple-seo-off">%s <em>%s</em></span>',
+			esc_html( wp_trim_words( $description_text, 12 ) ),
+			esc_html__( '(off)', 'simple-seo' )
+		);
 	}
 
-	if ( $other_plugin && ( '' !== $title || '' !== $description || $noindex ) ) {
+	if ( $other_plugin && $has_values ) {
 		echo '</div>';
 	}
 
-	if ( '' === $title && '' === $description && ! $noindex ) {
+	if ( ! $has_values ) {
 		printf( '<span aria-hidden="true">&#8212;</span><span class="screen-reader-text">%s</span>', esc_html__( 'Default', 'simple-seo' ) );
 	}
 
