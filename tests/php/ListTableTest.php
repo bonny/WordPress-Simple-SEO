@@ -36,7 +36,7 @@ class ListTableTest extends SimpleSEO_TestCase {
 		$html = get_echo( 'SimpleSEO\\column_content', [ 'simple_seo', $post_id ] );
 
 		$this->assertStringContainsString( '<strong>Our story</strong>', $html );
-		$this->assertStringContainsString( 'Hidden from search engines', $html );
+		$this->assertStringContainsString( 'Search engines discouraged', $html );
 		$this->assertStringNotContainsString( '<span class="description">Kept but off', $html );
 		// The switched-off text is still there for Quick Edit.
 		$this->assertStringContainsString( 'Kept but off', $html );

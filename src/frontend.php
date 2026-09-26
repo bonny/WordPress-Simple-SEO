@@ -194,7 +194,7 @@ function meta_description(): void {
 }
 
 /**
- * Add noindex for posts hidden from search engines.
+ * Add noindex for posts where search engines are discouraged.
  *
  * @param array<string, bool|string> $robots Robots directives.
  * @return array<string, bool|string>
@@ -203,7 +203,7 @@ function robots( array $robots ): array {
 	$post_id = queried_post_id();
 
 	/**
-	 * Filters whether a post is hidden from search engines (the robots noindex tag).
+	 * Filters whether search engines are asked not to index a post (the robots noindex tag).
 	 * The sitemap follows the stored setting, not this filter.
 	 *
 	 * @param bool $noindex Whether the post is hidden.
@@ -217,7 +217,7 @@ function robots( array $robots ): array {
 }
 
 /**
- * Leave posts hidden from search engines out of core's sitemap. The page count uses the same
+ * Leave noindexed posts out of core's sitemap. The page count uses the same
  * arguments, so it stays right. Noindex is stored as '1' (the meta's sanitize callback makes it so).
  *
  * @param array<string, mixed> $args WP_Query arguments for one post type's sitemap page.

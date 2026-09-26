@@ -26,7 +26,7 @@ foreach ( get_posts( [ 'post_type' => 'page', 'post_status' => 'any', 'numberpos
 	wp_delete_post( $old->ID, true );
 }
 
-// Title, content, SEO title, meta description, menu label. The thank-you page is hidden from search engines.
+// Title, content, SEO title, meta description, menu label. The thank-you page discourages search engines (noindex).
 $pages = [
 	[ 'About us', 'We have been roasting coffee in a small shed in Stockholm since 1998. These days the shed is a bit bigger.', 'Our story – small batch coffee', 'Small batch coffee, roasted to order in Stockholm since 1998.', 'About' ],
 	[ 'Our coffees', 'Light, medium and dark roasts, all roasted to order.', 'Coffee beans – light, medium and dark roasts', 'Freshly roasted coffee beans, shipped the day after roasting.', 'Coffees' ],

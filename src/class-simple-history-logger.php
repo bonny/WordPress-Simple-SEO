@@ -41,7 +41,7 @@ class Simple_History_Logger extends \Simple_History\Loggers\Logger {
 	public function get_info() {
 		return [
 			'name'        => __( 'Simple SEO', 'simple-seo' ),
-			'description' => __( 'Logs changes to the SEO title, meta description, "Hide from search engines" and menu label.', 'simple-seo' ),
+			'description' => __( 'Logs changes to the SEO title, meta description, "Discourage search engines" and menu label.', 'simple-seo' ),
 			'name_via'    => __( 'Using plugin Simple SEO', 'simple-seo' ),
 			'capability'  => 'edit_posts',
 			'messages'    => [
@@ -121,6 +121,50 @@ class Simple_History_Logger extends \Simple_History\Loggers\Logger {
 	}
 
 	/**
+	 * Links under the event, like Simple History's own post events (Simple History 5.24+, older
+	 * versions don't call this): edit and view the post, and the list of that post type.
+	 * No revisions link: meta changes don't create revisions.
+	 *
+	 * @param object $row Log row.
+	 * @return array<int, array{url: string, label: string, action: string}>
+	 */
+	public function get_action_links( $row ) {
+		$post_id   = (int) ( $row->context['post_id'] ?? 0 );
+		$post      = $post_id ? get_post( $post_id ) : null;
+		$post_type = get_post_type_object( $post ? $post->post_type : ( $row->context['post_type'] ?? '' ) );
+		$links     = [];
+
+		if ( $post && $post_type && current_user_can( 'edit_post', $post_id ) ) {
+			$links[] = [
+				'url'    => (string) get_edit_post_link( $post_id, 'raw' ),
+				/* translators: %s: post type, like "page" or "post". */
+				'label'  => sprintf( __( 'Edit %s', 'simple-seo' ), strtolower( $post_type->labels->singular_name ) ),
+				'action' => 'edit',
+			];
+		}
+
+		if ( $post && $post_type && 'publish' === get_post_status( $post ) ) {
+			$links[] = [
+				'url'    => (string) get_permalink( $post ),
+				/* translators: %s: post type, like "page" or "post". */
+				'label'  => sprintf( __( 'View %s', 'simple-seo' ), strtolower( $post_type->labels->singular_name ) ),
+				'action' => 'view',
+			];
+		}
+
+		if ( $post_type && current_user_can( $post_type->cap->edit_posts ) ) {
+			$links[] = [
+				'url'    => admin_url( 'edit.php?post_type=' . $post_type->name ),
+				/* translators: %s: post type in plural, like "pages" or "posts". */
+				'label'  => sprintf( __( 'All %s', 'simple-seo' ), strtolower( $post_type->labels->name ) ),
+				'action' => 'view',
+			];
+		}
+
+		return array_values( array_filter( $links, fn( $link ) => '' !== $link['url'] ) );
+	}
+
+	/**
 	 * A before/after table of the fields that changed.
 	 *
 	 * @param object $row Log row.
@@ -133,7 +177,7 @@ class Simple_History_Logger extends \Simple_History\Loggers\Logger {
 			[
 				new Event_Details_Item( [ 'seo_title' ], __( 'SEO title', 'simple-seo' ) ),
 				new Event_Details_Item( [ 'meta_description' ], __( 'Meta description', 'simple-seo' ) ),
-				new Event_Details_Item( [ 'noindex' ], __( 'Hide from search engines', 'simple-seo' ) ),
+				new Event_Details_Item( [ 'noindex' ], __( 'Discourage search engines', 'simple-seo' ) ),
 				new Event_Details_Item( [ 'menu_label' ], __( 'Menu label', 'simple-seo' ) ),
 			]
 		);

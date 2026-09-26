@@ -33,10 +33,10 @@ function title_help( int $post_id ): string {
 }
 
 /**
- * Help text for "Hide from search engines".
+ * Help text for "Discourage search engines from indexing this page". noindex is a request, not a block.
  */
 function noindex_help(): string {
-	return __( 'Search engines won\'t list this page. Anyone with the link can still open it.', 'simple-seo' );
+	return __( 'It\'s up to search engines to honor this request. Anyone with the link can still open the page.', 'simple-seo' );
 }
 
 /**

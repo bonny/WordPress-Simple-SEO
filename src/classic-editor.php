@@ -80,7 +80,7 @@ function meta_box( WP_Post $post ): void {
 	printf(
 		'<p><label><input type="checkbox" name="simple_seo[noindex_on]" value="1" aria-describedby="simple-seo-noindex-help" %1$s /> %2$s</label><span class="description" id="simple-seo-noindex-help">%3$s</span></p>',
 		checked( is_noindex( $post->ID ), true, false ),
-		esc_html__( 'Hide from search engines', 'simple-seo' ),
+		esc_html__( 'Discourage search engines from indexing this page', 'simple-seo' ),
 		esc_html( noindex_help() )
 	);
 

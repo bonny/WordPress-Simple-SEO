@@ -60,6 +60,21 @@ class SimpleHistoryTest extends SimpleSEO_TestCase {
 		$this->assertArrayNotHasKey( 'meta_description_new', $events[0] );
 	}
 
+	public function test_action_links() {
+		$page_id = self::factory()->post->create( [ 'post_type' => 'page' ] );
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'editor' ] ) );
+		$row = (object) [ 'context' => [ 'post_id' => $page_id, 'post_type' => 'page' ] ];
+
+		$links = $this->logger()->get_action_links( $row );
+
+		$this->assertSame( [ 'Edit page', 'View page', 'All pages' ], wp_list_pluck( $links, 'label' ) );
+		$this->assertSame( [ 'edit', 'view', 'view' ], wp_list_pluck( $links, 'action' ) );
+
+		// A deleted page still gets the overview link.
+		wp_delete_post( $page_id, true );
+		$this->assertSame( [ 'All pages' ], wp_list_pluck( $this->logger()->get_action_links( $row ), 'label' ) );
+	}
+
 	public function test_no_event_when_nothing_that_shows_changed() {
 		$post_id = self::factory()->post->create();
 		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, false, 'Kept but off' );

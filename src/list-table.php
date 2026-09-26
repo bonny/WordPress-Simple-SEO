@@ -92,7 +92,7 @@ function column_content( $column, $post_id ): void {
 	}
 
 	if ( $noindex ) {
-		printf( '<span class="dashicons dashicons-hidden" aria-hidden="true"></span> %s<br />', esc_html__( 'Hidden from search engines', 'simple-seo' ) );
+		printf( '<span class="dashicons dashicons-hidden" aria-hidden="true"></span> %s<br />', esc_html__( 'Search engines discouraged', 'simple-seo' ) );
 	}
 
 	if ( '' !== $title ) {
@@ -166,7 +166,7 @@ function quick_edit_fields( $column, $post_type ): void {
 
 	printf(
 		'<label class="simple-seo-check"><input type="checkbox" name="simple_seo[noindex_on]" value="1" /> %s</label>',
-		esc_html__( 'Hide from search engines', 'simple-seo' )
+		esc_html__( 'Discourage search engines from indexing this page', 'simple-seo' )
 	);
 
 	echo '</div></fieldset>';

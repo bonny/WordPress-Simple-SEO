@@ -40,7 +40,7 @@ function register_meta(): void {
 	$fields = [
 		TITLE_KEY                => [ 'string', __( 'SEO title. Replaces the post title in the <title> tag. Empty uses the post title.', 'simple-seo' ) ],
 		DESCRIPTION_KEY          => [ 'string', __( 'Meta description. Empty outputs none, and search engines pick their own snippet.', 'simple-seo' ) ],
-		NOINDEX_KEY              => [ 'boolean', __( 'Hide from search engines (noindex).', 'simple-seo' ) ],
+		NOINDEX_KEY              => [ 'boolean', __( 'Discourage search engines from indexing this post (noindex).', 'simple-seo' ) ],
 		// "Disabled" rather than "enabled", so a missing flag means on and setting just the text works.
 		TITLE_DISABLED_KEY       => [ 'boolean', __( 'Keep the SEO title but don\'t use it.', 'simple-seo' ) ],
 		DESCRIPTION_DISABLED_KEY => [ 'boolean', __( 'Keep the meta description but don\'t use it.', 'simple-seo' ) ],
@@ -172,7 +172,7 @@ function legacy_title_default( $value, $object_id, $meta_key, $single ) {
 }
 
 /**
- * Whether a post is hidden from search engines.
+ * Whether search engines are asked not to index a post (noindex).
  *
  * @param int $post_id Post ID.
  */

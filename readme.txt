@@ -57,17 +57,17 @@ Now go and edit a page and you should have two new options: "Custom Page Title" 
 == Changelog ==
 
 = Unreleased =
-- The custom page title, a new meta description and a new "hide from search engines" setting are now stored as post meta that the REST API and WP-CLI can read and write (`_simple_seo_title`, `_simple_seo_description`, `_simple_seo_noindex`). Existing custom page titles keep working and move to the new field the next time the post is saved. Only logged-in users who can edit the post see the fields in the REST API.
-- New: the meta description and "hide from search engines" (noindex) are output in the page head. With "Your latest posts" as the front page, the tagline is the meta description.
+- The custom page title, a new meta description and a new "discourage search engines from indexing this page" setting are now stored as post meta that the REST API and WP-CLI can read and write (`_simple_seo_title`, `_simple_seo_description`, `_simple_seo_noindex`). Existing custom page titles keep working and move to the new field the next time the post is saved. Only logged-in users who can edit the post see the fields in the REST API.
+- New: the meta description and "discourage search engines" (noindex) are output in the page head. With "Your latest posts" as the front page, the tagline is the meta description.
 - Fixed: a custom page title on a static front page was ignored by current themes. It is now the whole title of the front page.
 - New: an "SEO" panel in the block editor sidebar, with the same fields as the Classic Editor box. No more Classic Editor needed.
-- Changed: in the Classic Editor the fields moved from below the title into a "Simple SEO" box below the editor, with two new ones: a meta description and "Hide from search engines". Each field has a checkbox, so you can switch a value off without losing it.
+- Changed: in the Classic Editor the fields moved from below the title into a "Simple SEO" box below the editor, with two new ones: a meta description and "Discourage search engines from indexing this page". Each field has a checkbox, so you can switch a value off without losing it.
 - New: link previews. Open Graph and Twitter card tags, so links shared in Slack, iMessage, LinkedIn, Facebook and X show the right title, description and featured image. Developers can turn them off with the `simple_seo_link_previews` filter.
 - New: a default share image for link previews, in Settings → General → Simple SEO. Used when a post has no featured image.
-- New: with Simple History active, changes to the SEO fields show up in its log, with the old and new values.
+- New: with Simple History active, changes to the SEO fields show up in its log, with the old and new values and links to edit or view the page.
 - New: an "SEO" column in the Posts and Pages lists, and the SEO fields in Quick Edit, so you can fix many pages without opening each one.
 - New: filters for developers to change the title, description, noindex and link preview tags. See the FAQ.
-- New: posts hidden from search engines are left out of the WordPress sitemap (`/wp-sitemap.xml`).
+- New: posts that discourage search engines (noindex) are left out of the WordPress sitemap (`/wp-sitemap.xml`).
 - New: when Yoast SEO, Rank Math, All in One SEO, SEOPress or The SEO Framework is active, Simple SEO leaves the page head to it, so there are no duplicate tags. The edit screen tells you which plugin is in charge.
 - On a site older than WordPress 6.6 or PHP 7.4, Simple SEO now pauses and shows a notice with a link to 0.3.5, instead of possibly breaking the site.
 

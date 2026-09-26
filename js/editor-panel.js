@@ -166,9 +166,12 @@ function SimpleSeoPanel() {
 
 				<CheckboxControl
 					__nextHasNoMarginBottom
-					label={ __( 'Hide from search engines', 'simple-seo' ) }
+					label={ __(
+						'Discourage search engines from indexing this page',
+						'simple-seo'
+					) }
 					help={ __(
-						'Search engines won’t list this page. Anyone with the link can still open it.',
+						'It’s up to search engines to honor this request. Anyone with the link can still open the page.',
 						'simple-seo'
 					) }
 					checked={ !! meta._simple_seo_noindex }

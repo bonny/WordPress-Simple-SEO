@@ -51,7 +51,7 @@ The demo share image `acme-share-image.png` (1200 × 630, rendered from HTML wit
 Steps:
 
 1. `npm run env:start`, then activate Simple SEO there once: `npx wp-env run cli wp plugin activate simple-seo`.
-2. Seed both sites (Acme Coffee Roasters, four pages with varied fields, one hidden from search engines, the demo share image; trashes Sample Page). Each prints the "About us" and "Our coffees" IDs:
+2. Seed both sites (Acme Coffee Roasters, four pages with varied fields, one with search engines discouraged, the demo share image; trashes Sample Page). Each prints the "About us" and "Our coffees" IDs:
    ```bash
    npx wp-env run cli wp eval-file wp-content/plugins/simple-seo/.claude/skills/visual-check/seed.php
    (cd ../_docker-compose-to-run-on-system-boot && docker compose run --rm -T wpcli_classiceditor eval-file wp-content/plugins/simple-seo/.claude/skills/visual-check/seed.php)
