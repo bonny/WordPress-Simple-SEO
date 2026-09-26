@@ -56,11 +56,13 @@ class MetaTest extends SimpleSEO_TestCase {
 		$this->assertSame( '', get_description( $post_id ) );
 	}
 
-	public function test_ticked_but_empty_uses_the_default() {
+	public function test_ticked_but_empty_counts_as_off() {
+		// Same as the block editor panel shows it after a reload, so the editors, the list and
+		// the Simple History log agree. The front end uses the default either way.
 		$post_id = self::factory()->post->create();
 		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, true, '' );
 
-		$this->assertSame( [ true, '' ], title_field( $post_id ) );
+		$this->assertSame( [ false, '' ], title_field( $post_id ) );
 		$this->assertSame( '', get_title( $post_id ) );
 	}
 

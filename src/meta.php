@@ -89,10 +89,9 @@ function title_field( int $post_id ): array {
 		return field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY );
 	}
 
-	return [
-		(bool) get_post_meta( $post_id, LEGACY_USE_TITLE_KEY, true ),
-		trim( (string) get_post_meta( $post_id, LEGACY_TITLE_KEY, true ) ),
-	];
+	$text = trim( (string) get_post_meta( $post_id, LEGACY_TITLE_KEY, true ) );
+
+	return [ '' !== $text && (bool) get_post_meta( $post_id, LEGACY_USE_TITLE_KEY, true ), $text ];
 }
 
 /**
@@ -106,7 +105,9 @@ function description_field( int $post_id ): array {
 }
 
 /**
- * A text field and its "disabled" flag. On when there is text or the box was ticked, and not disabled.
+ * A text field and its "disabled" flag. On when there is text and it isn't disabled. A ticked box
+ * with empty text counts as off, as in the block editor panel: it behaves the same (the title falls
+ * back, no description), and the editors, the posts list and the Simple History log agree.
  *
  * @param int    $post_id      Post ID.
  * @param string $key          Text meta key.
@@ -115,12 +116,9 @@ function description_field( int $post_id ): array {
  */
 function field( int $post_id, string $key, string $disabled_key ): array {
 	$text = trim( (string) get_post_meta( $post_id, $key, true ) );
+	$on   = '' !== $text && ! rest_sanitize_boolean( get_post_meta( $post_id, $disabled_key, true ) );
 
-	if ( metadata_exists( 'post', $post_id, $disabled_key ) ) {
-		return [ ! rest_sanitize_boolean( get_post_meta( $post_id, $disabled_key, true ) ), $text ];
-	}
-
-	return [ '' !== $text, $text ];
+	return [ $on, $text ];
 }
 
 /**

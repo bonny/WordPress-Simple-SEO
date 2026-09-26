@@ -91,6 +91,21 @@ class SimpleHistoryTest extends SimpleSEO_TestCase {
 		$this->assertArrayNotHasKey( 'seo_title_new', $event );
 	}
 
+	public function test_clearing_the_text_logs_the_box_as_off() {
+		// Regression (code review): the log said the box stayed on while the block editor showed it off.
+		$post_id = self::factory()->post->create();
+		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, true, 'Hi' );
+		$this->logger()->log_changes();
+
+		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, true, '' );
+		$this->logger()->log_changes();
+
+		$event = $this->events( $post_id )[0];
+		$this->assertSame( 'Yes', $event['seo_title_on_prev'] );
+		$this->assertSame( 'No', $event['seo_title_on_new'] );
+		$this->assertSame( '', $event['seo_title_new'] );
+	}
+
 	public function test_no_event_when_nothing_changed() {
 		$post_id = self::factory()->post->create();
 		save_field( $post_id, TITLE_KEY, TITLE_DISABLED_KEY, true, 'Same' );
