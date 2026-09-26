@@ -117,7 +117,7 @@ Yes. It reads only the post being shown, which WordPress has already loaded, and
 
 = What happened to the menu label? =
 
-It's still there for pages, in the Classic Editor box and in Quick Edit in the Pages list: a shorter name in automatic page lists, like "About" for "About our company".
+It's still there for pages, in the Classic Editor box, and in Quick Edit on pages that already have one: a shorter name in automatic page lists, like "About" for "About our company".
 
 == Screenshots ==
 
@@ -132,6 +132,7 @@ It's still there for pages, in the Classic Editor box and in Quick Edit in the P
 
 = Unreleased =
 - Changed: no more checkboxes next to the SEO title, meta description and menu label. Fill in a field to use it, empty it to go back to the default. Only "Discourage search engines" is still a checkbox. Text you had switched off with a checkbox stays off.
+- Changed: Quick Edit shows the menu label only on pages that have one.
 
 = 1.0.0 (September 2026) =
 - The custom page title, a new meta description and a new "discourage search engines from indexing this page" setting are now stored as post meta that the REST API and WP-CLI can read and write (`_simple_seo_title`, `_simple_seo_description`, `_simple_seo_noindex`). Existing custom page titles keep working and move to the new field the next time the post is saved. Only logged-in users who can edit the post see the fields in the REST API.
