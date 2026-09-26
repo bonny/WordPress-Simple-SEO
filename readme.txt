@@ -62,7 +62,7 @@ Now go and edit a page and you should have two new options: "Custom Page Title" 
 - Fixed: a custom page title on a static front page was ignored by current themes. It is now the whole title of the front page.
 - New: an "SEO" panel in the block editor sidebar, with the same fields as the Classic Editor box. No more Classic Editor needed.
 - Changed: in the Classic Editor the fields moved from below the title into a "Simple SEO" box below the editor, with two new ones: a meta description and "Discourage search engines from indexing this page". Each field has a checkbox, so you can switch a value off without losing it.
-- New: link previews. Open Graph and Twitter card tags, so links shared in Slack, iMessage, LinkedIn, Facebook and X show the right title, description and featured image. Developers can turn them off with the `simple_seo_link_previews` filter.
+- New: link previews. Open Graph and Twitter card tags, so links shared in Slack, iMessage, LinkedIn, Mastodon, Bluesky and Facebook show the right title, description and featured image. Developers can turn them off with the `simple_seo_link_previews` filter.
 - New: a default share image for link previews, in Settings → General → Simple SEO. Used when a post has no featured image.
 - New: with Simple History active, changes to the SEO fields show up in its log, with the old and new values and links to edit or view the page.
 - New: an "SEO" column in the Posts and Pages lists, and the SEO fields in Quick Edit, so you can fix many pages without opening each one.

@@ -83,9 +83,9 @@ class LinkPreviewsTest extends SimpleSEO_TestCase {
 	}
 
 	public function test_filters() {
-		add_filter( 'simple_seo_link_preview_tags', fn( $tags ) => [ 'twitter:site' => '@simplehistory' ] + $tags );
+		add_filter( 'simple_seo_link_preview_tags', fn( $tags ) => [ 'og:locale' => 'sv_SE' ] + $tags );
 		$this->go_to( get_permalink( self::factory()->post->create() ) );
-		$this->assertStringContainsString( '<meta name="twitter:site" content="@simplehistory" />', $this->tags() );
+		$this->assertStringContainsString( '<meta property="og:locale" content="sv_SE" />', $this->tags() );
 
 		add_filter( 'simple_seo_link_previews', '__return_false' );
 		$this->assertSame( '', $this->tags() );

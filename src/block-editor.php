@@ -45,4 +45,9 @@ function enqueue_editor_panel(): void {
 	);
 
 	wp_set_script_translations( 'simple-seo-editor-panel', 'simple-seo' );
+
+	// The description grows with its text (field-sizing, where supported; elsewhere it scrolls).
+	wp_register_style( 'simple-seo-editor-panel', false, [], SIMPLE_SEO_VERSION );
+	wp_enqueue_style( 'simple-seo-editor-panel' );
+	wp_add_inline_style( 'simple-seo-editor-panel', autogrow_css( '.simple-seo-autogrow textarea' ) );
 }

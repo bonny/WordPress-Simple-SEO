@@ -52,6 +52,16 @@ function uses_seo_fields( int $post_id ): bool {
 }
 
 /**
+ * CSS that lets a textarea grow with its text, between two and about ten lines.
+ * field-sizing: content where the browser supports it; elsewhere the textarea keeps its rows and scrolls.
+ *
+ * @param string $selector The textarea selector.
+ */
+function autogrow_css( string $selector ): string {
+	return "{$selector} { field-sizing: content; min-height: 3.5em; max-height: 14em; }";
+}
+
+/**
  * A few lines of CSS for the Classic box and Quick Edit, on the screens that have them.
  *
  * @param string $hook_suffix The current admin page.
@@ -71,6 +81,7 @@ function enqueue_admin_css( string $hook_suffix ): void {
 		.simple-seo-quick-edit input[type="text"] { width: 100%; }
 		.simple-seo-quick-edit .simple-seo-note { margin: 4px 0; }
 		.column-simple_seo .simple-seo-not-used { opacity: .6; }
-		.column-simple_seo .dashicons-hidden { font-size: 16px; width: 16px; height: 16px; vertical-align: text-bottom; }'
+		.column-simple_seo .dashicons-hidden { font-size: 16px; width: 16px; height: 16px; vertical-align: text-bottom; }
+		' . autogrow_css( '#simple-seo textarea' )
 	);
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Link previews: Open Graph and Twitter card tags, for Slack, iMessage, LinkedIn, Facebook, X etc.
+ * Link previews: Open Graph and Twitter card tags, for Slack, iMessage, LinkedIn, Mastodon, Bluesky, Facebook etc.
  *
  * On by default. Turn off with add_filter( 'simple_seo_link_previews', '__return_false' ).
  * Hooked from add_seo_hooks(), so nothing is output when another SEO plugin is active.
@@ -77,12 +77,12 @@ function link_preview_tags(): void {
 		'og:image:width'  => $image['width'] ?? '',
 		'og:image:height' => $image['height'] ?? '',
 		'og:image:alt'    => $image['alt'] ?? '',
-		// X uses the og: tags for everything else.
+		// Apps that read twitter:card take everything else from the og: tags.
 		'twitter:card'    => $image ? 'summary_large_image' : 'summary',
 	];
 
 	/**
-	 * Filters the link preview tags before output. Change, add (e.g. 'og:locale', 'twitter:site')
+	 * Filters the link preview tags before output. Change, add (e.g. 'og:locale')
 	 * or remove tags. Empty values are skipped.
 	 *
 	 * @param array<string, string|int> $tags    Property => content. og:* print as property, the rest as name.

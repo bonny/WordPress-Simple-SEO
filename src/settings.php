@@ -87,7 +87,7 @@ function share_image_field(): void {
 
 	printf(
 		'<p class="description">%s</p>',
-		esc_html__( 'Shown in link previews (Slack, LinkedIn, X and others) when a post has no featured image. Best at 1200 × 630 pixels.', 'simple-seo' )
+		esc_html__( 'Shown in link previews (Slack, LinkedIn, Mastodon, Bluesky and others) when a post has no featured image. Best at 1200 × 630 pixels.', 'simple-seo' )
 	);
 }
 

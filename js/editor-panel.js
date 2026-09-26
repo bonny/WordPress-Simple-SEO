@@ -72,7 +72,11 @@ function Field( {
 				} }
 			/>
 			{ multiline ? (
-				<TextareaControl { ...inputProps } rows={ 2 } />
+				<TextareaControl
+					{ ...inputProps }
+					className="simple-seo-autogrow"
+					rows={ 2 }
+				/>
 			) : (
 				<TextControl { ...inputProps } __next40pxDefaultSize />
 			) }
