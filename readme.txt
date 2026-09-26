@@ -31,7 +31,7 @@ And a few things that just happen:
 - **Quick Edit.** An SEO column in the Posts and Pages lists, and the fields right in Quick Edit, for fixing many pages fast.
 - **Plays nice.** Using Yoast SEO, Rank Math, All in One SEO, SEOPress or The SEO Framework? Simple SEO steps aside and says so, so you don't get duplicate tags.
 
-No settings page. No dashboard widgets. No "Go Pro" banners. No extra database tables. Activate it, edit a page, done.
+No settings page. No dashboard widgets. No "Go Pro" banners. No extra database tables. No "optimized by Simple SEO" comment in your page source either: your HTML is yours. Activate it, edit a page, done.
 
 #### Built for search in 2026
 
@@ -53,7 +53,7 @@ Honest bit: I build Simple SEO for my own sites, like [simple-history.com](https
 
 #### Made by the Simple History guy
 
-I also make [Simple History](https://wordpress.org/plugins/simple-history/), which keeps a log of what happens on your site. With both active, every change to your SEO fields shows up in the log: who changed the title, when, and what it said before.
+No big company or investors behind Simple SEO. Just one developer: me. I also make [Simple History](https://wordpress.org/plugins/simple-history/), which keeps a log of what happens on your site. With both active, every change to your SEO fields shows up in the log: who changed the title, when, and what it said before.
 
 #### Donation and more plugins
 
