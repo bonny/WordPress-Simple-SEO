@@ -30,7 +30,7 @@ const { otherPlugin, simpleHistoryUrl, frontPageId } =
  * @param {Object}                                             props
  * @param {string}                                             props.label       Checkbox label.
  * @param {string}                                             props.inputLabel  Label of the text field, for screen readers.
- * @param {string}                                             props.help        Help text under the checkbox.
+ * @param {string}                                             props.help        Help text under the text field.
  * @param {string}                                             props.text        The text.
  * @param {boolean}                                            props.disabled    The stored "disabled" flag.
  * @param {(value: {text: string, disabled: boolean}) => void} props.onChange    Called with the new text and flag.
@@ -55,6 +55,7 @@ function Field( {
 		__nextHasNoMarginBottom: true,
 		hideLabelFromVision: true,
 		label: inputLabel,
+		help,
 		value: text,
 		onChange: ( value ) => onChange( { text: value, disabled: ! on } ),
 	};
@@ -64,7 +65,6 @@ function Field( {
 			<CheckboxControl
 				__nextHasNoMarginBottom
 				label={ label }
-				help={ help }
 				checked={ on }
 				onChange={ ( checked ) => {
 					setTickedEmpty( checked );
