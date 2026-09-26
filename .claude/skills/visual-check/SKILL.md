@@ -64,7 +64,7 @@ Steps:
    pngquant --quality=80-95 --strip --skip-if-larger --force --ext .png .wordpress-org/screenshot-*.png
    oxipng -o max --strip safe .wordpress-org/screenshot-*.png
    ```
-   2026-09-26: the six came out at 90/111/81/104/27/26 KB.
+   2026-09-26: the six came out at 111/111/81/104/27/26 KB.
 5. Look at all six before committing: the whole panel visible in shot 1 (the window is 1100 high for that), Quick Edit and column values both visible in shot 2 (it ends at the "Thanks for your order" row), nothing cut off in shot 4, no `about-us-2` slug (delete older "About us" pages on the Classic site), no Simple History sidebar in shot 6.
 
 ## Gotchas

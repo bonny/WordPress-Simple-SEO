@@ -18,8 +18,8 @@
 async ( page ) => {
 	const WP_ENV = 'http://localhost:8315';
 	const CLASSIC = 'http://wp-playground-classiceditor.test:8314';
-	const WP_ENV_PAGE = 180; // "About us" from seed.php on wp-env.
-	const WP_ENV_QUICK_EDIT = 177; // "Our coffees", opened in Quick Edit in shot 2.
+	const WP_ENV_PAGE = 201; // "About us" from seed.php on wp-env.
+	const WP_ENV_QUICK_EDIT = 198; // "Our coffees", opened in Quick Edit in shot 2.
 	const CLASSIC_PAGE = 119; // "About us" from seed.php on the Classic Editor site.
 	const X = 160; // Right of the admin menu.
 	const WIDTH = 1120;
