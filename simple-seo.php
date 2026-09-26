@@ -46,6 +46,7 @@ if ( version_compare( (string) phpversion(), '7.4', '<' ) || version_compare( $G
 const SIMPLE_SEO_PLUGIN_FILE = __FILE__;
 
 require __DIR__ . '/src/meta.php';
+require __DIR__ . '/src/admin.php';
 require __DIR__ . '/src/frontend.php';
 require __DIR__ . '/src/link-previews.php';
 require __DIR__ . '/src/settings.php';

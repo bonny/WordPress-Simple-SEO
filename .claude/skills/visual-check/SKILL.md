@@ -38,30 +38,33 @@ Don't send WP-CLI stderr to `/dev/null` while setting up; an activation once fai
 
 ## WordPress.org screenshots
 
-Four shots, captions in `readme.txt` under `== Screenshots ==` (keep them in sync):
+Five shots, captions in `readme.txt` under `== Screenshots ==` (keep them in sync). All at 2x and 1120 CSS px wide, so they show at the same zoom (the Simple History one is cropped to the entry):
 
-1. `screenshot-1.png`: the SEO panel in the block editor (wp-env dev site, http://localhost:8315, admin / password)
-2. `screenshot-2.png`: the Simple SEO box in the Classic Editor (http://wp-playground-classiceditor.test:8314, admin / admin)
-3. `screenshot-3.png`: the Simple SEO section in Settings → General (wp-env)
-4. `screenshot-4.png`: the Simple History entry for the SEO change made in shot 1 (wp-env, where Simple History is active)
+1. `screenshot-1.png`: the "Simple SEO" panel in the block editor, in a 1120 px window (wp-env dev site, http://localhost:8315, admin / password)
+2. `screenshot-2.png`: the Pages list with the SEO column and Quick Edit open on "Our coffees" (wp-env)
+3. `screenshot-3.png`: the Simple SEO box in the Classic Editor (http://wp-playground-classiceditor.test:8314, admin / admin)
+4. `screenshot-4.png`: the Simple SEO section in Settings → General with the demo share image (wp-env)
+5. `screenshot-5.png`: the Simple History entry for the title and description change made in shot 1 (wp-env, where Simple History is active)
+
+The demo share image `acme-share-image.png` (1200 × 630, rendered from HTML with Playwright) lives next to the scripts; don't use the plugin banner, it reads as if the plugin brands your previews.
 
 Steps:
 
 1. `npm run env:start`, then activate Simple SEO there once: `npx wp-env run cli wp plugin activate simple-seo`.
-2. Seed both sites (Acme Coffee Roasters, three pages with the fields filled in, the plugin banner as default share image; trashes Sample Page). Each prints the "About us" ID:
+2. Seed both sites (Acme Coffee Roasters, four pages with varied fields, one hidden from search engines, the demo share image; trashes Sample Page). Each prints the "About us" and "Our coffees" IDs:
    ```bash
    npx wp-env run cli wp eval-file wp-content/plugins/simple-seo/.claude/skills/visual-check/seed.php
    (cd ../_docker-compose-to-run-on-system-boot && docker compose run --rm -T wpcli_classiceditor eval-file wp-content/plugins/simple-seo/.claude/skills/visual-check/seed.php)
    ```
    Reseed wp-env before every capture: shot 1 edits the SEO title and description and saves, which is the change shot 4 shows, and unchanged fields leave the Save button disabled.
-3. Put the two IDs into `capture-screenshots.js` (`WP_ENV_PAGE`, `CLASSIC_PAGE`) and run it: Playwright MCP `browser_run_code_unsafe` with `filename: .claude/skills/visual-check/capture-screenshots.js`. It uses its own 2x context.
+3. Put the IDs into `capture-screenshots.js` (`WP_ENV_PAGE`, `WP_ENV_QUICK_EDIT`, `CLASSIC_PAGE`) and run it: Playwright MCP `browser_run_code_unsafe` with `filename: .claude/skills/visual-check/capture-screenshots.js`. It uses its own 2x context.
 4. Compress, same pipeline as Simple History's `code.md` "Images" (never commit a PNG straight out of Playwright):
    ```bash
    pngquant --quality=80-95 --strip --skip-if-larger --force --ext .png .wordpress-org/screenshot-*.png
    oxipng -o max --strip safe .wordpress-org/screenshot-*.png
    ```
-   2026-09-25: 197/323/54/61 KB down to 62/103/16/17 KB.
-5. Look at all four before committing: the whole SEO panel visible in shot 1 (the viewport is 1100 high for that), nothing cut off in shot 2, no `about-us-2` slug (delete older "About us" pages on the Classic site).
+   2026-09-26: the five came out at 62/68/85/23/22 KB.
+5. Look at all five before committing: the whole panel visible in shot 1 (the window is 1100 high for that), Quick Edit and column values both visible in shot 2, nothing cut off in shot 3, no `about-us-2` slug (delete older "About us" pages on the Classic site), no Simple History sidebar in shot 5.
 
 ## Gotchas
 

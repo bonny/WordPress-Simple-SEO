@@ -20,7 +20,8 @@ import {
 } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
 
-const { otherPlugin, simpleHistoryUrl } = window.simpleSeoEditor || {};
+const { otherPlugin, simpleHistoryUrl, frontPageId } =
+	window.simpleSeoEditor || {};
 
 /**
  * One field: a checkbox that switches the value on or off, and the text.
@@ -29,7 +30,7 @@ const { otherPlugin, simpleHistoryUrl } = window.simpleSeoEditor || {};
  * @param {Object}                                             props
  * @param {string}                                             props.label       Checkbox label.
  * @param {string}                                             props.inputLabel  Label of the text field, for screen readers.
- * @param {string}                                             props.help        Help text below the field.
+ * @param {string}                                             props.help        Help text under the checkbox.
  * @param {string}                                             props.text        The text.
  * @param {boolean}                                            props.disabled    The stored "disabled" flag.
  * @param {(value: {text: string, disabled: boolean}) => void} props.onChange    Called with the new text and flag.
@@ -54,7 +55,6 @@ function Field( {
 		__nextHasNoMarginBottom: true,
 		hideLabelFromVision: true,
 		label: inputLabel,
-		help,
 		value: text,
 		onChange: ( value ) => onChange( { text: value, disabled: ! on } ),
 	};
@@ -64,6 +64,7 @@ function Field( {
 			<CheckboxControl
 				__nextHasNoMarginBottom
 				label={ label }
+				help={ help }
 				checked={ on }
 				onChange={ ( checked ) => {
 					setTickedEmpty( checked );
@@ -84,12 +85,24 @@ function SimpleSeoPanel() {
 		( select ) => select( editorStore ).getCurrentPostType(),
 		[]
 	);
+	const postId = useSelect(
+		( select ) => select( editorStore ).getCurrentPostId(),
+		[]
+	);
 	const [ meta, setMeta ] = useEntityProp( 'postType', postType, 'meta' );
 
 	// Post types without 'custom-fields' support have no meta in the REST API.
 	if ( ! meta ) {
 		return null;
 	}
+
+	// The Simple History tip only shows on posts that use the fields.
+	const usesFields =
+		( ! meta._simple_seo_title_disabled &&
+			meta._simple_seo_title !== '' ) ||
+		( ! meta._simple_seo_description_disabled &&
+			meta._simple_seo_description !== '' ) ||
+		!! meta._simple_seo_noindex;
 
 	// Meta edits are merged, so pass only the changed keys.
 	const update =
@@ -100,7 +113,7 @@ function SimpleSeoPanel() {
 	return (
 		<PluginDocumentSettingPanel
 			name="simple-seo"
-			title={ __( 'SEO', 'simple-seo' ) }
+			title={ __( 'Simple SEO', 'simple-seo' ) }
 		>
 			<Flex direction="column" gap={ 4 }>
 				{ otherPlugin && (
@@ -119,10 +132,17 @@ function SimpleSeoPanel() {
 				<Field
 					label={ __( 'Use a custom SEO title', 'simple-seo' ) }
 					inputLabel={ __( 'SEO title', 'simple-seo' ) }
-					help={ __(
-						'The site name is added after it.',
-						'simple-seo'
-					) }
+					help={
+						postId === frontPageId
+							? __(
+									'Used as the whole title of the front page.',
+									'simple-seo'
+								)
+							: __(
+									'The site name is added after it.',
+									'simple-seo'
+								)
+					}
 					text={ meta._simple_seo_title }
 					disabled={ meta._simple_seo_title_disabled }
 					onChange={ update( '_simple_seo_title' ) }
@@ -148,7 +168,7 @@ function SimpleSeoPanel() {
 					__nextHasNoMarginBottom
 					label={ __( 'Hide from search engines', 'simple-seo' ) }
 					help={ __(
-						'Anyone with the link can still open it.',
+						'Search engines won’t list this page. Anyone with the link can still open it.',
 						'simple-seo'
 					) }
 					checked={ !! meta._simple_seo_noindex }
@@ -157,7 +177,7 @@ function SimpleSeoPanel() {
 					}
 				/>
 
-				{ simpleHistoryUrl && (
+				{ simpleHistoryUrl && usesFields && (
 					<p className="components-base-control__help">
 						{ createInterpolateElement(
 							__(

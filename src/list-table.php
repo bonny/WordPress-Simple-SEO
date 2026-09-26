@@ -74,16 +74,30 @@ function column_content( $column, $post_id ): void {
 	[ $title_on, $title_text ]             = title_field( $post_id );
 	[ $description_on, $description_text ] = description_field( $post_id );
 
+	$other_plugin = active_seo_plugin();
+
+	if ( $other_plugin && ( '' !== $title || '' !== $description || $noindex ) ) {
+		printf(
+			'<div class="simple-seo-not-used"><span class="screen-reader-text">%s</span>',
+			/* translators: %s: name of another SEO plugin, like Yoast SEO. */
+			esc_html( sprintf( __( 'Not used, %s handles SEO:', 'simple-seo' ), $other_plugin ) )
+		);
+	}
+
+	if ( $noindex ) {
+		printf( '<span class="dashicons dashicons-hidden" aria-hidden="true"></span> %s<br />', esc_html__( 'Hidden from search engines', 'simple-seo' ) );
+	}
+
 	if ( '' !== $title ) {
 		printf( '<strong>%s</strong><br />', esc_html( $title ) );
 	}
 
 	if ( '' !== $description ) {
-		printf( '<span class="description">%s</span><br />', esc_html( wp_trim_words( $description, 12 ) ) );
+		printf( '<span class="description">%s</span>', esc_html( wp_trim_words( $description, 12 ) ) );
 	}
 
-	if ( $noindex ) {
-		printf( '<em>%s</em>', esc_html__( 'Hidden from search engines', 'simple-seo' ) );
+	if ( $other_plugin && ( '' !== $title || '' !== $description || $noindex ) ) {
+		echo '</div>';
 	}
 
 	if ( '' === $title && '' === $description && ! $noindex ) {
@@ -111,7 +125,8 @@ function column_content( $column, $post_id ): void {
 }
 
 /**
- * The fields in Quick Edit, filled in by build/quick-edit.js.
+ * The fields in Quick Edit, filled in by build/quick-edit.js: a checkbox, then a full-width
+ * text field under it, like core's Tags field.
  *
  * @param string $column    Column name.
  * @param string $post_type Post type.
@@ -122,8 +137,18 @@ function quick_edit_fields( $column, $post_type ): void {
 	}
 
 	echo '<fieldset class="inline-edit-col-left simple-seo-quick-edit"><div class="inline-edit-col">';
-	printf( '<span class="title inline-edit-categories-label">%s</span>', esc_html__( 'SEO', 'simple-seo' ) );
+	printf( '<span class="title">%s</span>', esc_html__( 'SEO', 'simple-seo' ) );
 	wp_nonce_field( 'simple_seo_save', 'simple_seo_nonce', false );
+
+	$other_plugin = active_seo_plugin();
+
+	if ( $other_plugin ) {
+		printf(
+			'<p class="description simple-seo-note">%s</p>',
+			/* translators: %s: name of another SEO plugin, like Yoast SEO. */
+			esc_html( sprintf( __( '%s is active and handles SEO, so these fields aren\'t used.', 'simple-seo' ), $other_plugin ) )
+		);
+	}
 
 	quick_edit_field( 'title', __( 'Use a custom SEO title', 'simple-seo' ), __( 'SEO title', 'simple-seo' ) );
 	quick_edit_field( 'description', __( 'Use a custom meta description', 'simple-seo' ), __( 'Meta description', 'simple-seo' ) );
@@ -133,7 +158,7 @@ function quick_edit_fields( $column, $post_type ): void {
 	}
 
 	printf(
-		'<label class="alignleft"><input type="checkbox" name="simple_seo[noindex_on]" value="1" /> <span class="checkbox-title">%s</span></label>',
+		'<label class="simple-seo-check"><input type="checkbox" name="simple_seo[noindex_on]" value="1" /> %s</label>',
 		esc_html__( 'Hide from search engines', 'simple-seo' )
 	);
 
@@ -141,7 +166,7 @@ function quick_edit_fields( $column, $post_type ): void {
 }
 
 /**
- * One checkbox + text row in Quick Edit.
+ * One checkbox + text field in Quick Edit.
  *
  * @param string $name        Field name.
  * @param string $label       Checkbox label.
@@ -149,13 +174,13 @@ function quick_edit_fields( $column, $post_type ): void {
  */
 function quick_edit_field( string $name, string $label, string $input_label ): void {
 	printf(
-		'<label class="alignleft"><input type="checkbox" name="simple_seo[%1$s_on]" value="1" /> <span class="checkbox-title">%2$s</span></label>',
+		'<label class="simple-seo-check"><input type="checkbox" name="simple_seo[%1$s_on]" value="1" /> %2$s</label>',
 		esc_attr( $name ),
 		esc_html( $label )
 	);
 
 	printf(
-		'<label><span class="input-text-wrap"><input type="text" name="simple_seo[%1$s]" aria-label="%2$s" /></span></label>',
+		'<input type="text" name="simple_seo[%1$s]" aria-label="%2$s" />',
 		esc_attr( $name ),
 		esc_attr( $input_label )
 	);

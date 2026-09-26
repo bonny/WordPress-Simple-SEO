@@ -61,7 +61,7 @@ function meta_box( WP_Post $post ): void {
 	}
 
 	[ $title_on, $title ] = title_field( $post->ID );
-	text_field( 'title', __( 'Use a custom SEO title', 'simple-seo' ), __( 'SEO title', 'simple-seo' ), $title_on, $title, __( 'The site name is added after it.', 'simple-seo' ) );
+	text_field( 'title', __( 'Use a custom SEO title', 'simple-seo' ), __( 'SEO title', 'simple-seo' ), $title_on, $title, title_help( $post->ID ) );
 
 	[ $description_on, $description ] = description_field( $post->ID );
 	text_field( 'description', __( 'Use a custom meta description', 'simple-seo' ), __( 'Meta description', 'simple-seo' ), $description_on, $description, __( 'Shown under the title in search results.', 'simple-seo' ), true );
@@ -78,15 +78,15 @@ function meta_box( WP_Post $post ): void {
 	}
 
 	printf(
-		'<p><label><input type="checkbox" name="simple_seo[noindex_on]" value="1" %1$s /> %2$s</label><br /><span class="description">%3$s</span></p>',
+		'<p><label><input type="checkbox" name="simple_seo[noindex_on]" value="1" aria-describedby="simple-seo-noindex-help" %1$s /> %2$s</label><span class="description" id="simple-seo-noindex-help">%3$s</span></p>',
 		checked( is_noindex( $post->ID ), true, false ),
 		esc_html__( 'Hide from search engines', 'simple-seo' ),
-		esc_html__( 'Anyone with the link can still open it.', 'simple-seo' )
+		esc_html( noindex_help() )
 	);
 
 	$tip_url = simple_history_tip_url();
 
-	if ( $tip_url ) {
+	if ( $tip_url && uses_seo_fields( $post->ID ) ) {
 		printf(
 			'<p class="description">%s</p>',
 			sprintf(
@@ -111,7 +111,7 @@ function meta_box( WP_Post $post ): void {
  */
 function text_field( string $name, string $label, string $input_label, bool $on, string $value, string $help, bool $textarea = false ): void {
 	printf(
-		'<p><label><input type="checkbox" name="simple_seo[%1$s_on]" value="1" %2$s /> %3$s</label><br />',
+		'<p><label><input type="checkbox" name="simple_seo[%1$s_on]" value="1" aria-describedby="simple-seo-%1$s-help" %2$s /> %3$s</label><br />',
 		esc_attr( $name ),
 		checked( $on, true, false ),
 		esc_html( $label )
@@ -119,21 +119,21 @@ function text_field( string $name, string $label, string $input_label, bool $on,
 
 	if ( $textarea ) {
 		printf(
-			'<textarea class="widefat" rows="2" name="simple_seo[%1$s]" aria-label="%2$s">%3$s</textarea>',
+			'<textarea class="widefat" rows="2" name="simple_seo[%1$s]" aria-label="%2$s" aria-describedby="simple-seo-%1$s-help">%3$s</textarea>',
 			esc_attr( $name ),
 			esc_attr( $input_label ),
 			esc_textarea( $value )
 		);
 	} else {
 		printf(
-			'<input type="text" class="widefat" name="simple_seo[%1$s]" aria-label="%2$s" value="%3$s" />',
+			'<input type="text" class="widefat" name="simple_seo[%1$s]" aria-label="%2$s" aria-describedby="simple-seo-%1$s-help" value="%3$s" />',
 			esc_attr( $name ),
 			esc_attr( $input_label ),
 			esc_attr( $value )
 		);
 	}
 
-	printf( '<span class="description">%s</span></p>', esc_html( $help ) );
+	printf( '<span class="description" id="simple-seo-%1$s-help">%2$s</span></p>', esc_attr( $name ), esc_html( $help ) );
 }
 
 /**

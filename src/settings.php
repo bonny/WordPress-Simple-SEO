@@ -48,8 +48,8 @@ function settings_section(): void {
 
 	$text = $other_plugin
 		/* translators: %s: name of another SEO plugin, like Yoast SEO. */
-		? sprintf( __( 'From the Simple SEO plugin. %s is active and handles SEO, so this isn\'t used.', 'simple-seo' ), $other_plugin )
-		: __( 'From the Simple SEO plugin.', 'simple-seo' );
+		? sprintf( __( 'Settings from the Simple SEO plugin. %s is active and handles SEO, so this isn\'t used.', 'simple-seo' ), $other_plugin )
+		: __( 'Settings from the Simple SEO plugin. The SEO title, description and "Hide from search engines" are on each post and page.', 'simple-seo' );
 
 	printf( '<p>%s</p>', esc_html( $text ) );
 }
