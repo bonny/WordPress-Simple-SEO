@@ -22,6 +22,18 @@ async (page) => {
 		await ctx.close();
 	}
 
+	// GitHub social preview (upload it by hand: repo Settings → General → Social preview).
+	{
+		const ctx = await browser.newContext( { viewport: { width: 1280, height: 640 } } );
+		const p = await ctx.newPage();
+		await p.goto( root + '/.claude/skills/generating-banner/social-preview.html' );
+		await p.evaluate( () => document.fonts.ready );
+		await p.waitForLoadState( 'networkidle' );
+		await p.locator( '.preview' ).screenshot( { path: '.github/social-preview.png' } );
+		out.push( '.github/social-preview.png' );
+		await ctx.close();
+	}
+
 	for ( const size of [ 128, 256 ] ) {
 		const ctx = await browser.newContext( { viewport: { width: size, height: size } } );
 		const p = await ctx.newPage();
