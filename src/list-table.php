@@ -22,7 +22,7 @@ add_action( 'quick_edit_custom_box', __NAMESPACE__ . '\\quick_edit_fields', 10, 
 add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\\enqueue_quick_edit_script' );
 
 /**
- * Add the column before the date.
+ * Add the column right after the title, since the SEO title is an alternative to it.
  *
  * @param array<string, string> $columns   Columns.
  * @param string                $post_type Post type.
@@ -35,15 +35,22 @@ function add_column( $columns, $post_type = 'page' ): array {
 		return $columns;
 	}
 
-	$date = $columns['date'] ?? null;
-	unset( $columns['date'] );
-	$columns[ COLUMN ] = __( 'SEO', 'simple-seo' );
+	$added = [];
 
-	if ( null !== $date ) {
-		$columns['date'] = $date;
+	foreach ( $columns as $key => $label ) {
+		$added[ $key ] = $label;
+
+		if ( 'title' === $key ) {
+			$added[ COLUMN ] = __( 'SEO', 'simple-seo' );
+		}
 	}
 
-	return $columns;
+	// No title column (another plugin removed it): add it at the end.
+	if ( ! isset( $added[ COLUMN ] ) ) {
+		$added[ COLUMN ] = __( 'SEO', 'simple-seo' );
+	}
+
+	return $added;
 }
 
 /**

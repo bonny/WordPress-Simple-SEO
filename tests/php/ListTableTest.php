@@ -19,10 +19,11 @@ class ListTableTest extends SimpleSEO_TestCase {
 		parent::tear_down();
 	}
 
-	public function test_column_goes_before_the_date() {
-		$columns = SimpleSEO\add_column( [ 'title' => 'Title', 'date' => 'Date' ], 'post' );
+	public function test_column_goes_after_the_title() {
+		$columns = SimpleSEO\add_column( [ 'cb' => '', 'title' => 'Title', 'author' => 'Author', 'date' => 'Date' ], 'post' );
 
-		$this->assertSame( [ 'title', 'simple_seo', 'date' ], array_keys( $columns ) );
+		$this->assertSame( [ 'cb', 'title', 'simple_seo', 'author', 'date' ], array_keys( $columns ) );
+		$this->assertSame( [ 'date', 'simple_seo' ], array_keys( SimpleSEO\add_column( [ 'date' => 'Date' ], 'post' ) ) );
 		$this->assertArrayNotHasKey( 'simple_seo', SimpleSEO\add_column( [ 'title' => 'Title' ], 'attachment' ) );
 	}
 
