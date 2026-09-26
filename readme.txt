@@ -5,7 +5,7 @@ Tags: seo, meta description, open graph, noindex, simple
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -130,7 +130,7 @@ It's still there for pages, in the Classic Editor box, and in Quick Edit on page
 
 == Changelog ==
 
-= Unreleased =
+= 1.1.0 (September 2026) =
 - Changed: no more checkboxes next to the SEO title, meta description and menu label. Fill in a field to use it, empty it to go back to the default. Only "Discourage search engines" is still a checkbox. Text you had switched off with a checkbox stays off.
 - Changed: Quick Edit shows the menu label only on pages that have one.
 
