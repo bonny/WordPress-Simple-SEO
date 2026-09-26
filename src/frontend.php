@@ -26,9 +26,9 @@ function add_seo_hooks(): void {
 		return;
 	}
 
-	add_filter( 'single_post_title', __NAMESPACE__ . '\\post_title', 10, 2 );
-	add_filter( 'document_title_parts', __NAMESPACE__ . '\\front_page_title' );
-	add_filter( 'wp_title', __NAMESPACE__ . '\\wp_title_front_page', 10, 2 );
+	add_filter( 'document_title_parts', __NAMESPACE__ . '\\document_title' );
+	// Before core's escaping and texturizing at 10, so they run on our title too.
+	add_filter( 'wp_title', __NAMESPACE__ . '\\old_theme_title', 9, 3 );
 	add_action( 'wp_head', __NAMESPACE__ . '\\meta_description', 1 );
 	add_filter( 'wp_robots', __NAMESPACE__ . '\\robots' );
 	add_filter( 'wp_sitemaps_posts_query_args', __NAMESPACE__ . '\\sitemap_skip_noindex' );
@@ -109,54 +109,48 @@ function static_front_page_id(): int {
 /**
  * Use the SEO title for the post's part of the document title. Core adds " – Site name" after it.
  *
- * Also covers old themes calling wp_title(), which uses the same filter.
+ * Only the <title>: single_post_title() is left alone, since themes print it as the visible
+ * heading (the blog page's in Twenty Seventeen, for example).
  *
- * @param string       $title Post title.
- * @param WP_Post|null $post  The post the title is for. On the blog page this is the
- *                            page, while global $post is the first post in the list.
- * @return string
- */
-function post_title( $title, $post = null ) {
-	if ( ! $post instanceof WP_Post ) {
-		return $title;
-	}
-
-	$seo_title = seo_title( $post->ID );
-
-	return '' !== $seo_title ? $seo_title : $title;
-}
-
-/**
- * On a static front page, core builds the title from the site name and tagline and never
+ * On a static front page core builds the title from the site name and tagline and never
  * asks for the page title. An SEO title set on that page replaces both.
  *
  * @param array<string, string> $parts Title parts: title, page, tagline, site.
  * @return array<string, string>
  */
-function front_page_title( array $parts ): array {
-	$seo_title = seo_title( static_front_page_id() );
+function document_title( array $parts ): array {
+	$seo_title = seo_title( queried_post_id() );
 
 	if ( '' === $seo_title ) {
 		return $parts;
 	}
 
-	unset( $parts['tagline'] );
+	if ( static_front_page_id() ) {
+		unset( $parts['tagline'] );
+	}
+
 	$parts['title'] = $seo_title;
 
 	return $parts;
 }
 
 /**
- * The same for old themes that build the front page title with wp_title().
+ * The same for old themes that build the title with wp_title() instead of title-tag support.
+ * Laid out like core's own: the separator on the side the theme asked for.
  *
- * @param string $title Title so far.
- * @param string $sep   Title separator.
+ * @param string $title       Title so far.
+ * @param string $sep         Title separator.
+ * @param string $seplocation Where the separator goes: 'right', or anything else for left.
  * @return string
  */
-function wp_title_front_page( $title, $sep ) {
-	$seo_title = seo_title( static_front_page_id() );
+function old_theme_title( $title, $sep, $seplocation = '' ) {
+	$seo_title = seo_title( queried_post_id() );
 
-	return '' !== $seo_title ? "$seo_title $sep " : $title;
+	if ( '' === $seo_title ) {
+		return $title;
+	}
+
+	return 'right' === $seplocation ? "$seo_title $sep " : " $sep $seo_title";
 }
 
 /**
@@ -245,25 +239,51 @@ function sitemap_skip_noindex( array $args ): array {
  * Use the custom menu label as the page title in get_pages(), which wp_list_pages()
  * and the Page List block use.
  *
+ * Not in wp-admin, where get_pages() fills the Parent and Settings → Reading dropdowns
+ * (they must show the real titles), and code may save the pages it gets back.
+ *
  * @param WP_Post[]|false $pages Pages found by get_pages().
  * @return WP_Post[]|false
  */
 function menu_labels( $pages ) {
-	if ( ! $pages ) {
+	if ( ! $pages || ( is_admin() && ! wp_doing_ajax() ) ) {
 		return $pages;
 	}
 
-	// Load the meta for all pages in one query, so get_post_meta() below is free.
-	update_postmeta_cache( wp_list_pluck( $pages, 'ID' ) );
+	$labels = menu_label_values( wp_list_pluck( $pages, 'ID' ) );
 
 	foreach ( $pages as $page ) {
-		$label = trim( (string) get_post_meta( $page->ID, MENU_LABEL_KEY, true ) );
+		$label = trim( $labels[ $page->ID ][ MENU_LABEL_KEY ] ?? '' );
 
 		// Checked but left empty: keep the page title instead of an empty link.
-		if ( '' !== $label && get_post_meta( $page->ID, USE_MENU_LABEL_KEY, true ) ) {
+		if ( '' !== $label && ! empty( $labels[ $page->ID ][ USE_MENU_LABEL_KEY ] ) ) {
 			$page->post_title = $label;
 		}
 	}
 
 	return $pages;
+}
+
+/**
+ * The two menu label keys for a set of pages, in one query. Not update_postmeta_cache():
+ * that loads every meta row of every page, which on page builder sites can be megabytes.
+ *
+ * @param int[] $page_ids Page IDs.
+ * @return array<int, array<string, string>> Meta values by page ID and key.
+ */
+function menu_label_values( array $page_ids ): array {
+	global $wpdb;
+
+	$ids = implode( ',', array_map( 'absint', $page_ids ) );
+
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Two keys for a list of pages, which the meta API can't do. The IDs are ints.
+	$rows = $wpdb->get_results( $wpdb->prepare( "SELECT post_id, meta_key, meta_value FROM {$wpdb->postmeta} WHERE meta_key IN (%s, %s) AND post_id IN ($ids)", USE_MENU_LABEL_KEY, MENU_LABEL_KEY ) );
+
+	$values = [];
+
+	foreach ( $rows as $row ) {
+		$values[ (int) $row->post_id ][ $row->meta_key ] ??= (string) $row->meta_value;
+	}
+
+	return $values;
 }

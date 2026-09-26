@@ -101,7 +101,7 @@ class Simple_History_Logger extends \Simple_History\Loggers\Logger {
 	}
 
 	/**
-	 * The default share image is about to be removed (the image was deleted).
+	 * The default share image option is about to be deleted (by hand, WP-CLI or another plugin; the plugin itself stores [] instead).
 	 *
 	 * @param string $option Option name.
 	 */

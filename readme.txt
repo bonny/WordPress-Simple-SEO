@@ -143,6 +143,7 @@ It's still there for pages, in the Classic Editor box and in Quick Edit in the P
 - New: filters for developers to change the title, description, noindex and link preview tags. See the FAQ.
 - New: posts that discourage search engines (noindex) are left out of the WordPress sitemap (`/wp-sitemap.xml`).
 - New: when Yoast SEO, Rank Math, All in One SEO, SEOPress or The SEO Framework is active, Simple SEO leaves the page head to it, so there are no duplicate tags. The edit screen tells you which plugin is in charge.
+- Fixed: the Parent dropdown and the homepage and posts page dropdowns in Settings → Reading showed the custom menu label instead of the page title.
 - On a site older than WordPress 6.6 or PHP 7.4, Simple SEO now pauses and shows a notice with a link to 0.3.5, instead of possibly breaking the site.
 
 = 0.3.5 (September 2026) =

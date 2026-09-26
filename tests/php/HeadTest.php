@@ -87,7 +87,8 @@ class HeadTest extends SimpleSEO_TestCase {
 		update_post_meta( $post_id, '_simple_seo_noindex', true );
 
 		// Undo what plugins_loaded added, then run it again with another plugin "active".
-		remove_filter( 'single_post_title', 'SimpleSEO\\post_title' );
+		remove_filter( 'document_title_parts', 'SimpleSEO\\document_title' );
+		remove_filter( 'wp_title', 'SimpleSEO\\old_theme_title', 9 );
 		remove_action( 'wp_head', 'SimpleSEO\\meta_description', 1 );
 		remove_filter( 'wp_robots', 'SimpleSEO\\robots' );
 		remove_action( 'wp_head', 'SimpleSEO\\link_preview_tags', 2 );

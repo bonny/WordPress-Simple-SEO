@@ -15,10 +15,23 @@ defined( 'ABSPATH' ) || exit;
 const SHARE_IMAGE_OPTION = 'simple_seo_share_image';
 
 add_action( 'admin_init', __NAMESPACE__ . '\\register_settings' );
+add_action( 'admin_init', __NAMESPACE__ . '\\add_share_image_option' );
 add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\\enqueue_settings_script' );
 add_action( 'updated_post_meta', __NAMESPACE__ . '\\refresh_share_image', 10, 3 );
 add_action( 'added_post_meta', __NAMESPACE__ . '\\refresh_share_image', 10, 3 );
 add_action( 'delete_attachment', __NAMESPACE__ . '\\forget_share_image' );
+
+/**
+ * Make sure the option exists, autoloaded, even with no image. A missing option costs a
+ * query on every front-end request (get_option() only remembers it's missing for the
+ * request, without a persistent object cache); an autoloaded one costs none.
+ * In wp-admin, so sites updating from an older version get it too.
+ */
+function add_share_image_option(): void {
+	if ( false === get_option( SHARE_IMAGE_OPTION ) ) {
+		add_option( SHARE_IMAGE_OPTION, [], '', true );
+	}
+}
 
 /**
  * Add the section and field to Settings → General.
@@ -187,6 +200,6 @@ function refresh_share_image( $meta_id, $object_id, $meta_key ): void {
  */
 function forget_share_image( $attachment_id ): void {
 	if ( (int) ( share_image()['id'] ?? 0 ) === (int) $attachment_id ) {
-		delete_option( SHARE_IMAGE_OPTION );
+		update_option( SHARE_IMAGE_OPTION, [] ); // Not delete_option(): see add_share_image_option().
 	}
 }

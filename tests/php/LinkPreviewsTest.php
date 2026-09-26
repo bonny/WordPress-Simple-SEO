@@ -78,6 +78,20 @@ class LinkPreviewsTest extends SimpleSEO_TestCase {
 		$this->assertSame( [], share_image() );
 	}
 
+	public function test_share_image_option_stays_autoloaded_without_an_image() {
+		// Regression: a missing option cost a query on every front-end request.
+		delete_option( 'simple_seo_share_image' );
+		SimpleSEO\add_share_image_option();
+		$this->assertArrayHasKey( 'simple_seo_share_image', wp_load_alloptions() );
+
+		$image_id = $this->image();
+		update_option( 'simple_seo_share_image', SimpleSEO\sanitize_share_image( $image_id ) );
+		wp_delete_attachment( $image_id, true );
+
+		$this->assertArrayHasKey( 'simple_seo_share_image', wp_load_alloptions() );
+		$this->assertSame( [], share_image() );
+	}
+
 	public function test_non_image_is_not_a_share_image() {
 		$this->assertSame( [], SimpleSEO\sanitize_share_image( self::factory()->post->create() ) );
 	}
