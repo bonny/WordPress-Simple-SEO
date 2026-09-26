@@ -38,33 +38,34 @@ Don't send WP-CLI stderr to `/dev/null` while setting up; an activation once fai
 
 ## WordPress.org screenshots
 
-Five shots, captions in `readme.txt` under `== Screenshots ==` (keep them in sync). All at 2x and 1120 CSS px wide, so they show at the same zoom (the Simple History one is cropped to the entry):
+Six shots, captions in `readme.txt` under `== Screenshots ==` (keep them in sync). All at 2x and 1120 CSS px wide, so they show at the same zoom (the Simple History one is cropped to the entry):
 
 1. `screenshot-1.png`: the "Simple SEO" panel in the block editor, in a 1120 px window (wp-env dev site, http://localhost:8315, admin / password)
 2. `screenshot-2.png`: the Pages list with the SEO column and Quick Edit open on "Our coffees" (wp-env)
-3. `screenshot-3.png`: the Simple SEO box in the Classic Editor (http://wp-playground-classiceditor.test:8314, admin / admin)
-4. `screenshot-4.png`: the Simple SEO section in Settings → General with the demo share image (wp-env)
-5. `screenshot-5.png`: the Simple History entry for the title and description change made in shot 1 (wp-env, where Simple History is active)
+3. `screenshot-3.png`: the Posts list with the SEO column (wp-env; Tags and Comments are hidden in Screen Options by the seed, since the SEO column gets cramped next to them at this width)
+4. `screenshot-4.png`: the Simple SEO box in the Classic Editor (http://wp-playground-classiceditor.test:8314, admin / admin)
+5. `screenshot-5.png`: the Simple SEO section in Settings → General with the demo share image (wp-env)
+6. `screenshot-6.png`: the Simple History entry for the title and description change made in shot 1 (wp-env, where Simple History is active)
 
-The demo share image `acme-share-image.png` (1200 × 630, rendered from HTML with Playwright) lives next to the scripts; don't use the plugin banner, it reads as if the plugin brands your previews.
+The demo company is Tallvik Coffee Roasters, a made-up Stockholm roastery, set up to look like a real company's site (Pär, 2026-09-26): named authors (Anna Lindberg, Erik Sjöberg), pages published over several years, a child page, a draft, a static front page, the Stockholm timezone. Its domain `tallvikcoffee.se` (unregistered when checked on 2026-09-26) is only shown: as Anna's email and, rewritten in the DOM, as the Classic shot's permalink. The demo share image `demo-share-image.png` (1200 × 630, rendered with Playwright from `demo-share-image.html`, which says how) lives next to the scripts; don't use the plugin banner, it reads as if the plugin brands your previews.
 
 Steps:
 
 1. `npm run env:start`, then activate Simple SEO there once: `npx wp-env run cli wp plugin activate simple-seo`.
-2. Seed both sites (Acme Coffee Roasters, four pages with varied fields, one with search engines discouraged, the demo share image; trashes Sample Page). Each prints the "About us" and "Our coffees" IDs:
+2. Seed both sites (nine pages with varied fields: one with a switched-off title, one with search engines discouraged, a draft; the demo share image; trashes Sample Page). `full` (wp-env only) also adds eight blog posts, sets the front page, posts page, timezone and Anna's email, and publishes the privacy policy, which would change how the Classic Editor test site behaves. Each prints the "About us" and "Our coffees" IDs:
    ```bash
-   npx wp-env run cli wp eval-file wp-content/plugins/simple-seo/.claude/skills/visual-check/seed.php
+   npx wp-env run cli wp eval-file wp-content/plugins/simple-seo/.claude/skills/visual-check/seed.php full
    (cd ../_docker-compose-to-run-on-system-boot && docker compose run --rm -T wpcli_classiceditor eval-file wp-content/plugins/simple-seo/.claude/skills/visual-check/seed.php)
    ```
-   Reseed wp-env before every capture: shot 1 edits the SEO title and description and saves, which is the change shot 4 shows, and unchanged fields leave the Save button disabled.
+   Reseed wp-env before every capture: shot 1 edits the SEO title and description and saves, which is the change shot 6 shows, and unchanged fields leave the Save button disabled.
 3. Put the IDs into `capture-screenshots.js` (`WP_ENV_PAGE`, `WP_ENV_QUICK_EDIT`, `CLASSIC_PAGE`) and run it: Playwright MCP `browser_run_code_unsafe` with `filename: .claude/skills/visual-check/capture-screenshots.js`. It uses its own 2x context.
 4. Compress, same pipeline as Simple History's `code.md` "Images" (never commit a PNG straight out of Playwright):
    ```bash
    pngquant --quality=80-95 --strip --skip-if-larger --force --ext .png .wordpress-org/screenshot-*.png
    oxipng -o max --strip safe .wordpress-org/screenshot-*.png
    ```
-   2026-09-26: the five came out at 62/68/85/23/22 KB.
-5. Look at all five before committing: the whole panel visible in shot 1 (the window is 1100 high for that), Quick Edit and column values both visible in shot 2, nothing cut off in shot 3, no `about-us-2` slug (delete older "About us" pages on the Classic site), no Simple History sidebar in shot 5.
+   2026-09-26: the six came out at 90/111/81/104/27/26 KB.
+5. Look at all six before committing: the whole panel visible in shot 1 (the window is 1100 high for that), Quick Edit and column values both visible in shot 2 (it ends at the "Thanks for your order" row), nothing cut off in shot 4, no `about-us-2` slug (delete older "About us" pages on the Classic site), no Simple History sidebar in shot 6.
 
 ## Gotchas
 

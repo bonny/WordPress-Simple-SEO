@@ -133,7 +133,7 @@ class SimpleHistoryTest extends SimpleSEO_TestCase {
 
 	public function test_share_image_changes_are_logged() {
 		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
-		$path  = dirname( __DIR__, 2 ) . '/.claude/skills/visual-check/acme-share-image.png';
+		$path  = dirname( __DIR__, 2 ) . '/.claude/skills/visual-check/demo-share-image.png';
 		$first = self::factory()->attachment->create_upload_object( $path );
 		$other = self::factory()->attachment->create_upload_object( $path );
 

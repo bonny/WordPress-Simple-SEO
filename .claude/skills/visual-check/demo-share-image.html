@@ -1,0 +1,41 @@
+<!doctype html>
+<!--
+	Source of demo-share-image.png, the demo company's default share image in the screenshots.
+	Render at 1200 × 630 with Playwright (browser_run_code_unsafe):
+		const ctx = await page.context().browser().newContext( { viewport: { width: 1200, height: 630 } } );
+		const p = await ctx.newPage();
+		await p.goto( 'file://' + <absolute path to this file> ); // or p.setContent( <this file's HTML> )
+		await p.screenshot( { path: '.claude/skills/visual-check/demo-share-image.png' } );
+	Then pngquant + oxipng, like the screenshots (see SKILL.md).
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+	body { margin: 0; width: 1200px; height: 630px; background: #1f3a2f; font-family: Georgia, 'Times New Roman', serif; color: #f3ead8; overflow: hidden; position: relative; }
+	.hills { position: absolute; left: 0; right: 0; bottom: 0; height: 260px; }
+	.wrap { position: absolute; left: 96px; top: 120px; width: 760px; }
+	.eyebrow { font: 600 22px/1 -apple-system, Helvetica, Arial, sans-serif; letter-spacing: .22em; text-transform: uppercase; color: #d9a55b; }
+	h1 { font-weight: 400; font-size: 92px; line-height: 1.02; margin: 22px 0 26px; letter-spacing: -.01em; }
+	p { font-size: 32px; font-style: italic; margin: 0; color: #e6dcc6; }
+	.mark { position: absolute; right: 110px; top: 118px; width: 250px; height: 250px; border: 3px solid #d9a55b; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+</style>
+</head>
+<body>
+	<svg class="hills" viewBox="0 0 1200 260" preserveAspectRatio="none">
+		<path d="M0 170 C200 120 330 150 480 110 S820 60 1000 120 1200 100 1200 100 V260 H0Z" fill="#274838"/>
+		<path d="M0 220 C180 190 380 215 560 185 S900 150 1200 200 V260 H0Z" fill="#2e5242"/>
+	</svg>
+	<div class="wrap">
+		<div class="eyebrow">Stockholm · Since 1998</div>
+		<h1>Tallvik Coffee Roasters</h1>
+		<p>Specialty coffee, roasted to order</p>
+	</div>
+	<div class="mark">
+		<svg width="150" height="170" viewBox="0 0 150 170">
+			<path d="M75 8 L112 70 H95 L128 118 H104 L140 160 H10 L46 118 H22 L55 70 H38 Z" fill="#d9a55b"/>
+			<rect x="68" y="158" width="14" height="12" fill="#d9a55b"/>
+		</svg>
+	</div>
+</body>
+</html>
