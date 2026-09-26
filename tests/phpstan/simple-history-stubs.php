@@ -39,7 +39,21 @@ class Event_Details_Group {
 
 class Event_Details_Group_Diff_Table_Formatter {}
 
+class Event_Details_Item_Image_Diff_Table_Row_Formatter {
+	/** @param string $src URL. @param string $caption Caption. @return static */
+	public function set_new_image( $src, $caption = '' ) {}
+
+	/** @param string $src URL. @param string $caption Caption. @return static */
+	public function set_prev_image( $src, $caption = '' ) {}
+
+	/** @param string $size 'default' or 'small'. @return static */
+	public function set_size( $size ) {}
+}
+
 class Event_Details_Item {
+	/** @param object $formatter Formatter. @return static */
+	public function set_formatter( $formatter ) {}
+
 	/**
 	 * @param string|string[]|null $slug_or_slugs Context key(s).
 	 * @param string|null          $name          Label.

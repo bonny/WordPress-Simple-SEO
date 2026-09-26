@@ -96,6 +96,37 @@ class SimpleHistoryTest extends SimpleSEO_TestCase {
 		$this->assertCount( $before, $this->events( $post_id ) );
 	}
 
+	public function test_share_image_changes_are_logged() {
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$path  = dirname( __DIR__, 2 ) . '/.claude/skills/visual-check/acme-share-image.png';
+		$first = self::factory()->attachment->create_upload_object( $path );
+		$other = self::factory()->attachment->create_upload_object( $path );
+
+		update_option( 'simple_seo_share_image', SimpleSEO\sanitize_share_image( $first ) );
+		update_post_meta( $first, '_wp_attachment_image_alt', 'New alt' ); // A refresh, not a change.
+		update_option( 'simple_seo_share_image', SimpleSEO\sanitize_share_image( $other ) );
+		wp_delete_attachment( $other, true );
+
+		$this->assertSame( [ 'share_image_removed', 'share_image_changed', 'share_image_set' ], $this->message_keys( 3 ) );
+
+		$links = $this->logger()->get_action_links( (object) [ 'context' => [ '_message_key' => 'share_image_set' ] ] );
+		$this->assertSame( [ 'General settings' ], wp_list_pluck( $links, 'label' ) );
+	}
+
+	/**
+	 * Message keys of our newest events.
+	 *
+	 * @return string[]
+	 */
+	private function message_keys( int $count ): array {
+		global $wpdb;
+		$events   = Simple_History\Simple_History::get_instance()->get_events_table_name();
+		$contexts = Simple_History\Simple_History::get_instance()->get_contexts_table_name();
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return $wpdb->get_col( $wpdb->prepare( "SELECT c.value FROM {$events} h JOIN {$contexts} c ON c.history_id = h.id WHERE h.logger = 'SimpleSEOLogger' AND c.key = '_message_key' ORDER BY h.id DESC LIMIT %d", $count ) );
+	}
+
 	public function test_post_logger_ignores_our_keys() {
 		$this->assertContains( '_simple_seo_*', apply_filters( 'simple_history/post_logger/meta_keys_to_ignore', [], [], [], [] ) );
 	}

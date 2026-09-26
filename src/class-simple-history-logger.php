@@ -11,6 +11,7 @@ namespace SimpleSEO;
 use Simple_History\Event_Details\Event_Details_Group;
 use Simple_History\Event_Details\Event_Details_Group_Diff_Table_Formatter;
 use Simple_History\Event_Details\Event_Details_Item;
+use Simple_History\Event_Details\Event_Details_Item_Image_Diff_Table_Row_Formatter;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -41,11 +42,14 @@ class Simple_History_Logger extends \Simple_History\Loggers\Logger {
 	public function get_info() {
 		return [
 			'name'        => __( 'Simple SEO', 'simple-seo' ),
-			'description' => __( 'Logs changes to the SEO title, meta description, "Discourage search engines" and menu label.', 'simple-seo' ),
+			'description' => __( 'Logs changes to the SEO title, meta description, "Discourage search engines", menu label and default share image.', 'simple-seo' ),
 			'name_via'    => __( 'Using plugin Simple SEO', 'simple-seo' ),
 			'capability'  => 'edit_posts',
 			'messages'    => [
-				'seo_updated' => __( 'Updated the SEO for "{post_title}"', 'simple-seo' ),
+				'seo_updated'         => __( 'Updated the SEO for "{post_title}"', 'simple-seo' ),
+				'share_image_set'     => __( 'Set a default share image', 'simple-seo' ),
+				'share_image_changed' => __( 'Changed the default share image', 'simple-seo' ),
+				'share_image_removed' => __( 'Removed the default share image', 'simple-seo' ),
 			],
 			'labels'      => [
 				'search' => [
@@ -53,6 +57,7 @@ class Simple_History_Logger extends \Simple_History\Loggers\Logger {
 					'label_all' => __( 'All SEO changes', 'simple-seo' ),
 					'options'   => [
 						__( 'SEO changes', 'simple-seo' ) => [ 'seo_updated' ],
+						__( 'Default share image', 'simple-seo' ) => [ 'share_image_set', 'share_image_changed', 'share_image_removed' ],
 					],
 				],
 			],
@@ -68,6 +73,69 @@ class Simple_History_Logger extends \Simple_History\Loggers\Logger {
 		add_filter( 'update_post_metadata', [ $this, 'remember_before' ], 10, 3 );
 		add_filter( 'delete_post_metadata', [ $this, 'remember_before' ], 10, 3 );
 		add_action( 'shutdown', [ $this, 'log_changes' ] );
+
+		add_action( 'add_option_' . SHARE_IMAGE_OPTION, [ $this, 'on_share_image_added' ], 10, 2 );
+		add_action( 'update_option_' . SHARE_IMAGE_OPTION, [ $this, 'on_share_image_updated' ], 10, 2 );
+		add_action( 'delete_option', [ $this, 'on_delete_option' ] );
+	}
+
+	/**
+	 * The default share image was set for the first time.
+	 *
+	 * @param string $option Option name.
+	 * @param mixed  $value  New value.
+	 */
+	public function on_share_image_added( $option, $value ): void {
+		$this->log_share_image( [], (array) $value );
+	}
+
+	/**
+	 * The default share image changed. Only logged when the image itself changed, not when
+	 * its stored details were refreshed after an edit in the media library.
+	 *
+	 * @param mixed $old_value Old value.
+	 * @param mixed $value     New value.
+	 */
+	public function on_share_image_updated( $old_value, $value ): void {
+		$this->log_share_image( (array) $old_value, (array) $value );
+	}
+
+	/**
+	 * The default share image is about to be removed (the image was deleted).
+	 *
+	 * @param string $option Option name.
+	 */
+	public function on_delete_option( $option ): void {
+		if ( SHARE_IMAGE_OPTION === $option ) {
+			$this->log_share_image( share_image(), [] );
+		}
+	}
+
+	/**
+	 * Log a change of the default share image, if the image changed.
+	 *
+	 * @param array<string, mixed> $before Old value (id, url, …), or [].
+	 * @param array<string, mixed> $after  New value, or [].
+	 */
+	private function log_share_image( array $before, array $after ): void {
+		$old_id = (int) ( $before['id'] ?? 0 );
+		$new_id = (int) ( $after['id'] ?? 0 );
+
+		if ( $old_id === $new_id ) {
+			return;
+		}
+
+		$message = $new_id ? ( $old_id ? 'share_image_changed' : 'share_image_set' ) : 'share_image_removed';
+
+		$this->info_message(
+			$message,
+			[
+				'share_image_prev'    => (string) ( $before['url'] ?? '' ),
+				'share_image_new'     => (string) ( $after['url'] ?? '' ),
+				'share_image_prev_id' => $old_id,
+				'share_image_new_id'  => $new_id,
+			]
+		);
 	}
 
 	/**
@@ -129,6 +197,18 @@ class Simple_History_Logger extends \Simple_History\Loggers\Logger {
 	 * @return array<int, array{url: string, label: string, action: string}>
 	 */
 	public function get_action_links( $row ) {
+		if ( 0 === strpos( (string) ( $row->context['_message_key'] ?? '' ), 'share_image_' ) ) {
+			return current_user_can( 'manage_options' )
+				? [
+					[
+						'url'    => admin_url( 'options-general.php' ),
+						'label'  => __( 'General settings', 'simple-seo' ),
+						'action' => 'view',
+					],
+				]
+				: [];
+		}
+
 		$post_id   = (int) ( $row->context['post_id'] ?? 0 );
 		$post      = $post_id ? get_post( $post_id ) : null;
 		$post_type = get_post_type_object( $post ? $post->post_type : ( $row->context['post_type'] ?? '' ) );
@@ -171,6 +251,10 @@ class Simple_History_Logger extends \Simple_History\Loggers\Logger {
 	 * @return Event_Details_Group
 	 */
 	public function get_log_row_details_output( $row ) {
+		if ( 0 === strpos( (string) ( $row->context['_message_key'] ?? '' ), 'share_image_' ) ) {
+			return $this->share_image_details( $row->context );
+		}
+
 		$group = new Event_Details_Group();
 		$group->set_formatter( new Event_Details_Group_Diff_Table_Formatter() );
 		$group->add_items(
@@ -181,6 +265,35 @@ class Simple_History_Logger extends \Simple_History\Loggers\Logger {
 				new Event_Details_Item( [ 'menu_label' ], __( 'Menu label', 'simple-seo' ) ),
 			]
 		);
+
+		return $group;
+	}
+
+	/**
+	 * The old and new share image side by side (Simple History 5.32+), or their URLs.
+	 *
+	 * @param array<string, mixed> $context Event context.
+	 * @return Event_Details_Group
+	 */
+	private function share_image_details( array $context ) {
+		$item  = new Event_Details_Item( [ 'share_image' ], __( 'Default share image', 'simple-seo' ) );
+		$group = new Event_Details_Group();
+
+		// The image formatter draws its own diff row, like Simple History's site icon event.
+		if ( class_exists( Event_Details_Item_Image_Diff_Table_Row_Formatter::class ) ) {
+			$new = (string) ( $context['share_image_new'] ?? '' );
+			$old = (string) ( $context['share_image_prev'] ?? '' );
+
+			$formatter = new Event_Details_Item_Image_Diff_Table_Row_Formatter();
+			$formatter->set_new_image( $new, wp_basename( $new ) );
+			$formatter->set_prev_image( $old, wp_basename( $old ) );
+			$formatter->set_size( 'small' ); // The default size overflows the diff cells.
+			$item->set_formatter( $formatter );
+		} else {
+			$group->set_formatter( new Event_Details_Group_Diff_Table_Formatter() );
+		}
+
+		$group->add_items( [ $item ] );
 
 		return $group;
 	}
