@@ -94,21 +94,14 @@ function column_content( $column, $post_id ): void {
 		printf( '<span class="dashicons dashicons-hidden" aria-hidden="true"></span> %s<br />', esc_html__( 'Search engines discouraged', 'simple-seo' ) );
 	}
 
-	// Switched-off text is still saved, so show it greyed out with "(off)" instead of hiding it.
+	// A short label on each line, so a row reads on its own. Switched-off text is still saved,
+	// so it shows greyed out with "(off)" by its label instead of being hidden.
 	if ( '' !== $title_text ) {
-		printf(
-			$title_on ? '<strong>%s</strong><br />' : '<span class="simple-seo-off">%s <em>%s</em></span><br />',
-			esc_html( $title_text ),
-			esc_html__( '(off)', 'simple-seo' )
-		);
+		column_line( $title_on ? __( 'Title:', 'simple-seo' ) : __( 'Title (off):', 'simple-seo' ), $title_text, $title_on, 'simple-seo-title' );
 	}
 
 	if ( '' !== $description_text ) {
-		printf(
-			$description_on ? '<span class="description">%s</span>' : '<span class="description simple-seo-off">%s <em>%s</em></span>',
-			esc_html( wp_trim_words( $description_text, 12 ) ),
-			esc_html__( '(off)', 'simple-seo' )
-		);
+		column_line( $description_on ? __( 'Description:', 'simple-seo' ) : __( 'Description (off):', 'simple-seo' ), wp_trim_words( $description_text, 12 ), $description_on, 'simple-seo-description' );
 	}
 
 	if ( $other_plugin && $has_values ) {
@@ -136,6 +129,24 @@ function column_content( $column, $post_id ): void {
 				]
 			)
 		)
+	);
+}
+
+/**
+ * One labeled line in the column.
+ *
+ * @param string $label      Label, like "Title:".
+ * @param string $text       The field's text.
+ * @param bool   $on         Whether the field is used; greyed out if not.
+ * @param string $text_class Class of the text.
+ */
+function column_line( string $label, string $text, bool $on, string $text_class ): void {
+	printf(
+		'<div%s><span class="simple-seo-label">%s</span> <span class="%s">%s</span></div>',
+		$on ? '' : ' class="simple-seo-off"',
+		esc_html( $label ),
+		esc_attr( $text_class ),
+		esc_html( $text )
 	);
 }
 

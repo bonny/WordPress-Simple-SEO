@@ -35,11 +35,10 @@ class ListTableTest extends SimpleSEO_TestCase {
 
 		$html = get_echo( 'SimpleSEO\\column_content', [ 'simple_seo', $post_id ] );
 
-		$this->assertStringContainsString( '<strong>Our story</strong>', $html );
+		$this->assertStringContainsString( '<div><span class="simple-seo-label">Title:</span> <span class="simple-seo-title">Our story</span></div>', $html );
 		$this->assertStringContainsString( 'Search engines discouraged', $html );
-		// Switched-off text shows greyed out with "(off)", not as used.
-		$this->assertStringNotContainsString( '<span class="description">Kept but off', $html );
-		$this->assertStringContainsString( '<span class="description simple-seo-off">Kept but off <em>(off)</em></span>', $html );
+		// Switched-off text shows greyed out with "(off)" by its label, not as used.
+		$this->assertStringContainsString( '<div class="simple-seo-off"><span class="simple-seo-label">Description (off):</span> <span class="simple-seo-description">Kept but off</span></div>', $html );
 	}
 
 	public function test_quick_edit_data_keeps_stored_entities() {
