@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Simple SEO is a small WordPress plugin by Pär (eskapism), on WordPress.org at https://wordpress.org/plugins/simple-seo/ (slug `simple-seo`, about 300 active installs). It went unreleased from 0.3.4 (October 2012) until 0.3.5 (2026-09-24), the first release of the revival. The plan and its status live in [`todo.md`](todo.md).
+Simple SEO is a small WordPress plugin by Pär (eskapism), on WordPress.org at https://wordpress.org/plugins/simple-seo/ (slug `simple-seo`, about 300 active installs). It went unreleased from 0.3.4 (October 2012) until 0.3.5 (2026-09-24), the first release of the revival. Private notes (the todo list, drafts, plans) live in Pär's Obsidian vault and are linked into the repo by `scripts/setup-private-docs.sh` as `todo.md`, `todos/` and `CLAUDE.private.md` (all git-ignored). Contributors can ignore them. Never put strategy, site plans or business details in tracked files; they go in those private files.
 
 Goals for the revival: a deliberately tiny SEO plugin (a few fields per post, no settings maze, no upsells), working on modern WordPress and PHP, and a friendly home for existing users.
 
@@ -103,6 +103,7 @@ Between releases the version stays at the last released one (`bumping-version` s
 
 ## Conventions
 
+- Commit messages: no `Claude-Session:` links (Pär, 2026-09-26: the repo is going public). `Co-Authored-By` is fine.
 - Take tooling and conventions from `../WordPress-CMS-Tree-Page-View` (the most recent plugin Pär revived) and, behind it, Simple History. Keep it proportionate: this plugin is small.
 - Pär posts all public content himself. Draft readme copy, WordPress.org replies, and blog posts into `todo.md` or a `todos/` file and stop.
 - Readme tone: short, personal, a bit funny. See the example copy in `todo.md` and the draft in `todos/readme-draft.md`.

@@ -3,7 +3,7 @@
 // filename: .claude/skills/generating-banner/render.js
 // Then compress (see SKILL.md).
 async (page) => {
-	const root = 'file:///path/to/WordPress-Simple-SEO';
+	const root = 'file://' + require( 'path' ).resolve( __dirname, '../../..' );
 	const browser = page.context().browser();
 	const out = [];
 	// Where the banner goes. '.design-drafts' (gitignored) while trying out a new banner

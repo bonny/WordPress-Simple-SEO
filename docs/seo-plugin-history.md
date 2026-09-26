@@ -22,4 +22,3 @@ Notes:
 
 - Yoast SEO's slug `wordpress-seo` was reserved on 2009-01-02, but the first code ("Initial commit") is from 2010-10-11. The readme's "seven weeks before Yoast SEO" line rests on that.
 - Of the plugins older than Simple SEO, only All in One SEO Pack is still maintained. Four are closed, two haven't been updated since 2016–2017.
-- The SEO Framework's last update is 2025-12-10, nine months ago.

@@ -19,3 +19,8 @@
 
 # PHPUnit
 .phpunit.result.cache
+
+# Private docs, symlinked from the Obsidian vault by scripts/setup-private-docs.sh
+/todo.md
+/todos
+/CLAUDE.private.md
