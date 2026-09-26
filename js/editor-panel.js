@@ -14,13 +14,14 @@ import { useSelect } from '@wordpress/data';
 import { createInterpolateElement, useState } from '@wordpress/element';
 import {
 	CheckboxControl,
+	ExternalLink,
 	Flex,
 	TextControl,
 	TextareaControl,
 } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
 
-const { otherPlugin, simpleHistoryUrl, frontPageId } =
+const { otherPlugin, simpleHistoryUrl, frontPageId, faqUrl } =
 	window.simpleSeoEditor || {};
 
 /**
@@ -196,6 +197,12 @@ function SimpleSeoPanel() {
 						) }
 					</p>
 				) }
+
+				<div>
+					<ExternalLink href={ faqUrl }>
+						{ __( 'Learn more about these fields', 'simple-seo' ) }
+					</ExternalLink>
+				</div>
 			</Flex>
 		</PluginDocumentSettingPanel>
 	);

@@ -38,6 +38,7 @@ function enqueue_editor_panel(): void {
 			[
 				'otherPlugin'      => active_seo_plugin(),
 				'simpleHistoryUrl' => simple_history_tip_url(),
+				'faqUrl'           => FAQ_URL,
 				'frontPageId'      => 'page' === get_option( 'show_on_front' ) ? (int) get_option( 'page_on_front' ) : 0,
 			]
 		) . ';',

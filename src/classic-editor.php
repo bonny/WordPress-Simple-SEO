@@ -96,6 +96,14 @@ function meta_box( WP_Post $post ): void {
 			)
 		);
 	}
+
+	printf(
+		'<p><a href="%1$s" target="_blank" rel="noopener">%2$s<span class="screen-reader-text"> %3$s</span><span aria-hidden="true" class="dashicons dashicons-external"></span></a></p>',
+		esc_url( FAQ_URL ),
+		esc_html__( 'Learn more about these fields', 'simple-seo' ),
+		/* translators: Accessibility text. */
+		esc_html__( '(opens in a new tab)', 'simple-seo' )
+	);
 }
 
 /**

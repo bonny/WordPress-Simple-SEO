@@ -22,6 +22,11 @@ function is_front_page_post( int $post_id ): bool {
 }
 
 /**
+ * The readme's FAQ on WordPress.org, linked as "Learn more" at the bottom of the fields.
+ */
+const FAQ_URL = 'https://wordpress.org/plugins/simple-seo/#faq';
+
+/**
  * Help text for the SEO title field.
  *
  * @param int $post_id Post ID.
