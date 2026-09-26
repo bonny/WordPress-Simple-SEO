@@ -1,7 +1,7 @@
 === Simple SEO ===
 Contributors: eskapism
 Donate link: https://eskapism.se/sida/donate/
-Tags: seo, page title, title tag, menu label, classic editor
+Tags: seo, meta description, open graph, noindex, simple
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 7.4
@@ -9,50 +9,124 @@ Stable tag: 0.3.5
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Set a custom page title and menu label for any page or post. Two fields, no settings.
+The SEO basics and nothing more: a title, a description and a "don't index" checkbox for every page. No upsells, no settings maze.
 
 == Description ==
 
+Looking for an SEO tool with AI scores, premium upsells and an almost infinite number of settings? Then look elsewhere, because we have none of that.
+
+What we've got: three fields on every post and page. Exactly what you need, and something you can actually manage.
+
+- **SEO title.** The title you give search engines and the browser tab. Your headline can say "About us" while search results say "Our story – small batch coffee from Stockholm".
+- **Meta description.** The short summary search engines often show under the title.
+- **Discourage search engines.** Ask them not to index thank-you pages, test pages and anything else that doesn't belong in Google.
+
+Tick a box to use a field. Untick it to switch it off without losing what you wrote.
+
+And a few things that just happen:
+
+- **Link previews.** Links shared in Slack, iMessage, LinkedIn, Mastodon, Bluesky and Facebook get the right title, description and image: the featured image, or a default one you pick in Settings → General.
+- **A cleaner sitemap.** WordPress's built-in sitemap, minus the pages search engines shouldn't index.
+- **Both editors.** A panel in the block editor sidebar, a box in the Classic Editor.
+- **Quick Edit.** An SEO column in the Posts and Pages lists, and the fields right in Quick Edit, for fixing many pages fast.
+- **Plays nice.** Using Yoast SEO, Rank Math, All in One SEO, SEOPress or The SEO Framework? Simple SEO steps aside and says so, so you don't get duplicate tags.
+
+No settings page. No dashboard widgets. No "Go Pro" banners. No extra database tables. Activate it, edit a page, done.
+
+#### Built for search in 2026
+
+As of 2026, Google's AI Overviews and ChatGPT search use the same basics as normal search: a page they can crawl, a good title and a good description. That's what Simple SEO does. No llms.txt, no "AI optimization" scores, no keyword stuffing. More in the FAQ.
+
 #### Back from the dead!
-Simple SEO slept from 2012 to 2026. That's fourteen years, 37 major WordPress releases and one block editor. Now it's awake again, dusted off, and tested with WordPress 7.1. Still small on purpose.
+
+Simple SEO slept from 2012 to 2026. That's fourteen years, 37 major WordPress releases and one block editor. Now it's awake again, dusted off, and still small on purpose.
 
 One of the earliest SEO plugins for WordPress. Older than Yoast SEO, Rank Math, SEOPress and The SEO Framework, and still alive and kicking (again!).
 
-**Heads up: the fields only show up in the Classic Editor for now.** If you use the block editor (Gutenberg), install the [Classic Editor](https://wordpress.org/plugins/classic-editor/) plugin, or wait for Simple SEO 1.0, which adds block editor support. Titles you have already set keep working on the front end either way.
-
-Change the title and menu label of any page or post, without touching the headline on the page itself.
-
-#### Features
-- **Custom page title.** The title shown in the browser tab and in search engines like Google. Leave it empty and the normal title is used.
-- **Custom menu label.** A shorter name for the page in page lists, like "About" for a page called "About our company". Used by `wp_list_pages()` and the Page List block, which is the default navigation in block themes. Menu items you add by hand keep their own labels.
-- Supports **custom post types**.
-- No settings, just activate the plugin and you're ready to go.
-- Uses WordPress own custom fields, so **no extra database tables**.
-- Works with most themes and plugins. (Well.. at least that's what I hope for... ;)
-
 #### Why does this plugin exist?
+
 Back in 2010 I wanted two small things: a better page title for Google, and a shorter name in the menu. So I wrote a plugin that does exactly that.
 
 Fun fact: Simple SEO arrived on WordPress.org in August 2010, seven weeks before Yoast SEO. Not the first SEO plugin (All in One SEO Pack beat us by three years), but one of the old-timers.
 
-Honest bit: I build Simple SEO for my own sites, like [simple-history.com](https://simple-history.com/). It does what they need and not much more. But sharing is caring, so here it is for you too. Feature requests are welcome, just know that the answer is often "that's a bit much for a plugin called Simple".
+Honest bit: I build Simple SEO for my own sites, like [simple-history.com](https://simple-history.com/). It does what they need and not much more. But sharing is caring, so here it is for you too. Feature requests are welcome, just know that the answer is often "that's a bit much for a plugin called Simple". And hey, things may change: features come and go as my own sites need them. What you've typed into the fields stays put, and the plugin stays simple. Promise.
+
+#### Made by the Simple History guy
+
+I also make [Simple History](https://wordpress.org/plugins/simple-history/), which keeps a log of what happens on your site. With both active, every change to your SEO fields shows up in the log: who changed the title, when, and what it said before.
 
 #### Donation and more plugins
-* If you like this plugin don't forget to [donate to support further development](https://eskapism.se/sida/donate/).
-* Check out some [more WordPress plugins by me](https://profiles.wordpress.org/eskapism/#content-plugins).
+
+* If you like this plugin, [a donation keeps it going](https://eskapism.se/sida/donate/).
+* Check out [more WordPress plugins by me](https://profiles.wordpress.org/eskapism/#content-plugins).
 
 == Installation ==
 
-1. In your WordPress admin, go to Plugins → Add New Plugin and search for "Simple SEO"
-1. Install and activate it
-1. Done!
+1. In your WordPress admin, go to Plugins → Add New Plugin and search for "Simple SEO".
+1. Install and activate it.
+1. Edit a post or page. In the block editor, open the "Simple SEO" panel in the sidebar. In the Classic Editor, scroll to the "Simple SEO" box below the editor. To fix many pages at once, use Quick Edit in the Posts or Pages list.
+1. Optional: pick a default share image in Settings → General.
 
-Now go and edit a page and you should have two new options: "Custom Page Title" and "Custom Menu Label".
+== Frequently Asked Questions ==
+
+= What happens if I leave a field empty? =
+
+WordPress does what it always does: the post title in search results and browser tabs, and search engines pick their own description.
+
+= Where does the site name go? =
+
+After your SEO title, like WordPress normally does: "Our story – Tallvik Coffee Roasters". On the front page, your SEO title is the whole title.
+
+= My front page shows my latest posts. How do I set its title and description? =
+
+It uses the Site Title and Tagline from Settings → General. The tagline becomes the meta description.
+
+= I use Yoast SEO (or Rank Math, All in One SEO, SEOPress, The SEO Framework). =
+
+Then that plugin is in charge and Simple SEO outputs nothing. The fields stay editable and say which plugin is in charge, so nothing is lost if you switch.
+
+= Do I need llms.txt? =
+
+Not today. As of 2026, Google says it doesn't use it, and hardly any AI search engine fetches it, so Simple SEO doesn't make one. If that changes, so will we.
+
+= What about AI search, like Google AI Overviews and ChatGPT? =
+
+Same rules as normal search: a page that can be crawled, with a good title and description. Simple SEO handles those. Discouraging search engines keeps a page out of AI answers too, with the search engines that honor it (Google does, as of 2026).
+
+= Can I stop AI companies from training on my site? =
+
+Not with Simple SEO. That's a robots.txt job: block the training bots (like GPTBot and ClaudeBot) and keep the search bots, so you still show up in AI search.
+
+= Does it make a sitemap? =
+
+WordPress has one built in, at /wp-sitemap.xml. Simple SEO leaves out the pages that discourage search engines.
+
+= Can I edit the fields with WP-CLI, the REST API or an AI tool? =
+
+Yes. They're normal post meta: `_simple_seo_title`, `_simple_seo_description` and `_simple_seo_noindex`, plus `_simple_seo_title_disabled` and `_simple_seo_description_disabled` for the checkboxes. For example: `wp post meta update 123 _simple_seo_title "Our story"`. In the REST API they're under `meta` with `?context=edit`, for users who can edit the post.
+
+= For developers: can I change what Simple SEO outputs? =
+
+Yes, with filters: `simple_seo_title`, `simple_seo_description`, `simple_seo_noindex`, `simple_seo_link_previews`, `simple_seo_link_preview_image`, `simple_seo_link_preview_tags` and `simple_seo_active_seo_plugin`. For example, to add the page's language:
+
+`add_filter( 'simple_seo_link_preview_tags', function ( $tags ) { $tags['og:locale'] = 'sv_SE'; return $tags; } );`
+
+= Is it fast? =
+
+Yes. It reads only the post being shown, which WordPress has already loaded, and its one setting loads with WordPress's own. The only lookup it may add is the featured image for link previews, and most themes load that anyway.
+
+= What happened to the menu label? =
+
+It's still there for pages, in the Classic Editor box and in Quick Edit in the Pages list: a shorter name in automatic page lists, like "About" for "About our company".
 
 == Screenshots ==
 
-1. The Edit Page screen with a custom page title and a custom menu label, right below the title.
-2. The same page on the site. The menu says "About", the headline says "About us", and the browser tab and Google get the custom page title. Hooray for variation!
+1. A few SEO fields in the page sidebar of the block editor. That's it.
+2. See and edit the SEO of every page right from the Pages list, with Quick Edit.
+3. The same column for posts, so you can spot the ones missing a description.
+4. Works in the Classic Editor too.
+5. One setting: a default share image for link previews, in Settings → General.
+6. With Simple History, every SEO change is logged: who, when, and what it said before.
 
 == Changelog ==
 
