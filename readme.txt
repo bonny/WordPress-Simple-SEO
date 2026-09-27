@@ -13,125 +13,67 @@ The SEO basics and nothing more: a title, a description and a "don't index" chec
 
 == Description ==
 
-Looking for an SEO tool with AI scores, premium upsells and an almost infinite number of settings? Then look elsewhere, because we have none of that.
+Three fields on every post and page:
 
-What we've got: three fields on every post and page. Exactly what you need, and something you can actually manage.
+- **SEO title.** The title in search results and the browser tab. Your headline says "About us", search results say "About us: small batch coffee from Stockholm".
+- **Meta description.** The summary search engines often show under the title.
+- **Discourage search engines.** For thank-you pages, test pages and anything else that doesn't belong in Google.
 
-- **SEO title.** The title you give search engines and the browser tab. Your headline can say "About us" while search results say "About us: small batch coffee from Stockholm". Same page, just more to go on.
-- **Meta description.** The short summary search engines often show under the title.
-- **Discourage search engines.** Ask them not to index thank-you pages, test pages and anything else that doesn't belong in Google.
+Leave a field empty and WordPress does what it always did.
 
-Fill in a field to use it. Leave it empty, and WordPress does what it always did.
+A few things just happen: link previews with the right title, description and image in Slack, Mastodon, Bluesky and friends. Pages you keep out of search are left out of the sitemap too. There's a panel in the block editor, a box in the Classic Editor, and the fields in Quick Edit. Using Yoast SEO or another big SEO plugin? Simple SEO steps aside.
 
-And a few things that just happen:
+No settings page, no scores, no "Go Pro" banners, no extra database queries. <del>No nags.</del> Okay, one small grey tip about Simple History.
 
-- **Link previews.** Links shared in Slack, iMessage, LinkedIn, Mastodon, Bluesky and Facebook get the right title, description and image: the featured image, or a default one you pick in Settings → General.
-- **A cleaner sitemap.** WordPress's built-in sitemap, minus the pages search engines shouldn't index.
-- **Both editors.** A panel in the block editor sidebar, a box in the Classic Editor.
-- **Quick Edit.** An SEO column in the Posts and Pages lists, and the fields right in Quick Edit, for fixing many pages fast.
-- **Plays nice.** Using Yoast SEO, Rank Math, All in One SEO, SEOPress or The SEO Framework? Simple SEO steps aside and says so, so you don't get duplicate tags.
+No plugin makes a page rank. Good content does. Simple SEO hands search engines and shared links the title, description and image you chose, and asks search engines to skip the pages you don't want listed. That's also all AI search needs from a plugin: no llms.txt, no "AI optimization".
 
-No settings page. No dashboard widgets. No "Go Pro" banners. <del>No nags.</del> Okay, one small grey tip about Simple History. No extra database tables. No "optimized by Simple SEO" comment in your page source either: your HTML is yours. Activate it, edit a page, done.
+#### Back from the dead
 
-#### No magic
+Simple SEO is old. Like really old. It arrived on WordPress.org in August 2010 (seven weeks before Yoast SEO!). Of the SEO plugins still maintained today, only All in One SEO is older. Then it slept from 2012 to 2026.
 
-No plugin makes a page rank. Good content does. What Simple SEO does is make your pages look right: the title and description you chose in search results, the right image when a link is shared, and the pages you don't want listed kept out of search.
+I woke it up mostly for myself: I wanted the SEO basics on my own sites without a plugin that asks for attention every time I log in. It stays small on purpose, so feature requests often get "that's a bit much for a plugin called Simple".
 
-That's also all AI search needs from a plugin. As of 2026, Google's AI Overviews and ChatGPT search use the same basics as normal search. No llms.txt, no "AI optimization" scores, no keyword stuffing. More in the FAQ.
-
-#### Back from the dead!
-
-Simple SEO slept from 2012 to 2026. That's fourteen years, 37 major WordPress releases and one block editor. Now it's awake again, dusted off, and still small on purpose.
-
-One of the earliest SEO plugins for WordPress. Older than Yoast SEO, Rank Math, SEOPress and The SEO Framework, and still alive and kicking (again!).
-
-#### Why does this plugin exist?
-
-Back in 2010 I wanted two small things: a better page title for Google, and a shorter name in the menu. So I wrote a plugin that does exactly that.
-
-Fun fact: Simple SEO arrived on WordPress.org in August 2010, seven weeks before Yoast SEO. Not the first SEO plugin (All in One SEO Pack beat us by three years), but one of the old-timers.
-
-Honest bit: I build Simple SEO for my own sites, like [simple-history.com](https://simple-history.com/). It does what they need and not much more. But sharing is caring, so here it is for you too. Feature requests are welcome, just know that the answer is often "that's a bit much for a plugin called Simple". And hey, things may change: features come and go as my own sites need them. What you've typed into the fields stays put, and the plugin stays simple. Promise.
-
-#### Made by the Simple History guy
-
-No big company or investors behind Simple SEO. Just one developer: me. I also make [Simple History](https://wordpress.org/plugins/simple-history/), which keeps a log of what happens on your site. With both active, every change to your SEO fields shows up in the log: who changed the title, when, and what it said before.
-
-#### Donation and more plugins
-
-* If you like this plugin, [a donation keeps it going](https://eskapism.se/sida/donate/).
-* Check out [more WordPress plugins by me](https://profiles.wordpress.org/eskapism/#content-plugins).
+No company or investors, just one developer: me, the guy behind [Simple History](https://simple-history.com/). With both active, every SEO change is logged: who, when, and what it said before. If Simple SEO saves you time, [a donation](https://eskapism.se/sida/donate/) keeps it going.
 
 == Installation ==
 
-1. In your WordPress admin, go to Plugins → Add New Plugin and search for "Simple SEO".
-1. Install and activate it.
-1. Edit a post or page. In the block editor, open the "Simple SEO" panel in the sidebar. In the Classic Editor, scroll to the "Simple SEO" box below the editor. To fix many pages at once, use Quick Edit in the Posts or Pages list.
+1. Go to Plugins → Add New Plugin, search for "Simple SEO", install and activate it.
+1. Edit a page and open the "Simple SEO" panel in the sidebar, or the box below the Classic Editor.
 1. Optional: pick a default share image in Settings → General.
 
 == Frequently Asked Questions ==
 
 = What happens if I leave a field empty? =
 
-WordPress does what it always does: the post title in search results and browser tabs, and search engines pick their own description.
-
-= Where does the site name go? =
-
-After your SEO title, like WordPress normally does: "About us: small batch coffee from Stockholm – Tallvik Coffee Roasters". On the front page, your SEO title is the whole title.
+WordPress does what it always does: the post title, and search engines pick their own description. On a front page that shows your latest posts, the Tagline is the description.
 
 = How long should the SEO title be? =
 
-About 50 characters, and close to the page's heading: the same words, just more to go on. WordPress adds " – Site name" after it, and search results cut titles off at around 60 characters. Google also tends to rewrite titles that are long or say something different from the heading. On the front page, the SEO title is the whole title, so about 60 characters works.
+About 50 characters, close to the page's heading: the same words, with more to go on. WordPress adds " – Site name" after it (not on the front page), and Google may rewrite titles that are long or don't match the heading.
 
 = Does "Discourage search engines" hide the page? =
 
-No, it asks search engines not to list it, and it's up to them to honor that. Anyone with the link can still open the page. Simple SEO also leaves the page out of the sitemap.
+No. It asks search engines not to list it, and it's up to them to honor that. Anyone with the link can still open the page. It's also left out of the sitemap.
 
 = What makes a good default share image? =
 
-A wide picture, 1200 × 630 pixels, not your logo or site icon. It shows in link previews in Slack, LinkedIn, Mastodon, Bluesky and others when a post has no featured image. Small or square images get the small preview card.
-
-= My front page shows my latest posts. How do I set its title and description? =
-
-It uses the Site Title and Tagline from Settings → General. The tagline becomes the meta description.
+A wide picture, 1200 × 630 pixels, not your logo. It's used in link previews when a post has no featured image.
 
 = I use Yoast SEO (or Rank Math, All in One SEO, SEOPress, The SEO Framework). =
 
-Then that plugin is in charge and Simple SEO outputs nothing. The fields stay editable and say which plugin is in charge, so nothing is lost if you switch.
+Then that plugin is in charge and Simple SEO outputs nothing. The fields stay, so nothing is lost if you switch.
 
-= Do I need llms.txt? =
+= What about AI search and llms.txt? =
 
-Not today. As of 2026, Google says it doesn't use it, and hardly any AI search engine fetches it, so Simple SEO doesn't make one. If that changes, so will we.
+AI search uses the same basics as normal search: a page that can be crawled, with a good title and description. As of 2026, Google doesn't use llms.txt, so Simple SEO doesn't make one.
 
-= What about AI search, like Google AI Overviews and ChatGPT? =
+= Can I use WP-CLI, the REST API or filters? =
 
-Same rules as normal search: a page that can be crawled, with a good title and description. Simple SEO handles those. Discouraging search engines keeps a page out of AI answers too, with the search engines that honor it (Google does, as of 2026).
-
-= Can I stop AI companies from training on my site? =
-
-Not with Simple SEO. That's a robots.txt job: block the training bots (like GPTBot and ClaudeBot) and keep the search bots, so you still show up in AI search.
-
-= Does it make a sitemap? =
-
-WordPress has one built in, at /wp-sitemap.xml. Simple SEO leaves out the pages that discourage search engines.
-
-= Can I edit the fields with WP-CLI, the REST API or an AI tool? =
-
-Yes. They're normal post meta: `_simple_seo_title`, `_simple_seo_description` and `_simple_seo_noindex`. A title or description is used when it isn't empty. For example: `wp post meta update 123 _simple_seo_title "About us: small batch coffee from Stockholm"`. In the REST API they're under `meta` with `?context=edit`, for users who can edit the post.
-
-= For developers: can I change what Simple SEO outputs? =
-
-Yes, with filters: `simple_seo_title`, `simple_seo_description`, `simple_seo_noindex`, `simple_seo_link_previews`, `simple_seo_link_preview_image`, `simple_seo_link_preview_tags` and `simple_seo_active_seo_plugin`. For example, to add the page's language:
-
-`add_filter( 'simple_seo_link_preview_tags', function ( $tags ) { $tags['og:locale'] = 'sv_SE'; return $tags; } );`
-
-= Is it fast? =
-
-Yes. It reads only the post being shown, which WordPress has already loaded, and its one setting loads with WordPress's own. The only lookup it may add is the featured image for link previews, and most themes load that anyway.
+Yup. The fields are post meta: `_simple_seo_title`, `_simple_seo_description` and `_simple_seo_noindex`, in the REST API with `?context=edit`. Everything Simple SEO outputs goes through a filter first. See [the hooks](https://github.com/bonny/WordPress-Simple-SEO/blob/main/docs/hooks.md).
 
 = What happened to the menu label? =
 
-It's still there for pages, in the Classic Editor box, and in Quick Edit on pages that already have one: a shorter name in automatic page lists, like "About" for "About our company".
+It's still there for pages: in the Classic Editor box, and in Quick Edit on pages that have one.
 
 == Screenshots ==
 
