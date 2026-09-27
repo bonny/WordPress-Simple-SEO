@@ -33,15 +33,15 @@ const FAQ_URL = 'https://wordpress.org/plugins/simple-seo/#faq';
  */
 function title_help( int $post_id ): string {
 	return is_front_page_post( $post_id )
-		? __( 'Used as the whole title of the front page.', 'simple-seo' )
-		: __( 'The site name is added after it.', 'simple-seo' );
+		? __( 'The whole title of the front page.', 'simple-seo' )
+		: __( 'About 50 characters. The site name is added after it.', 'simple-seo' );
 }
 
 /**
  * Help text for "Discourage search engines from indexing this page". noindex is a request, not a block.
  */
 function noindex_help(): string {
-	return __( 'It\'s up to search engines to honor this request. Anyone with the link can still open the page.', 'simple-seo' );
+	return __( 'It\'s up to search engines to honor this request.', 'simple-seo' );
 }
 
 /**

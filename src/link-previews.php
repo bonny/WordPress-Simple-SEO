@@ -42,15 +42,22 @@ function link_preview_tags(): void {
 		return;
 	}
 
-	$title = get_bloginfo( 'name' );
-	$url   = home_url( '/' );
-	$image = null;
+	$title       = get_bloginfo( 'name' );
+	$description = current_description();
+	$url         = home_url( '/' );
+	$image       = null;
 
 	if ( $post_id ) {
 		$title = seo_title( $post_id );
 		$title = '' !== $title ? $title : wp_strip_all_tags( get_the_title( $post_id ) );
 		$url   = (string) get_permalink( $post_id );
 		$image = featured_image( $post_id );
+
+		// No meta description: the excerpt, if someone wrote one. Not an automatic excerpt from the
+		// content, which is usually a worse summary than the apps' own.
+		if ( '' === $description ) {
+			$description = trim( (string) preg_replace( '/\s+/', ' ', wp_strip_all_tags( (string) get_post_field( 'post_excerpt', $post_id ) ) ) );
+		}
 	}
 
 	// The default share image from Settings → General, when there's no featured image.
@@ -71,14 +78,14 @@ function link_preview_tags(): void {
 		'og:type'         => is_front_page() ? 'website' : 'article',
 		'og:site_name'    => get_bloginfo( 'name' ),
 		'og:title'        => $title,
-		'og:description'  => current_description(),
+		'og:description'  => $description,
 		'og:url'          => $url,
 		'og:image'        => $image['url'] ?? '',
 		'og:image:width'  => $image['width'] ?? '',
 		'og:image:height' => $image['height'] ?? '',
 		'og:image:alt'    => $image['alt'] ?? '',
 		// Apps that read twitter:card take everything else from the og: tags.
-		'twitter:card'    => $image ? 'summary_large_image' : 'summary',
+		'twitter:card'    => $image && is_wide( $image ) ? 'summary_large_image' : 'summary',
 	];
 
 	/**
@@ -102,6 +109,20 @@ function link_preview_tags(): void {
 			esc_attr( (string) $content )
 		);
 	}
+}
+
+/**
+ * Whether an image suits a large, wide preview card: at least 600 px wide and wider than tall.
+ * A small or square image, like a site icon, gets the small card instead of being cropped or blurred.
+ * An image without a known size (from the filter) counts as wide.
+ *
+ * @param array{url: string, width?: int, height?: int} $image The image.
+ */
+function is_wide( array $image ): bool {
+	$width  = (int) ( $image['width'] ?? 0 );
+	$height = (int) ( $image['height'] ?? 0 );
+
+	return ! $width || ( $width >= 600 && $width > $height );
 }
 
 /**

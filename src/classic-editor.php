@@ -61,7 +61,7 @@ function meta_box( WP_Post $post ): void {
 	}
 
 	text_field( 'title', __( 'SEO title', 'simple-seo' ), get_title( $post->ID ), title_help( $post->ID ) );
-	text_field( 'description', __( 'Meta description', 'simple-seo' ), get_description( $post->ID ), __( 'Often shown under the title in search results.', 'simple-seo' ), true );
+	text_field( 'description', __( 'Meta description', 'simple-seo' ), get_description( $post->ID ), __( 'Often shown in search results.', 'simple-seo' ), true );
 
 	if ( 'page' === $post->post_type ) {
 		text_field( 'menu_label', __( 'Menu label', 'simple-seo' ), get_menu_label( $post->ID ), __( 'Used in automatic page lists, not in hand-made menus.', 'simple-seo' ) );

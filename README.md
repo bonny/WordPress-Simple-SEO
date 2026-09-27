@@ -15,7 +15,7 @@ A title, a description and a "don't index this" checkbox for every post and page
 
 Three fields on every post, page and public custom post type:
 
-- **SEO title.** The title you give search engines and the browser tab. Your headline can say "About us" while search results say "Our story – small batch coffee".
+- **SEO title.** The title you give search engines and the browser tab. Your headline can say "About us" while search results say "About us: small batch coffee from Stockholm". Same page, just more to go on.
 - **Meta description.** The short text search engines often show under the title.
 - **Discourage search engines.** For thank-you pages, test pages and anything else that doesn't belong in Google.
 
@@ -85,7 +85,7 @@ The fields are plain, registered post meta, so WP-CLI, the REST API and AI tools
 | `_simple_seo_noindex` | Discourage search engines |
 
 ```bash
-wp post meta update 123 _simple_seo_title "Our story – small batch coffee"
+wp post meta update 123 _simple_seo_title "About us: small batch coffee from Stockholm"
 ```
 
 In the REST API they're under `meta`, with `?context=edit`, for users who can edit the post. Anonymous requests see nothing.

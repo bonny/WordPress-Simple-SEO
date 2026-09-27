@@ -76,11 +76,11 @@ function SimpleSeoPanel() {
 					help={
 						postId === frontPageId
 							? __(
-									'Used as the whole title of the front page.',
+									'The whole title of the front page.',
 									'simple-seo'
 								)
 							: __(
-									'The site name is added after it.',
+									'About 50 characters. The site name is added after it.',
 									'simple-seo'
 								)
 					}
@@ -94,7 +94,7 @@ function SimpleSeoPanel() {
 					rows={ 2 }
 					label={ __( 'Meta description', 'simple-seo' ) }
 					help={ __(
-						'Often shown under the title in search results.',
+						'Often shown in search results.',
 						'simple-seo'
 					) }
 					value={ meta._simple_seo_description }
@@ -108,7 +108,7 @@ function SimpleSeoPanel() {
 						'simple-seo'
 					) }
 					help={ __(
-						'It’s up to search engines to honor this request. Anyone with the link can still open the page.',
+						'It’s up to search engines to honor this request.',
 						'simple-seo'
 					) }
 					checked={ !! meta._simple_seo_noindex }

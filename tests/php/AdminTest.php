@@ -14,13 +14,13 @@ class AdminTest extends SimpleSEO_TestCase {
 		$front = self::factory()->post->create( [ 'post_type' => 'page' ] );
 		$other = self::factory()->post->create( [ 'post_type' => 'page' ] );
 
-		$this->assertSame( 'The site name is added after it.', title_help( $front ) );
+		$this->assertSame( 'About 50 characters. The site name is added after it.', title_help( $front ) );
 
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_on_front', $front );
 
-		$this->assertSame( 'Used as the whole title of the front page.', title_help( $front ) );
-		$this->assertSame( 'The site name is added after it.', title_help( $other ) );
+		$this->assertSame( 'The whole title of the front page.', title_help( $front ) );
+		$this->assertSame( 'About 50 characters. The site name is added after it.', title_help( $other ) );
 	}
 
 	public function test_uses_seo_fields() {

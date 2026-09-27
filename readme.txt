@@ -17,7 +17,7 @@ Looking for an SEO tool with AI scores, premium upsells and an almost infinite n
 
 What we've got: three fields on every post and page. Exactly what you need, and something you can actually manage.
 
-- **SEO title.** The title you give search engines and the browser tab. Your headline can say "About us" while search results say "Our story – small batch coffee from Stockholm".
+- **SEO title.** The title you give search engines and the browser tab. Your headline can say "About us" while search results say "About us: small batch coffee from Stockholm". Same page, just more to go on.
 - **Meta description.** The short summary search engines often show under the title.
 - **Discourage search engines.** Ask them not to index thank-you pages, test pages and anything else that doesn't belong in Google.
 
@@ -75,7 +75,19 @@ WordPress does what it always does: the post title in search results and browser
 
 = Where does the site name go? =
 
-After your SEO title, like WordPress normally does: "Our story – Tallvik Coffee Roasters". On the front page, your SEO title is the whole title.
+After your SEO title, like WordPress normally does: "About us: small batch coffee from Stockholm – Tallvik Coffee Roasters". On the front page, your SEO title is the whole title.
+
+= How long should the SEO title be? =
+
+About 50 characters, and close to the page's heading: the same words, just more to go on. WordPress adds " – Site name" after it, and search results cut titles off at around 60 characters. Google also tends to rewrite titles that are long or say something different from the heading. On the front page, the SEO title is the whole title, so about 60 characters works.
+
+= Does "Discourage search engines" hide the page? =
+
+No, it asks search engines not to list it, and it's up to them to honor that. Anyone with the link can still open the page. Simple SEO also leaves the page out of the sitemap.
+
+= What makes a good default share image? =
+
+A wide picture, 1200 × 630 pixels, not your logo or site icon. It shows in link previews in Slack, LinkedIn, Mastodon, Bluesky and others when a post has no featured image. Small or square images get the small preview card.
 
 = My front page shows my latest posts. How do I set its title and description? =
 
@@ -103,7 +115,7 @@ WordPress has one built in, at /wp-sitemap.xml. Simple SEO leaves out the pages 
 
 = Can I edit the fields with WP-CLI, the REST API or an AI tool? =
 
-Yes. They're normal post meta: `_simple_seo_title`, `_simple_seo_description` and `_simple_seo_noindex`. A title or description is used when it isn't empty. For example: `wp post meta update 123 _simple_seo_title "Our story"`. In the REST API they're under `meta` with `?context=edit`, for users who can edit the post.
+Yes. They're normal post meta: `_simple_seo_title`, `_simple_seo_description` and `_simple_seo_noindex`. A title or description is used when it isn't empty. For example: `wp post meta update 123 _simple_seo_title "About us: small batch coffee from Stockholm"`. In the REST API they're under `meta` with `?context=edit`, for users who can edit the post.
 
 = For developers: can I change what Simple SEO outputs? =
 
@@ -131,6 +143,9 @@ It's still there for pages, in the Classic Editor box, and in Quick Edit on page
 == Changelog ==
 
 = Unreleased =
+- New: link previews use the post's excerpt when it has no meta description, if you wrote one. Not an automatic excerpt.
+- Changed: a small or square share image, like a site icon, now gets the small preview card instead of being stretched into a large one.
+- Changed: shorter help text under the fields. The details moved to the FAQ: how long the SEO title should be, what "Discourage search engines" does, and what makes a good share image.
 - New: on a local development site (environment type `local`), HTML comments mark where Simple SEO's tags start and end in the page head, for easier debugging. Never on live sites.
 
 = 1.1.0 (September 2026) =

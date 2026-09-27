@@ -52,6 +52,34 @@ class LinkPreviewsTest extends SimpleSEO_TestCase {
 		$this->assertStringContainsString( 'twitter:card" content="summary"', $tags );
 	}
 
+	public function test_small_or_square_image_is_a_small_card() {
+		$post_id = self::factory()->post->create();
+		add_filter( 'simple_seo_link_preview_image', fn() => [ 'url' => 'https://example.com/icon.png', 'width' => 512, 'height' => 512, 'alt' => '' ] );
+		$this->go_to( get_permalink( $post_id ) );
+
+		$tags = $this->tags();
+		$this->assertStringContainsString( 'og:image" content="https://example.com/icon.png"', $tags );
+		$this->assertStringContainsString( 'twitter:card" content="summary"', $tags );
+	}
+
+	public function test_excerpt_when_there_is_no_description() {
+		$post_id = self::factory()->post->create( [ 'post_excerpt' => "  A hand-written\n<b>summary</b>. " ] );
+		$this->go_to( get_permalink( $post_id ) );
+
+		$this->assertStringContainsString( 'og:description" content="A hand-written summary."', $this->tags() );
+		// Only in link previews, not the meta description.
+		$this->assertSame( '', SimpleSEO\current_description() );
+
+		update_post_meta( $post_id, '_simple_seo_description', 'The SEO description' );
+		$this->assertStringContainsString( 'og:description" content="The SEO description"', $this->tags() );
+	}
+
+	public function test_no_automatic_excerpt() {
+		$this->go_to( get_permalink( self::factory()->post->create( [ 'post_content' => 'Only content, no excerpt.', 'post_excerpt' => '' ] ) ) );
+
+		$this->assertStringNotContainsString( 'og:description', $this->tags() );
+	}
+
 	public function test_nothing_on_archives() {
 		self::factory()->post->create();
 		$this->go_to( get_category_link( 1 ) );

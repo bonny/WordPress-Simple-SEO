@@ -18,9 +18,9 @@
 async ( page ) => {
 	const WP_ENV = 'http://localhost:8315';
 	const CLASSIC = 'http://wp-playground-classiceditor.test:8314';
-	const WP_ENV_PAGE = 281; // "About us" from seed.php on wp-env.
-	const WP_ENV_QUICK_EDIT = 278; // "Our coffees", opened in Quick Edit in shot 2.
-	const CLASSIC_PAGE = 161; // "About us" from seed.php on the Classic Editor site.
+	const WP_ENV_PAGE = 361; // "About us" from seed.php on wp-env.
+	const WP_ENV_QUICK_EDIT = 358; // "Our coffees", opened in Quick Edit in shot 2.
+	const CLASSIC_PAGE = 183; // "About us" from seed.php on the Classic Editor site.
 	const X = 160; // Right of the admin menu.
 	const WIDTH = 1120;
 
@@ -72,7 +72,7 @@ async ( page ) => {
 	}
 	await p.waitForTimeout( 500 );
 	// A change to the title and description, for the Simple History shot.
-	await p.getByRole( 'textbox', { name: 'SEO title' } ).fill( 'Our story – coffee by the water' );
+	await p.getByRole( 'textbox', { name: 'SEO title' } ).fill( 'About us: our roastery in Nacka' );
 	await p
 		.getByRole( 'textbox', { name: 'Meta description' } )
 		.fill( 'Small batch coffee, roasted to order by the water in Nacka since 1998.' );
