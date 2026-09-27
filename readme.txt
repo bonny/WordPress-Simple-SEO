@@ -33,7 +33,7 @@ Simple SEO is old. Like really old. It arrived on WordPress.org in August 2010 (
 
 I woke it up mostly for myself: I wanted the SEO basics on my own sites without a plugin that asks for attention every time I log in. It stays small on purpose, so feature requests often get "that's a bit much for a plugin called Simple".
 
-No company or investors, just one developer: me, the guy behind [Simple History](https://simple-history.com/). With both active, every SEO change is logged: who, when, and what it said before. If Simple SEO saves you time, [a donation](https://eskapism.se/sida/donate/) keeps it going.
+No big company or investors, just one developer: me, the guy behind [Simple History](https://simple-history.com/). With both active, every SEO change is logged: who, when, and what it said before. If Simple SEO saves you time, [a donation](https://eskapism.se/sida/donate/) keeps it going.
 
 == Installation ==
 

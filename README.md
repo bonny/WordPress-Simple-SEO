@@ -18,6 +18,8 @@ A few things just happen:
 - ✍️ **Both editors,** plus an SEO column and the fields in **Quick Edit**.
 - 📜 **Changes logged** using [Simple History](https://simple-history.com/).
 
+## Screenshots
+
 <p align="center">
 	<img src=".wordpress-org/screenshot-1.png" width="720" alt="The Simple SEO panel in the block editor sidebar, with an SEO title, a meta description and the discourage search engines checkbox.">
 </p>
@@ -50,15 +52,13 @@ A few things just happen:
 
 Search for **Simple SEO** in Plugins → Add New Plugin, or get it from [wordpress.org/plugins/simple-seo](https://wordpress.org/plugins/simple-seo/). Needs WordPress 6.6 and PHP 7.4.
 
-## For developers
+## For developers and automation
 
-The fields are post meta (`_simple_seo_title`, `_simple_seo_description`, `_simple_seo_noindex`), readable over REST with `?context=edit`:
+The fields are plain post meta, so scripts, WP-CLI and AI tools can read and write them like any other post data: `_simple_seo_title`, `_simple_seo_description` and `_simple_seo_noindex`.
 
-```bash
-wp post meta update 123 _simple_seo_title "About us: small batch coffee from Stockholm"
-```
+### Using the REST API
 
-Over the REST API, with an [application password](https://make.wordpress.org/core/2020/11/05/application-passwords-integration-guide/) (Users → Profile → Application Passwords):
+Log in with an [application password](https://make.wordpress.org/core/2020/11/05/application-passwords-integration-guide/) (Users → Profile → Application Passwords). The fields show up with `?context=edit`:
 
 ```bash
 # Read
@@ -72,7 +72,18 @@ curl -u "editor:xxxx xxxx xxxx xxxx xxxx xxxx" -X POST \
   "https://example.com/wp-json/wp/v2/pages/123"
 ```
 
+### Using WP-CLI
+
+```bash
+wp post meta get 123 _simple_seo_title
+wp post meta update 123 _simple_seo_title "About us: small batch coffee from Stockholm"
+```
+
+### Filters
+
 Everything Simple SEO outputs goes through a filter first: [`docs/hooks.md`](docs/hooks.md).
+
+### Contributing
 
 ```bash
 npm install && npm run build          # the block editor panel (Node 22.22+ or 24.15+)
@@ -86,4 +97,4 @@ Issues and pull requests are welcome, though the answer to a new feature is ofte
 
 Simple SEO arrived on WordPress.org in August 2010, seven weeks before Yoast SEO ([history](docs/seo-plugin-history.md)), slept from 2012 to 2026, and is awake again.
 
-Made by [Pär Thernström](https://eskapism.se/): one developer, no company or investors. Also [Simple History](https://simple-history.com/) and [CMS Tree Page View](https://wordpress.org/plugins/cms-tree-page-view/). [A donation](https://eskapism.se/sida/donate/) keeps it going. GPLv2.
+Made by [Pär Thernström](https://eskapism.se/): one developer, no big company or investors behind it. Also [Simple History](https://simple-history.com/) and [CMS Tree Page View](https://wordpress.org/plugins/cms-tree-page-view/). [A donation](https://eskapism.se/sida/donate/) keeps it going. GPLv2.

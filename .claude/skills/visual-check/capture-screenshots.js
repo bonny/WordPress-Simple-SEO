@@ -18,9 +18,9 @@
 async ( page ) => {
 	const WP_ENV = 'http://localhost:8315';
 	const CLASSIC = 'http://wp-playground-classiceditor.test:8314';
-	const WP_ENV_PAGE = 361; // "About us" from seed.php on wp-env.
-	const WP_ENV_QUICK_EDIT = 358; // "Our coffees", opened in Quick Edit in shot 2.
-	const CLASSIC_PAGE = 183; // "About us" from seed.php on the Classic Editor site.
+	const WP_ENV_PAGE = 394; // "About us" from seed.php on wp-env.
+	const WP_ENV_QUICK_EDIT = 391; // "Our coffees", opened in Quick Edit in shot 2.
+	const CLASSIC_PAGE = 195; // "About us" from seed.php on the Classic Editor site.
 	const X = 160; // Right of the admin menu.
 	const WIDTH = 1120;
 
@@ -87,6 +87,25 @@ async ( page ) => {
 		// Just below the sidebar's sticky tabs.
 		document.querySelector( '.interface-complementary-area' ).scrollBy( 0, -72 );
 		document.querySelector( '.components-snackbar-list' )?.remove();
+	} );
+	// Spotlight: dim everything but the panel, so it's clear which part is ours.
+	await p.evaluate( () => {
+		const panel = [ ...document.querySelectorAll( '.components-panel__body' ) ].find( ( e ) =>
+			e.querySelector( '.simple-seo-title' )
+		);
+		const r = panel.getBoundingClientRect();
+		const spot = document.createElement( 'div' );
+		Object.assign( spot.style, {
+			position: 'fixed',
+			left: `${ r.left }px`,
+			top: `${ r.top }px`,
+			width: `${ r.width }px`,
+			height: `${ r.height }px`,
+			boxShadow: '0 0 0 4000px rgba(30, 30, 30, 0.3)',
+			zIndex: 100000,
+			pointerEvents: 'none',
+		} );
+		document.body.appendChild( spot );
 	} );
 	await p.waitForTimeout( 300 );
 	await p.screenshot( { path: '.wordpress-org/screenshot-1.png' } );
