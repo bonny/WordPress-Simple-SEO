@@ -33,9 +33,11 @@ And a few things that just happen:
 
 No settings page. No dashboard widgets. No "Go Pro" banners. <del>No nags.</del> Okay, one small grey tip about Simple History. No extra database tables. No "optimized by Simple SEO" comment in your page source either: your HTML is yours. Activate it, edit a page, done.
 
-#### Built for search in 2026
+#### No magic
 
-As of 2026, Google's AI Overviews and ChatGPT search use the same basics as normal search: a page they can crawl, a good title and a good description. That's what Simple SEO does. No llms.txt, no "AI optimization" scores, no keyword stuffing. More in the FAQ.
+No plugin makes a page rank. Good content does. What Simple SEO does is make your pages look right: the title and description you chose in search results, the right image when a link is shared, and the pages you don't want listed kept out of search.
+
+That's also all AI search needs from a plugin. As of 2026, Google's AI Overviews and ChatGPT search use the same basics as normal search. No llms.txt, no "AI optimization" scores, no keyword stuffing. More in the FAQ.
 
 #### Back from the dead!
 
