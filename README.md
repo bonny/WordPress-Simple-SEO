@@ -83,16 +83,6 @@ wp post meta update 123 _simple_seo_title "About us: small batch coffee from Sto
 
 Everything Simple SEO outputs goes through a filter first: [`docs/hooks.md`](docs/hooks.md).
 
-### Contributing
-
-```bash
-npm install && npm run build          # the block editor panel (Node 22.22+ or 24.15+)
-composer install && composer check    # PHPCS and PHPStan
-npm run env:start && npm run test:php # PHPUnit in wp-env
-```
-
-Issues and pull requests are welcome, though the answer to a new feature is often "that's a bit much for a plugin called *Simple*". More in [`CLAUDE.md`](CLAUDE.md).
-
 ## About
 
 Simple SEO arrived on WordPress.org in August 2010, seven weeks before Yoast SEO ([history](docs/seo-plugin-history.md)), slept from 2012 to 2026, and is awake again.
