@@ -121,4 +121,48 @@ class HeadTest extends SimpleSEO_TestCase {
 		$this->assertSame( 1, substr_count( $head, $start ) );
 		$this->assertMatchesRegularExpression( '/' . preg_quote( $start, '/' ) . '\n<meta name="description" content="SEO description" \/>\n(<meta [^>]+>\n)+' . preg_quote( '<!-- Simple SEO end -->', '/' ) . '/', $head );
 	}
+
+	public function test_website_schema_on_the_front_page_only() {
+		update_option( 'blogname', 'Acme & "Co" </script>' );
+		$this->go_to( home_url( '/' ) );
+		$head = get_echo( 'wp_head' );
+
+		$this->assertSame( 1, $this->tag_count( '/<script type="application\/ld\+json">/', $head ) );
+		preg_match( '/<script type="application\/ld\+json">(.*?)<\/script>/', $head, $match );
+		$this->assertSame(
+			[
+				'@context' => 'https://schema.org',
+				'@type'    => 'WebSite',
+				'name'     => 'Acme & "Co" </script>',
+				'url'      => home_url( '/' ),
+			],
+			json_decode( $match[1], true )
+		);
+
+		$this->assertStringNotContainsString( 'ld+json', $this->head( self::factory()->post->create() ) );
+	}
+
+	public function test_website_schema_on_a_static_front_page() {
+		$page_id = self::factory()->post->create( [ 'post_type' => 'page' ] );
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', $page_id );
+
+		$this->assertStringContainsString( '"@type":"WebSite"', $this->head( $page_id ) );
+	}
+
+	public function test_website_schema_filter() {
+		add_filter(
+			'simple_seo_website_schema',
+			function ( $schema ) {
+				$schema['alternateName'] = 'Acme';
+				return $schema;
+			}
+		);
+		$this->go_to( home_url( '/' ) );
+		$this->assertStringContainsString( '"alternateName":"Acme"', get_echo( 'wp_head' ) );
+
+		add_filter( 'simple_seo_website_schema', '__return_empty_array', 20 );
+		$this->go_to( home_url( '/' ) );
+		$this->assertStringNotContainsString( 'ld+json', get_echo( 'wp_head' ) );
+	}
 }

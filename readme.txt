@@ -86,6 +86,9 @@ It's still there for pages: in the Classic Editor box, and in Quick Edit on page
 
 == Changelog ==
 
+= Unreleased =
+- New: the front page tells Google your site's name (a small `WebSite` JSON-LD block), which it shows next to your pages in search results.
+
 = 1.2.0 (September 2026) =
 - Changed: the SEO title field in the block editor wraps onto a second line, so you can see the whole title while typing.
 - New: with CMS Tree Page View active, a page's SEO title, description and menu label show in its page tree card, and Simple History events about a page link to it in the page tree.

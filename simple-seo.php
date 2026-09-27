@@ -49,6 +49,7 @@ require __DIR__ . '/src/meta.php';
 require __DIR__ . '/src/admin.php';
 require __DIR__ . '/src/frontend.php';
 require __DIR__ . '/src/link-previews.php';
+require __DIR__ . '/src/website-schema.php';
 require __DIR__ . '/src/settings.php';
 require __DIR__ . '/src/simple-history.php';
 require __DIR__ . '/src/cms-tree-page-view.php';

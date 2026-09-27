@@ -176,8 +176,9 @@ function current_description(): string {
 }
 
 /**
- * Print our tags in the head, together: the meta description and the link previews. WordPress
- * prints the <title> and robots tags itself, through the filters above.
+ * Print our tags in the head, together: the meta description, the link previews and, on the
+ * front page, the WebSite JSON-LD. WordPress prints the <title> and robots tags itself,
+ * through the filters above.
  *
  * On a local site, comments mark where our tags start and end, for debugging. Nowhere else: in
  * every page's source they'd be an advert and, with a version, help fingerprint the site.
@@ -186,6 +187,7 @@ function head_tags(): void {
 	ob_start();
 	meta_description();
 	link_preview_tags();
+	website_schema();
 	$tags = (string) ob_get_clean();
 
 	if ( '' === $tags ) {
