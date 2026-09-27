@@ -33,7 +33,7 @@ Simple SEO is old. Like really old. It arrived on WordPress.org in August 2010 (
 
 I woke it up mostly for myself: I wanted the SEO basics on my own sites without a plugin that asks for attention every time I log in. It stays small on purpose, so feature requests often get "that's a bit much for a plugin called Simple".
 
-No big company or investors, just one developer: me, the guy behind [Simple History](https://simple-history.com/). With both active, every SEO change is logged: who, when, and what it said before. If Simple SEO saves you time, [a donation](https://eskapism.se/sida/donate/) keeps it going.
+No big company or investors, just one developer: me, the guy behind [Simple History](https://simple-history.com/). With both active, every SEO change is logged: who, when, and what it said before. I also make [CMS Tree Page View](https://wordpress.org/plugins/cms-tree-page-view/), and the two work together too. If Simple SEO saves you time, [a donation](https://eskapism.se/sida/donate/) keeps it going.
 
 == Installation ==
 
@@ -88,7 +88,7 @@ It's still there for pages: in the Classic Editor box, and in Quick Edit on page
 
 = 1.2.0 (September 2026) =
 - Changed: the SEO title field in the block editor wraps onto a second line, so you can see the whole title while typing.
-- New: with CMS Tree Page View, Simple History events about a page link to it in the page tree. From CMS Tree Page View's next release, a page's SEO title, description and menu label also show in its page tree card.
+- New: with CMS Tree Page View active, a page's SEO title, description and menu label show in its page tree card, and Simple History events about a page link to it in the page tree.
 - Fixed: one wasted database query each time CMS Tree Page View loaded its page tree.
 - New: link previews use the post's excerpt when it has no meta description, if you wrote one. Not an automatic excerpt.
 - Changed: a small or square share image, like a site icon, now gets the small preview card instead of being stretched into a large one.
