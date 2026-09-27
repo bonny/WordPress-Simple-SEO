@@ -3,7 +3,7 @@
  * Plugin Name: Simple SEO
  * Plugin URI: https://wordpress.org/plugins/simple-seo/
  * Description: Change the page title and menu label output for any page or post, which can be useful for SEO (Search Engine Optimization) reasons. It may also increase the usability of your website, making it more friendly and understandable for your visitors.
- * Version: 1.2.0
+ * Version: 1.3.0
  * Requires at least: 6.6
  * Requires PHP: 7.4
  * Text Domain: simple-seo
@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'SIMPLE_SEO_VERSION', '1.2.0' );
+define( 'SIMPLE_SEO_VERSION', '1.3.0' );
 
 // This file must stay parseable by PHP 5.6: WordPress before 5.2 ignores "Requires PHP"
 // and installs updates anyway. Too old a site gets a notice instead of a fatal error.
