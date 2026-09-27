@@ -18,6 +18,8 @@ A few things just happen:
 - ✍️ **Both editors,** plus an SEO column and the fields in **Quick Edit**.
 - 📜 **Changes logged** using [Simple History](https://simple-history.com/).
 
+**Not included, on purpose:** readability scores, green lights, `llms.txt`, admin notices, "Go Pro" banners, an "optimized by" comment in your HTML, and extra database queries. No plugin makes a page rank; good content does.
+
 ## Screenshots
 
 <p align="center">
@@ -45,8 +47,6 @@ A few things just happen:
 </table>
 
 </details>
-
-**Not included, on purpose:** readability scores, green lights, `llms.txt`, admin notices, "Go Pro" banners, an "optimized by" comment in your HTML, and extra database queries. No plugin makes a page rank; good content does.
 
 ## Install
 
