@@ -16,8 +16,7 @@ A few things just happen:
 - 🔗 **Link previews** with the right title, description and image.
 - 🗺️ **A cleaner sitemap:** pages you keep out of search are left out.
 - ✍️ **Both editors,** plus an SEO column and the fields in **Quick Edit**.
-- 🤝 **Plays nice:** with Yoast SEO or another big SEO plugin active, Simple SEO steps aside.
-- 📜 **Every change logged** with [Simple History](https://simple-history.com/).
+- 📜 **Changes logged** using [Simple History](https://simple-history.com/).
 
 <p align="center">
 	<img src=".wordpress-org/screenshot-1.png" width="720" alt="The Simple SEO panel in the block editor sidebar, with an SEO title, a meta description and the discourage search engines checkbox.">
@@ -28,20 +27,20 @@ A few things just happen:
 
 <br>
 
-**The SEO column and Quick Edit in the Pages list**
-<img src=".wordpress-org/screenshot-2.png" alt="The Pages list with an SEO column, and Quick Edit open with the SEO fields.">
-
-**The same column for posts**
-<img src=".wordpress-org/screenshot-3.png" alt="The Posts list with the SEO column.">
-
-**The Classic Editor box**
-<img src=".wordpress-org/screenshot-4.png" alt="The Simple SEO box below the Classic Editor.">
-
-**The one setting: a default share image**
-<img src=".wordpress-org/screenshot-5.png" alt="The Simple SEO section in Settings, General, with a default share image.">
-
-**Every change logged in Simple History**
-<img src=".wordpress-org/screenshot-6.png" alt="A Simple History entry showing the old and new SEO title and meta description.">
+<table>
+<tr>
+	<td width="50%" valign="top"><strong>The SEO column and Quick Edit in the Pages list</strong><br><img src=".wordpress-org/screenshot-2.png" width="100%" alt="The Pages list with an SEO column, and Quick Edit open with the SEO fields."></td>
+	<td width="50%" valign="top"><strong>The same column for posts</strong><br><img src=".wordpress-org/screenshot-3.png" width="100%" alt="The Posts list with the SEO column."></td>
+</tr>
+<tr>
+	<td width="50%" valign="top"><strong>The Classic Editor box</strong><br><img src=".wordpress-org/screenshot-4.png" width="100%" alt="The Simple SEO box below the Classic Editor."></td>
+	<td width="50%" valign="top"><strong>The one setting: a default share image</strong><br><img src=".wordpress-org/screenshot-5.png" width="100%" alt="The Simple SEO section in Settings, General, with a default share image."></td>
+</tr>
+<tr>
+	<td width="50%" valign="top"><strong>Changes logged in Simple History</strong><br><img src=".wordpress-org/screenshot-6.png" width="100%" alt="A Simple History entry showing the old and new SEO title and meta description."></td>
+	<td width="50%"></td>
+</tr>
+</table>
 
 </details>
 
@@ -57,6 +56,20 @@ The fields are post meta (`_simple_seo_title`, `_simple_seo_description`, `_simp
 
 ```bash
 wp post meta update 123 _simple_seo_title "About us: small batch coffee from Stockholm"
+```
+
+Over the REST API, with an [application password](https://make.wordpress.org/core/2020/11/05/application-passwords-integration-guide/) (Users → Profile → Application Passwords):
+
+```bash
+# Read
+curl -u "editor:xxxx xxxx xxxx xxxx xxxx xxxx" \
+  "https://example.com/wp-json/wp/v2/pages/123?context=edit&_fields=meta"
+
+# Write
+curl -u "editor:xxxx xxxx xxxx xxxx xxxx xxxx" -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"meta":{"_simple_seo_description":"Small batch coffee, roasted in Stockholm."}}' \
+  "https://example.com/wp-json/wp/v2/pages/123"
 ```
 
 Everything Simple SEO outputs goes through a filter first: [`docs/hooks.md`](docs/hooks.md).
