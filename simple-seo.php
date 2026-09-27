@@ -51,6 +51,7 @@ require __DIR__ . '/src/frontend.php';
 require __DIR__ . '/src/link-previews.php';
 require __DIR__ . '/src/settings.php';
 require __DIR__ . '/src/simple-history.php';
+require __DIR__ . '/src/cms-tree-page-view.php';
 require __DIR__ . '/src/classic-editor.php';
 require __DIR__ . '/src/block-editor.php';
 require __DIR__ . '/src/list-table.php';

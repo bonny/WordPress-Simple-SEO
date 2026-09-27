@@ -190,7 +190,8 @@ class Simple_History_Logger extends \Simple_History\Loggers\Logger {
 
 	/**
 	 * Links under the event, like Simple History's own post events (Simple History 5.24+, older
-	 * versions don't call this): edit and view the post, and the list of that post type.
+	 * versions don't call this): edit and view the post, the page tree when CMS Tree Page View is
+	 * active, and the list of that post type.
 	 * No revisions link: meta changes don't create revisions.
 	 *
 	 * @param object $row Log row.
@@ -228,6 +229,16 @@ class Simple_History_Logger extends \Simple_History\Loggers\Logger {
 				'url'    => (string) get_permalink( $post ),
 				/* translators: %s: post type, like "page" or "post". */
 				'label'  => sprintf( __( 'View %s', 'simple-seo' ), strtolower( $post_type->labels->singular_name ) ),
+				'action' => 'view',
+			];
+		}
+
+		$tree_url = $post && 'trash' !== get_post_status( $post ) ? page_tree_url( $post ) : '';
+
+		if ( '' !== $tree_url ) {
+			$links[] = [
+				'url'    => $tree_url,
+				'label'  => __( 'Page tree', 'simple-seo' ),
 				'action' => 'view',
 			];
 		}

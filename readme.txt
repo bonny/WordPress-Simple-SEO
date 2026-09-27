@@ -145,6 +145,9 @@ It's still there for pages, in the Classic Editor box, and in Quick Edit on page
 == Changelog ==
 
 = Unreleased =
+- Changed: the SEO title field in the block editor wraps onto a second line, so you can see the whole title while typing.
+- New: with CMS Tree Page View, a page's SEO title, description and menu label show in its page tree card, and Simple History events about a page link to it in the page tree.
+- Fixed: one wasted database query each time CMS Tree Page View loaded its page tree.
 - New: link previews use the post's excerpt when it has no meta description, if you wrote one. Not an automatic excerpt.
 - Changed: a small or square share image, like a site icon, now gets the small preview card instead of being stretched into a large one.
 - Changed: shorter help text under the fields. The details moved to the FAQ: how long the SEO title should be, what "Discourage search engines" does, and what makes a good share image.

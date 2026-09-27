@@ -17,7 +17,6 @@ import {
 	CheckboxControl,
 	ExternalLink,
 	Flex,
-	TextControl,
 	TextareaControl,
 } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
@@ -69,9 +68,14 @@ function SimpleSeoPanel() {
 					</p>
 				) }
 
-				<TextControl
-					__next40pxDefaultSize
+				{ /* A textarea that looks like a text field until the title needs a
+				     second line: a one-line field in the sidebar shows only about 30
+				     characters. A title is one line, so Enter does nothing and pasted
+				     line breaks become spaces. */ }
+				<TextareaControl
 					__nextHasNoMarginBottom
+					className="simple-seo-autogrow simple-seo-title"
+					rows={ 1 }
 					label={ __( 'SEO title', 'simple-seo' ) }
 					help={
 						postId === frontPageId
@@ -85,7 +89,16 @@ function SimpleSeoPanel() {
 								)
 					}
 					value={ meta._simple_seo_title }
-					onChange={ update( '_simple_seo_title' ) }
+					onChange={ ( value ) =>
+						update( '_simple_seo_title' )(
+							value.replace( /[\r\n]+/g, ' ' )
+						)
+					}
+					onKeyDown={ ( event ) => {
+						if ( event.key === 'Enter' ) {
+							event.preventDefault();
+						}
+					} }
 				/>
 
 				<TextareaControl

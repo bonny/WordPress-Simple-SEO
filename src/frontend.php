@@ -271,11 +271,15 @@ function sitemap_skip_noindex( array $args ): array {
  * Not in wp-admin, where get_pages() fills the Parent and Settings → Reading dropdowns
  * (they must show the real titles), and code may save the pages it gets back.
  *
- * @param WP_Post[]|false $pages Pages found by get_pages().
- * @return WP_Post[]|false
+ * Only for real posts: other plugins run the get_pages filter on their own lists too.
+ * CMS Tree Page View passes objects with only an ID when it loads its tree over REST,
+ * which have no title to replace, so the query would be wasted.
+ *
+ * @param array<WP_Post|object>|false $pages Pages found by get_pages(), or another plugin's list.
+ * @return array<WP_Post|object>|false
  */
 function menu_labels( $pages ) {
-	if ( ! $pages || ( is_admin() && ! wp_doing_ajax() ) ) {
+	if ( ! $pages || ! reset( $pages ) instanceof WP_Post || ( is_admin() && ! wp_doing_ajax() ) ) {
 		return $pages;
 	}
 

@@ -216,4 +216,17 @@ class FrontendTest extends SimpleSEO_TestCase {
 
 		set_current_screen( 'front' );
 	}
+
+	public function test_no_query_for_objects_that_only_have_an_id() {
+		// Regression: CMS Tree Page View runs the get_pages filter on ID-only objects when it
+		// loads its tree over REST, and menu_labels() spent a query on them.
+		global $wpdb;
+		$page_id = self::factory()->post->create( [ 'post_type' => 'page' ] );
+		$pages   = [ (object) [ 'ID' => $page_id ] ];
+		$queries = $wpdb->num_queries;
+
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Core's filter.
+		$this->assertEquals( $pages, apply_filters( 'get_pages', $pages, [] ) );
+		$this->assertSame( $queries, $wpdb->num_queries );
+	}
 }
