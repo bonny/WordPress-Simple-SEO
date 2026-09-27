@@ -5,7 +5,7 @@ Tags: seo, meta description, open graph, noindex, simple
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,9 +86,9 @@ It's still there for pages: in the Classic Editor box, and in Quick Edit on page
 
 == Changelog ==
 
-= Unreleased =
+= 1.2.0 (September 2026) =
 - Changed: the SEO title field in the block editor wraps onto a second line, so you can see the whole title while typing.
-- New: with CMS Tree Page View, a page's SEO title, description and menu label show in its page tree card, and Simple History events about a page link to it in the page tree.
+- New: with CMS Tree Page View, Simple History events about a page link to it in the page tree. From CMS Tree Page View's next release, a page's SEO title, description and menu label also show in its page tree card.
 - Fixed: one wasted database query each time CMS Tree Page View loaded its page tree.
 - New: link previews use the post's excerpt when it has no meta description, if you wrote one. Not an automatic excerpt.
 - Changed: a small or square share image, like a site icon, now gets the small preview card instead of being stretched into a large one.
