@@ -91,7 +91,7 @@ It's still there for pages: in the Classic Editor box, and in Quick Edit on page
 
 = 1.2.0 (September 2026) =
 - Changed: the SEO title field in the block editor wraps onto a second line, so you can see the whole title while typing.
-- New: with CMS Tree Page View active, a page's SEO title, description and menu label show in its page tree card, and Simple History events about a page link to it in the page tree.
+- New: with [CMS Tree Page View](https://wordpress.org/plugins/cms-tree-page-view/) active, a page's SEO title, description and menu label show in its page tree card, and Simple History events about a page link to it in the page tree.
 - Fixed: one wasted database query each time CMS Tree Page View loaded its page tree.
 - New: link previews use the post's excerpt when it has no meta description, if you wrote one. Not an automatic excerpt.
 - Changed: a small or square share image, like a site icon, now gets the small preview card instead of being stretched into a large one.
