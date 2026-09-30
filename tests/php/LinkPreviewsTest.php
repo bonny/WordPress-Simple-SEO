@@ -88,6 +88,17 @@ class LinkPreviewsTest extends SimpleSEO_TestCase {
 		$this->assertSame( '', SimpleSEO\current_description() );
 	}
 
+	public function test_blog_page_uses_the_tagline_not_its_own_content() {
+		update_option( 'blogdescription', 'Our tagline' );
+		$blog_page = self::factory()->post->create( [ 'post_type' => 'page', 'post_content' => 'Text.', 'post_excerpt' => '' ] );
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', self::factory()->post->create( [ 'post_type' => 'page' ] ) );
+		update_option( 'page_for_posts', $blog_page );
+		$this->go_to( get_permalink( $blog_page ) );
+
+		$this->assertStringContainsString( 'og:description" content="Our tagline"', $this->tags() );
+	}
+
 	public function test_no_automatic_excerpt_for_password_protected_posts() {
 		$post_id = self::factory()->post->create( [ 'post_content' => 'Secret text.', 'post_password' => 'pw' ] );
 		$this->assertSame( '', SimpleSEO\automatic_excerpt( $post_id ) );

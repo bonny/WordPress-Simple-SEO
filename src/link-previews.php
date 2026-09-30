@@ -83,8 +83,10 @@ function link_preview_tags(): void {
 			$description = trim( (string) preg_replace( '/\s+/', ' ', wp_strip_all_tags( (string) get_post_field( 'post_excerpt', $post_id ) ) ) );
 		}
 
+		// The blog page's own content is never shown (WordPress lists the posts there), so the
+		// tagline, as on a front page with the latest posts.
 		if ( '' === $description ) {
-			$description = automatic_excerpt( $post_id );
+			$description = (int) get_option( 'page_for_posts' ) === $post_id ? get_bloginfo( 'description' ) : automatic_excerpt( $post_id );
 		}
 	}
 
