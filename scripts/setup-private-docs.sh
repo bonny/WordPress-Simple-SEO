@@ -6,6 +6,8 @@
 # The private docs (todo list, drafts, strategy and site plans for Claude Code)
 # live in the vault, not in git, and are git-ignored here:
 #   todo.md, todos/, CLAUDE.private.md
+# todo.md links to "Simple SEO todo.md" in the vault (a plain "todo" is too common a
+# name among the notes there).
 # CLAUDE.private.md is loaded through the git-ignored CLAUDE.local.md.
 #
 # Required env var:
@@ -34,12 +36,15 @@ fi
 
 cd "$(dirname "$0")/.."
 
-for item in todo.md todos CLAUDE.private.md; do
+# Repo name:vault name.
+for pair in "todo.md:Simple SEO todo.md" "todos:todos" "CLAUDE.private.md:CLAUDE.private.md"; do
+	item="${pair%%:*}"
+	target="${pair#*:}"
 	if [ -e "$item" ] && [ ! -L "$item" ]; then
 		echo "Skipped $item: a real file or folder is in the way. Move it into the vault first." >&2
 		continue
 	fi
-	ln -sfn "$SIMPLE_SEO_PRIVATE_DIR/$item" "$item"
+	ln -sfn "$SIMPLE_SEO_PRIVATE_DIR/$target" "$item"
 	echo "Linked $item"
 done
 
