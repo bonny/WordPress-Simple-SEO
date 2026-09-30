@@ -85,7 +85,7 @@ function column_content( $column, $post_id ): void {
 	if ( $other_plugin && $has_values ) {
 		printf(
 			'<div class="simple-seo-not-used"><span class="screen-reader-text">%s</span>',
-			/* translators: %s: name of another SEO plugin, like Yoast SEO. */
+			/* translators: %s: name of another SEO plugin, like "Yoast SEO" or "The SEO Framework". */
 			esc_html( sprintf( __( 'Not used, %s handles SEO:', 'simple-seo' ), $other_plugin ) )
 		);
 	}
@@ -164,8 +164,8 @@ function quick_edit_fields( $column, $post_type ): void {
 	if ( $other_plugin ) {
 		printf(
 			'<p class="description simple-seo-note">%s</p>',
-			/* translators: %s: name of another SEO plugin, like Yoast SEO. */
-			esc_html( sprintf( __( '%s is active and handles SEO, so these fields aren\'t used.', 'simple-seo' ), $other_plugin ) )
+			/* translators: %s: name of another SEO plugin, like "Yoast SEO" or "The SEO Framework". */
+			esc_html( sprintf( __( '%s plugin is active and handles SEO, so these fields aren\'t used.', 'simple-seo' ), $other_plugin ) )
 		);
 	}
 

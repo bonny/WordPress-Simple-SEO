@@ -17,6 +17,7 @@ import {
 	CheckboxControl,
 	ExternalLink,
 	Flex,
+	Notice,
 	TextareaControl,
 } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
@@ -55,17 +56,19 @@ function SimpleSeoPanel() {
 			title={ __( 'Simple SEO', 'simple-seo' ) }
 		>
 			<Flex direction="column" gap={ 4 }>
+				{ /* A warning, not grey help text: easy to miss otherwise, and
+				     then the fields look like they do something. */ }
 				{ otherPlugin && (
-					<p className="components-base-control__help">
+					<Notice status="warning" isDismissible={ false }>
 						{ sprintf(
-							/* translators: %s: name of another SEO plugin, like Yoast SEO. */
+							/* translators: %s: name of another SEO plugin, like "Yoast SEO" or "The SEO Framework". */
 							__(
-								'%s is active and handles SEO, so these fields aren’t used.',
+								'%s plugin is active and handles SEO, so these fields aren’t used.',
 								'simple-seo'
 							),
 							otherPlugin
 						) }
-					</p>
+					</Notice>
 				) }
 
 				{ /* A textarea that looks like a text field until the title needs a

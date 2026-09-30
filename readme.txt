@@ -86,6 +86,9 @@ It's still there for pages: in the Classic Editor box, and in Quick Edit on page
 
 == Changelog ==
 
+= Unreleased =
+- Changed: when another SEO plugin is active, the message saying so is a yellow notice, not easy-to-miss grey text.
+
 = 1.3.0 (September 2026) =
 - New: the front page tells Google your site's name (a small `WebSite` JSON-LD block), which it shows next to your pages in search results.
 

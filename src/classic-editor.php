@@ -47,13 +47,14 @@ function meta_box( WP_Post $post ): void {
 
 	$other_plugin = active_seo_plugin();
 
+	// A warning, not grey help text: easy to miss otherwise.
 	if ( $other_plugin ) {
 		printf(
-			'<p class="description">%s</p>',
+			'<div class="notice notice-warning inline"><p>%s</p></div>',
 			esc_html(
 				sprintf(
-					/* translators: %s: name of another SEO plugin, like Yoast SEO. */
-					__( '%s is active and handles SEO, so these fields aren\'t used. The menu label still works.', 'simple-seo' ),
+					/* translators: %s: name of another SEO plugin, like "Yoast SEO" or "The SEO Framework". */
+					__( '%s plugin is active and handles SEO, so these fields aren\'t used. The menu label still works.', 'simple-seo' ),
 					$other_plugin
 				)
 			)
