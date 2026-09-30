@@ -87,6 +87,8 @@ It's still there for pages: in the Classic Editor box, and in Quick Edit on page
 == Changelog ==
 
 = Unreleased =
+- New: link previews on Bluesky, Mastodon, Facebook and friends always get a description. Without a meta description or excerpt, the start of the post is used.
+- Fixed: with Jetpack active, pages had two meta descriptions. Jetpack's SEO Tools now step aside for Simple SEO, as they do for other SEO plugins.
 - Changed: when another SEO plugin is active, the message saying so is a yellow notice, not easy-to-miss grey text.
 
 = 1.3.0 (September 2026) =

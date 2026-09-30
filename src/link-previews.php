@@ -29,6 +29,29 @@ function jetpack_open_graph( $enabled ): bool {
 }
 
 /**
+ * The first 30 words of a post's text, for link previews. Headings are left out, so it starts
+ * with a sentence, not "Welcome" or "Features". '' for password-protected posts.
+ *
+ * Like core's automatic excerpt, but without running the_content: that filter renders
+ * everything (page builders, embeds) and other plugins act on it.
+ *
+ * @param int $post_id Post ID.
+ */
+function automatic_excerpt( int $post_id ): string {
+	if ( post_password_required( $post_id ) ) {
+		return '';
+	}
+
+	// Text blocks only, as in core's excerpt.
+	$content = excerpt_remove_blocks( (string) get_post_field( 'post_content', $post_id ) );
+	$content = strip_shortcodes( $content );
+	$content = (string) preg_replace( '#<h[1-6][^>]*>.*?</h[1-6]>#is', ' ', $content );
+	$text    = trim( (string) preg_replace( '/\s+/', ' ', wp_strip_all_tags( $content ) ) );
+
+	return wp_trim_words( $text, 30 );
+}
+
+/**
  * Print the tags for a post, a page, the blog page or the front page. Not on archives or search.
  */
 function link_preview_tags(): void {
@@ -53,10 +76,15 @@ function link_preview_tags(): void {
 		$url   = (string) get_permalink( $post_id );
 		$image = featured_image( $post_id );
 
-		// No meta description: the excerpt, if someone wrote one. Not an automatic excerpt from the
-		// content, which is usually a worse summary than the apps' own.
+		// No meta description: the hand-written excerpt, else the start of the content, so a
+		// shared link never shows an empty card (2026-09-30). Link previews only: the meta
+		// description stays hand-written.
 		if ( '' === $description ) {
 			$description = trim( (string) preg_replace( '/\s+/', ' ', wp_strip_all_tags( (string) get_post_field( 'post_excerpt', $post_id ) ) ) );
+		}
+
+		if ( '' === $description ) {
+			$description = automatic_excerpt( $post_id );
 		}
 	}
 

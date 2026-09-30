@@ -74,10 +74,23 @@ class LinkPreviewsTest extends SimpleSEO_TestCase {
 		$this->assertStringContainsString( 'og:description" content="The SEO description"', $this->tags() );
 	}
 
-	public function test_no_automatic_excerpt() {
-		$this->go_to( get_permalink( self::factory()->post->create( [ 'post_content' => 'Only content, no excerpt.', 'post_excerpt' => '' ] ) ) );
+	public function test_automatic_excerpt_as_the_last_resort() {
+		$content = "<!-- wp:heading --><h2>Welcome</h2><!-- /wp:heading -->\n"
+			. "<!-- wp:paragraph --><p>First <b>sentence</b> here. [gallery] Second one.</p><!-- /wp:paragraph -->\n"
+			. '<!-- wp:paragraph --><p>' . str_repeat( 'word ', 40 ) . '</p><!-- /wp:paragraph -->';
+		$post_id = self::factory()->post->create( [ 'post_content' => $content, 'post_excerpt' => '' ] );
+		$this->go_to( get_permalink( $post_id ) );
 
-		$this->assertStringNotContainsString( 'og:description', $this->tags() );
+		// No heading, no shortcode, no HTML, 30 words and an ellipsis.
+		$this->assertStringContainsString( 'og:description" content="First sentence here. Second one. word word', $this->tags() );
+		$this->assertSame( 'First sentence here. Second one. ' . trim( str_repeat( 'word ', 25 ) ) . '&hellip;', SimpleSEO\automatic_excerpt( $post_id ) );
+		// Link previews only: no meta description.
+		$this->assertSame( '', SimpleSEO\current_description() );
+	}
+
+	public function test_no_automatic_excerpt_for_password_protected_posts() {
+		$post_id = self::factory()->post->create( [ 'post_content' => 'Secret text.', 'post_password' => 'pw' ] );
+		$this->assertSame( '', SimpleSEO\automatic_excerpt( $post_id ) );
 	}
 
 	public function test_nothing_on_archives() {
@@ -136,5 +149,10 @@ class LinkPreviewsTest extends SimpleSEO_TestCase {
 
 	public function test_jetpack_open_graph_is_off_while_ours_are_on() {
 		$this->assertFalse( apply_filters( 'jetpack_enable_open_graph', true ) );
+	}
+
+	public function test_jetpack_seo_tools_are_off() {
+		$this->assertTrue( apply_filters( 'jetpack_disable_seo_tools', false ) );
+		$this->assertFalse( apply_filters( 'jetpack_seo_meta_tags_enabled', true ) );
 	}
 }
