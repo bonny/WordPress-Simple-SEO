@@ -79,6 +79,18 @@ wp post meta get 123 _simple_seo_title
 wp post meta update 123 _simple_seo_title "About us: small batch coffee from Stockholm"
 ```
 
+### Good to know
+
+- **Leave out the site name.** WordPress adds " – Site name" after the SEO title, except on the front page, where the SEO title is the whole title.
+- **Empty means not used.** Saving an empty title or description deletes the key, and WordPress falls back to the post title. Link previews fall back to the excerpt, then the start of the post.
+- **Noindex** is a boolean: `true`/`false` over REST, `1` to set it with WP-CLI (`0` or `false` means off).
+- **Titles from before 1.0** live in `_simple_seo_custom_page_title_value` and are still used. REST shows them as `_simple_seo_title`, `wp post meta get` doesn't. Writing `_simple_seo_title` replaces them.
+- **The default share image** is the option `simple_seo_share_image`, stored as the whole image so the front end needs no queries. Set it in Settings → General, or write every field:
+  ```bash
+  wp option update simple_seo_share_image '{"id":123,"url":"https://example.com/share.png","width":1200,"height":630,"alt":""}' --format=json
+  ```
+- **With another SEO plugin active** (Yoast SEO, Rank Math and friends) the fields are kept but not used.
+
 ### Filters
 
 Everything Simple SEO outputs goes through a filter first: [`docs/hooks.md`](docs/hooks.md).
