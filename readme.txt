@@ -23,7 +23,7 @@ Leave a field empty and WordPress does what it always did.
 
 A few things just happen: link previews with the right title, description and image in Slack, Mastodon, Bluesky and friends. Pages you keep out of search are left out of the sitemap too. There's a panel in the block editor, a box in the Classic Editor, and the fields in Quick Edit. Using Yoast SEO or another big SEO plugin? Simple SEO steps aside.
 
-No settings page, no scores, no "Go Pro" banners, no extra database queries. <del>No nags.</del> Okay, one small grey tip about Simple History.
+No settings page, no scores, no "Go Pro" banners, no extra database queries. <del>No nags.</del> Okay, one small grey tip about [Simple History](https://wordpress.org/plugins/simple-history/), my activity log plugin.
 
 No plugin makes a page rank. Good content does. Simple SEO hands search engines and shared links the title, description and image you chose, and asks search engines to skip the pages you don't want listed. That's also all AI search needs from a plugin: no llms.txt, no "AI optimization".
 
@@ -115,7 +115,7 @@ It's still there for pages: in the Classic Editor box, and in Quick Edit on page
 - Changed: in the Classic Editor the fields moved from below the title into a "Simple SEO" box below the editor, with two new ones: a meta description and "Discourage search engines from indexing this page". Each field has a checkbox, so you can switch a value off without losing it.
 - New: link previews. Open Graph and Twitter card tags, so links shared in Slack, iMessage, LinkedIn, Mastodon, Bluesky and Facebook get the right title, description and featured image. Developers can turn them off with the `simple_seo_link_previews` filter.
 - New: a default share image for link previews, in Settings → General → Simple SEO. Used when a post has no featured image.
-- New: with Simple History active, changes to the SEO fields show up in its log, with the old and new values and links to edit or view the page. Changes to the default share image are logged too.
+- New: with [Simple History](https://wordpress.org/plugins/simple-history/) active, changes to the SEO fields show up in its log, with the old and new values and links to edit or view the page. Changes to the default share image are logged too.
 - New: an "SEO" column in the Posts and Pages lists, and the SEO fields in Quick Edit, so you can fix many pages without opening each one.
 - New: filters for developers to change the title, description, noindex and link preview tags. See the FAQ.
 - New: posts that discourage search engines (noindex) are left out of the WordPress sitemap (`/wp-sitemap.xml`).
