@@ -33,6 +33,11 @@ function add_seo_hooks(): void {
 	add_filter( 'wp_robots', __NAMESPACE__ . '\\robots' );
 	add_filter( 'wp_sitemaps_posts_query_args', __NAMESPACE__ . '\\sitemap_skip_noindex' );
 	add_filter( 'jetpack_enable_open_graph', __NAMESPACE__ . '\\jetpack_open_graph' );
+
+	// Jetpack's SEO Tools print a second meta description. Jetpack turns them off for the SEO
+	// plugins it knows (its modules/seo-tools.php), with these two filters; do the same.
+	add_filter( 'jetpack_disable_seo_tools', '__return_true' );
+	add_filter( 'jetpack_seo_meta_tags_enabled', '__return_false' );
 }
 
 /**
