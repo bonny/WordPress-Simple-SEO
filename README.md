@@ -23,7 +23,7 @@ A few things just happen:
 ## Screenshots
 
 <p align="center">
-	<img src=".wordpress-org/screenshot-1.png" width="720" alt="The Simple SEO panel in the block editor sidebar, with an SEO title, a meta description and the discourage search engines checkbox.">
+	<img src=".wordpress-org/screenshot-1.png" width="720" alt="The Simple SEO panel in the block editor sidebar, with an SEO title, a meta description, a share image and the discourage search engines checkbox.">
 </p>
 
 <details>

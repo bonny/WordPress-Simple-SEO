@@ -170,5 +170,10 @@ $image_id = media_handle_sideload( [ 'name' => 'tallvik-share-image.png', 'tmp_n
 update_post_meta( $image_id, '_simple_seo_demo', 1 );
 update_post_meta( $image_id, '_wp_attachment_image_alt', 'Tallvik Coffee Roasters, specialty coffee from Stockholm' );
 update_option( SimpleSEO\SHARE_IMAGE_OPTION, SimpleSEO\sanitize_share_image( $image_id ) );
+// And as About us's own share image, so the editor screenshots show the field in use. Not on
+// wp-env: there shot 1 sets it while saving, so the Simple History entry in shot 6 shows the image.
+if ( ! $full ) {
+	update_post_meta( $ids['About us'], SimpleSEO\SHARE_IMAGE_KEY, $image_id );
+}
 
 echo (int) $ids['About us'], ' ', (int) $ids['Our coffees'];

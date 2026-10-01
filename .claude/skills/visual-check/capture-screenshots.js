@@ -18,9 +18,9 @@
 async ( page ) => {
 	const WP_ENV = 'http://localhost:8315';
 	const CLASSIC = 'http://wp-playground-classiceditor.test:8314';
-	const WP_ENV_PAGE = 394; // "About us" from seed.php on wp-env.
-	const WP_ENV_QUICK_EDIT = 391; // "Our coffees", opened in Quick Edit in shot 2.
-	const CLASSIC_PAGE = 195; // "About us" from seed.php on the Classic Editor site.
+	const WP_ENV_PAGE = 37; // "About us" from seed.php on wp-env.
+	const WP_ENV_QUICK_EDIT = 34; // "Our coffees", opened in Quick Edit in shot 2.
+	const CLASSIC_PAGE = 14; // "About us" from seed.php on the Classic Editor site.
 	const X = 160; // Right of the admin menu.
 	const WIDTH = 1120;
 
@@ -28,7 +28,7 @@ async ( page ) => {
 		.context()
 		.browser()
 		.newContext( {
-			viewport: { width: WIDTH, height: 1200 }, // The block editor has no admin menu; tall enough for the whole panel.
+			viewport: { width: WIDTH, height: 1500 }, // The block editor has no admin menu; tall enough for the whole panel.
 			deviceScaleFactor: 2,
 		} );
 	const p = await context.newPage();
@@ -76,6 +76,13 @@ async ( page ) => {
 	await p
 		.getByRole( 'textbox', { name: 'Meta description' } )
 		.fill( 'Small batch coffee, roasted to order by the water in Nacka since 1998.' );
+	// And the share image (the seeded demo image), so shot 6 shows the image diff too.
+	await p.evaluate( async () => {
+		const [ image ] = await wp.apiFetch( { path: '/wp/v2/media?search=tallvik&per_page=1' } );
+		wp.data.dispatch( 'core/editor' ).editPost( { meta: { _simple_seo_share_image: image.id } } );
+	} );
+	await p.getByRole( 'button', { name: 'Replace' } ).waitFor();
+	await p.waitForTimeout( 1000 ); // The preview image.
 	await p.getByRole( 'button', { name: 'Save', exact: true } ).click();
 	await p.waitForTimeout( 2500 );
 	await p.evaluate( () => document.activeElement?.blur() ); // No focus ring on Save.
@@ -160,11 +167,12 @@ async ( page ) => {
 
 	// 4. Classic Editor box.
 	await login( CLASSIC, 'admin', 'admin' );
-	await p.setViewportSize( { width: X + WIDTH, height: 1160 } );
+	await p.setViewportSize( { width: X + WIDTH, height: 1700 } );
 	await p.goto( `${ CLASSIC }/wp-admin/post.php?post=${ CLASSIC_PAGE }&action=edit` );
 	await p.waitForSelector( '#simple-seo' );
-	// The company's domain instead of the test site's (display only).
+	// The company's domain instead of the test site's, and no core update notice (display only).
 	await p.evaluate( () => {
+		document.querySelector( '.update-nag' )?.remove();
 		const link = document.querySelector( '#sample-permalink a' );
 		link.innerHTML = link.innerHTML.replace( /^https?:\/\/[^/]+/, 'https://tallvikcoffee.se' );
 	} );
