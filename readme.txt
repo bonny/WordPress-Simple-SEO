@@ -5,7 +5,7 @@ Tags: seo, meta description, open graph, noindex, simple
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.4.0
+Stable tag: 1.5.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -90,7 +90,7 @@ It's still there for pages: in the Classic Editor box, and in Quick Edit on page
 
 == Changelog ==
 
-= Unreleased =
+= 1.5.0 (October 2026) =
 - New: a share image for each post, used in link previews instead of the featured image. Your theme keeps showing the featured image. In both editors, and logged in Simple History.
 
 = 1.4.0 (September 2026) =
