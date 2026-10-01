@@ -111,6 +111,33 @@ class LinkPreviewsTest extends SimpleSEO_TestCase {
 		$this->assertSame( '', $this->tags() );
 	}
 
+	public function test_post_share_image_wins_over_the_featured_image() {
+		$post_id  = self::factory()->post->create();
+		$featured = $this->image();
+		$share    = $this->image();
+		set_post_thumbnail( $post_id, $featured );
+		update_post_meta( $post_id, '_simple_seo_share_image', $share );
+		update_post_meta( $share, '_wp_attachment_image_alt', 'Share card' );
+		$this->go_to( get_permalink( $post_id ) );
+
+		$tags = $this->tags();
+		$this->assertStringContainsString( 'og:image" content="' . wp_get_attachment_url( $share ) . '"', $tags );
+		$this->assertStringContainsString( 'og:image:alt" content="Share card"', $tags );
+		$this->assertStringNotContainsString( wp_get_attachment_url( $featured ), $tags );
+	}
+
+	public function test_deleted_share_image_falls_back_to_the_featured_image() {
+		$post_id  = self::factory()->post->create();
+		$featured = $this->image();
+		$share    = $this->image();
+		set_post_thumbnail( $post_id, $featured );
+		update_post_meta( $post_id, '_simple_seo_share_image', $share );
+		wp_delete_attachment( $share, true );
+		$this->go_to( get_permalink( $post_id ) );
+
+		$this->assertStringContainsString( 'og:image" content="' . wp_get_attachment_url( $featured ) . '"', $this->tags() );
+	}
+
 	public function test_default_share_image_when_no_featured_image() {
 		$image_id = $this->image();
 		update_option( 'simple_seo_share_image', SimpleSEO\sanitize_share_image( $image_id ) );

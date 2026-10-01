@@ -45,6 +45,13 @@ function noindex_help(): string {
 }
 
 /**
+ * Help text for a post's share image.
+ */
+function share_image_help(): string {
+	return __( 'Used in link previews instead of the featured image.', 'simple-seo' );
+}
+
+/**
  * Whether a post uses any of the fields. The Simple History tip only shows then.
  *
  * @param int $post_id Post ID.
@@ -53,7 +60,64 @@ function uses_seo_fields( int $post_id ): bool {
 	return '' !== get_title( $post_id )
 		|| '' !== get_description( $post_id )
 		|| is_noindex( $post_id )
+		|| get_share_image_id( $post_id )
 		|| '' !== get_menu_label( $post_id );
+}
+
+/**
+ * An image picker: a preview, the media library buttons and a hidden attachment ID, like core's
+ * Site Icon. Used by the default share image in Settings and the share image in the Classic box.
+ * Needs enqueue_image_field_script().
+ *
+ * @param string $name          Form field name.
+ * @param int    $attachment_id The image, or 0.
+ * @param string $preview_url   URL of the image to show, or ''.
+ */
+function image_field( string $name, int $attachment_id, string $preview_url ): void {
+	$has_image = $attachment_id && '' !== $preview_url;
+
+	printf(
+		'<div class="simple-seo-share-image"><img src="%1$s" alt="" style="max-width:300px;width:100%%;height:auto;display:block;margin-bottom:8px" %2$s />',
+		esc_url( $preview_url ),
+		$has_image ? '' : 'hidden'
+	);
+
+	printf(
+		'<input type="hidden" name="%1$s" value="%2$s" />',
+		esc_attr( $name ),
+		esc_attr( $has_image ? (string) $attachment_id : '' )
+	);
+
+	printf(
+		'<button type="button" class="button simple-seo-share-image-choose" data-choose="%1$s" data-change="%2$s">%3$s</button> ',
+		esc_attr__( 'Choose image', 'simple-seo' ),
+		esc_attr__( 'Change image', 'simple-seo' ),
+		$has_image ? esc_html__( 'Change image', 'simple-seo' ) : esc_html__( 'Choose image', 'simple-seo' )
+	);
+
+	printf(
+		'<button type="button" class="button button-secondary simple-seo-share-image-remove" %1$s>%2$s</button></div>',
+		$has_image ? '' : 'hidden',
+		esc_html__( 'Remove image', 'simple-seo' )
+	);
+}
+
+/**
+ * The media library and the script behind image_field(). Can be called while the page renders:
+ * both print in the footer.
+ */
+function enqueue_image_field_script(): void {
+	wp_enqueue_media();
+
+	$asset = require dirname( __DIR__ ) . '/build/share-image-field.asset.php';
+
+	wp_enqueue_script(
+		'simple-seo-share-image-field',
+		plugins_url( 'build/share-image-field.js', \SIMPLE_SEO_PLUGIN_FILE ),
+		$asset['dependencies'],
+		$asset['version'],
+		true
+	);
 }
 
 /**
@@ -90,8 +154,9 @@ function enqueue_admin_css( string $hook_suffix ): void {
 	wp_enqueue_style( 'simple-seo-admin' );
 	wp_add_inline_style(
 		'simple-seo-admin',
-		'#simple-seo label { display: block; margin-bottom: 4px; font-weight: 600; }
+		'#simple-seo label, #simple-seo .simple-seo-field-label { display: block; margin-bottom: 4px; font-weight: 600; }
 		#simple-seo .description { display: block; margin-top: 4px; }
+		#simple-seo .simple-seo-field { margin: 1em 0; }
 		.simple-seo-quick-edit .simple-seo-field, .simple-seo-quick-edit .simple-seo-check { display: block; margin-top: 6px; }
 		.simple-seo-quick-edit input[type="text"] { display: block; width: 100%; }
 		.simple-seo-quick-edit .simple-seo-note { margin: 4px 0; }

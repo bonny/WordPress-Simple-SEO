@@ -9,7 +9,7 @@ Stable tag: 1.4.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-The SEO basics and nothing more: a title, a description and a "don't index" checkbox for every page. No upsells, no settings maze.
+The SEO basics: a title, a description and a "don't index" checkbox for every page. Small, fast, and no upsell banners all over your admin.
 
 == Description ==
 
@@ -23,7 +23,7 @@ Leave a field empty and WordPress does what it always did.
 
 A few things just happen: link previews with the right title, description and image in Slack, Mastodon, Bluesky and friends. Pages you keep out of search are left out of the sitemap too. There's a panel in the block editor, a box in the Classic Editor, and the fields in Quick Edit. Using Yoast SEO or another big SEO plugin? Simple SEO steps aside.
 
-No settings page, no scores, no "Go Pro" banners, no extra database queries. <del>No nags.</del> Okay, one small grey tip about [Simple History](https://wordpress.org/plugins/simple-history/), my activity log plugin.
+No scores, no "Go Pro" banners, no extra database queries. <del>No nags.</del> Okay, one small grey tip about [Simple History](https://wordpress.org/plugins/simple-history/), my activity log plugin.
 
 No plugin makes a page rank. Good content does. Simple SEO hands search engines and shared links the title, description and image you chose, and asks search engines to skip the pages you don't want listed. That's also all AI search needs from a plugin: no llms.txt, no "AI optimization".
 
@@ -31,7 +31,7 @@ No plugin makes a page rank. Good content does. Simple SEO hands search engines 
 
 Simple SEO is old. Like really old. It arrived on WordPress.org in August 2010 (seven weeks before Yoast SEO!). Of the SEO plugins still maintained today, only All in One SEO is older. Then it slept from 2012 to 2026.
 
-I woke it up mostly for myself: I wanted the SEO basics on my own sites without a plugin that asks for attention every time I log in. It stays small on purpose, so feature requests often get "that's a bit much for a plugin called Simple".
+I woke it up mostly for myself: I wanted the SEO basics on my own sites without a plugin that asks for attention every time I log in. It grows when I need something on my own sites, but it stays small and fast on purpose.
 
 No big company or investors, just one developer: me, the guy behind [Simple History](https://simple-history.com/). With both active, every SEO change is logged: who, when, and what it said before. I also make [CMS Tree Page View](https://wordpress.org/plugins/cms-tree-page-view/), and the two work together too. If Simple SEO saves you time, [a donation](https://eskapism.se/sida/donate/) keeps it going.
 
@@ -59,6 +59,10 @@ No. It asks search engines not to list it, and it's up to them to honor that. An
 
 A wide picture, 1200 × 630 pixels, not your logo. It's used in link previews when a post has no featured image.
 
+= Can a post have a different image in link previews? =
+
+Yes, pick a share image in the post's Simple SEO fields. Link previews use it instead of the featured image, and your theme keeps showing the featured image. Handy when the picture that looks good on your site isn't the one that works in a shared link, like a card with the headline on it.
+
 = I use Yoast SEO (or Rank Math, All in One SEO, SEOPress, The SEO Framework). =
 
 Then that plugin is in charge and Simple SEO outputs nothing. The fields stay, so nothing is lost if you switch.
@@ -69,7 +73,7 @@ AI search uses the same basics as normal search: a page that can be crawled, wit
 
 = Can I use WP-CLI, the REST API or filters? =
 
-Yup. The fields are post meta: `_simple_seo_title`, `_simple_seo_description` and `_simple_seo_noindex`, in the REST API with `?context=edit`. Everything Simple SEO outputs goes through a filter first. See [the hooks](https://github.com/bonny/WordPress-Simple-SEO/blob/main/docs/hooks.md).
+Yup. The fields are post meta: `_simple_seo_title`, `_simple_seo_description`, `_simple_seo_noindex` and `_simple_seo_share_image` (an attachment ID), in the REST API with `?context=edit`. Everything Simple SEO outputs goes through a filter first. See [the hooks](https://github.com/bonny/WordPress-Simple-SEO/blob/main/docs/hooks.md).
 
 = What happened to the menu label? =
 
@@ -77,14 +81,17 @@ It's still there for pages: in the Classic Editor box, and in Quick Edit on page
 
 == Screenshots ==
 
-1. A few SEO fields in the page sidebar of the block editor. That's it.
+1. The SEO fields in the page sidebar of the block editor.
 2. See and edit the SEO of every page right from the Pages list, with Quick Edit.
 3. The same column for posts, so you can spot the ones missing a description.
 4. Works in the Classic Editor too.
-5. One setting: a default share image for link previews, in Settings → General.
+5. A default share image for link previews, in Settings → General.
 6. With Simple History, every SEO change is logged: who, when, and what it said before.
 
 == Changelog ==
+
+= Unreleased =
+- New: a share image for each post, used in link previews instead of the featured image. Your theme keeps showing the featured image. In both editors, and logged in Simple History.
 
 = 1.4.0 (September 2026) =
 - New: link previews on Bluesky, Mastodon, Facebook and friends always get a description. Without a meta description or excerpt, the start of the post is used.

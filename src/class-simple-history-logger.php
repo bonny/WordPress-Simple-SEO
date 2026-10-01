@@ -8,6 +8,7 @@
 
 namespace SimpleSEO;
 
+use Simple_History\Event_Details\Event_Details_Container;
 use Simple_History\Event_Details\Event_Details_Group;
 use Simple_History\Event_Details\Event_Details_Group_Diff_Table_Formatter;
 use Simple_History\Event_Details\Event_Details_Item;
@@ -42,7 +43,7 @@ class Simple_History_Logger extends \Simple_History\Loggers\Logger {
 	public function get_info() {
 		return [
 			'name'        => __( 'Simple SEO', 'simple-seo' ),
-			'description' => __( 'Logs changes to the SEO title, meta description, "Discourage search engines", menu label and default share image.', 'simple-seo' ),
+			'description' => __( 'Logs changes to the SEO title, meta description, "Discourage search engines", menu label, share image and default share image.', 'simple-seo' ),
 			'name_via'    => __( 'Using plugin Simple SEO', 'simple-seo' ),
 			'capability'  => 'edit_posts',
 			'messages'    => [
@@ -256,14 +257,14 @@ class Simple_History_Logger extends \Simple_History\Loggers\Logger {
 	}
 
 	/**
-	 * A before/after table of the fields that changed.
+	 * A before/after table of the fields that changed, and the share image side by side.
 	 *
 	 * @param object $row Log row.
-	 * @return Event_Details_Group
+	 * @return Event_Details_Group|Event_Details_Container
 	 */
 	public function get_log_row_details_output( $row ) {
 		if ( 0 === strpos( (string) ( $row->context['_message_key'] ?? '' ), 'share_image_' ) ) {
-			return $this->share_image_details( $row->context );
+			return $this->share_image_details( $row->context, __( 'Default share image', 'simple-seo' ) );
 		}
 
 		$group = new Event_Details_Group();
@@ -277,17 +278,29 @@ class Simple_History_Logger extends \Simple_History\Loggers\Logger {
 			]
 		);
 
-		return $group;
+		if ( ! array_key_exists( 'share_image_new', $row->context ) ) {
+			return $group;
+		}
+
+		// The image diff is its own group, as Simple History's featured image. Older versions without
+		// the container class get its URL as a row in the table.
+		if ( ! class_exists( Event_Details_Container::class ) ) {
+			$group->add_items( [ new Event_Details_Item( [ 'share_image' ], __( 'Share image', 'simple-seo' ) ) ] );
+			return $group;
+		}
+
+		return new Event_Details_Container( [ $group, $this->share_image_details( $row->context, __( 'Share image', 'simple-seo' ) ) ], $row->context );
 	}
 
 	/**
 	 * The old and new share image side by side (Simple History 5.32+), or their URLs.
 	 *
 	 * @param array<string, mixed> $context Event context.
+	 * @param string               $label   Row label.
 	 * @return Event_Details_Group
 	 */
-	private function share_image_details( array $context ) {
-		$item  = new Event_Details_Item( [ 'share_image' ], __( 'Default share image', 'simple-seo' ) );
+	private function share_image_details( array $context, string $label ) {
+		$item  = new Event_Details_Item( [ 'share_image' ], $label );
 		$group = new Event_Details_Group();
 
 		// The image formatter draws its own diff row, like Simple History's site icon event.

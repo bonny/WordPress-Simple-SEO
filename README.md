@@ -2,14 +2,14 @@
 
 # Simple SEO
 
-**The SEO basics for WordPress. Nothing more.**
+**The SEO basics for WordPress, kept small and fast.**
 
 [![Version on WordPress.org](https://img.shields.io/wordpress/plugin/v/simple-seo?label=wordpress.org&color=FFD23F&labelColor=1e1b3a)](https://wordpress.org/plugins/simple-seo/)
 [![Active installs](https://img.shields.io/wordpress/plugin/installs/simple-seo?color=FFD23F&labelColor=1e1b3a)](https://wordpress.org/plugins/simple-seo/advanced/)
 [![Tests](https://github.com/bonny/WordPress-Simple-SEO/actions/workflows/tests.yml/badge.svg)](https://github.com/bonny/WordPress-Simple-SEO/actions/workflows/tests.yml)
 [![License: GPL v2](https://img.shields.io/badge/license-GPLv2-1e1b3a)](https://www.gnu.org/licenses/gpl-2.0.html)
 
-Three fields on every post and page: an **SEO title**, a **meta description** and **Discourage search engines**. Leave one empty and WordPress does what it always did. No settings page, no scores, no upsells.
+Three fields on every post and page: an **SEO title**, a **meta description** and **Discourage search engines**. Leave one empty and WordPress does what it always did. No scores, and no upsell banners all over your admin.
 
 A few things just happen:
 
@@ -18,7 +18,7 @@ A few things just happen:
 - ✍️ **Both editors,** plus an SEO column and the fields in **Quick Edit**.
 - 📜 **Changes logged** using [Simple History](https://simple-history.com/).
 
-**Not included, on purpose:** readability scores, green lights, `llms.txt`, admin notices, "Go Pro" banners, an "optimized by" comment in your HTML, and extra database queries. No plugin makes a page rank; good content does.
+**Not included, on purpose:** readability scores, green lights, `llms.txt`, a dashboard full of notices and "Go Pro" banners, an "optimized by" comment in your HTML, and extra database queries. No plugin makes a page rank; good content does.
 
 ## Screenshots
 
@@ -38,7 +38,7 @@ A few things just happen:
 </tr>
 <tr>
 	<td width="50%" valign="top"><strong>The Classic Editor box</strong><br><img src=".wordpress-org/screenshot-4.png" width="100%" alt="The Simple SEO box below the Classic Editor."></td>
-	<td width="50%" valign="top"><strong>The one setting: a default share image</strong><br><img src=".wordpress-org/screenshot-5.png" width="100%" alt="The Simple SEO section in Settings, General, with a default share image."></td>
+	<td width="50%" valign="top"><strong>A default share image, in Settings → General</strong><br><img src=".wordpress-org/screenshot-5.png" width="100%" alt="The Simple SEO section in Settings, General, with a default share image."></td>
 </tr>
 <tr>
 	<td width="50%" valign="top"><strong>Changes logged in Simple History</strong><br><img src=".wordpress-org/screenshot-6.png" width="100%" alt="A Simple History entry showing the old and new SEO title and meta description."></td>
@@ -54,7 +54,7 @@ Search for **Simple SEO** in Plugins → Add New Plugin, or get it from [wordpre
 
 ## For developers and automation
 
-The fields are plain post meta, so scripts, WP-CLI and AI tools can read and write them like any other post data: `_simple_seo_title`, `_simple_seo_description` and `_simple_seo_noindex`.
+The fields are plain post meta, so scripts, WP-CLI and AI tools can read and write them like any other post data: `_simple_seo_title`, `_simple_seo_description`, `_simple_seo_noindex` and `_simple_seo_share_image`.
 
 ### Using the REST API
 
@@ -85,6 +85,7 @@ wp post meta update 123 _simple_seo_title "About us: small batch coffee from Sto
 - **Empty means not used.** Saving an empty title or description deletes the key, and WordPress falls back to the post title. Link previews fall back to the excerpt, then the start of the post.
 - **Noindex** is a boolean: `true`/`false` over REST, `1` to set it with WP-CLI (`0` or `false` means off).
 - **Titles from before 1.0** live in `_simple_seo_custom_page_title_value` and are still used. REST shows them as `_simple_seo_title`, `wp post meta get` doesn't. Writing `_simple_seo_title` replaces them.
+- **A post's share image** is `_simple_seo_share_image`, an attachment ID. Link previews use it instead of the featured image. It must be an image; `0` or anything else removes it.
 - **The default share image** is the option `simple_seo_share_image`, stored as the whole image so the front end needs no queries. Set it in Settings → General, or write every field:
   ```bash
   wp option update simple_seo_share_image '{"id":123,"url":"https://example.com/share.png","width":1200,"height":630,"alt":""}' --format=json

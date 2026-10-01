@@ -73,30 +73,7 @@ function settings_section(): void {
 function share_image_field(): void {
 	$image = share_image();
 
-	printf(
-		'<div class="simple-seo-share-image"><img src="%1$s" alt="" style="max-width:300px;height:auto;display:block;margin-bottom:8px" %2$s />',
-		esc_url( $image['url'] ?? '' ),
-		$image ? '' : 'hidden'
-	);
-
-	printf(
-		'<input type="hidden" name="%1$s" value="%2$s" />',
-		esc_attr( SHARE_IMAGE_OPTION ),
-		esc_attr( (string) ( $image['id'] ?? '' ) )
-	);
-
-	printf(
-		'<button type="button" class="button simple-seo-share-image-choose" data-choose="%1$s" data-change="%2$s">%3$s</button> ',
-		esc_attr__( 'Choose image', 'simple-seo' ),
-		esc_attr__( 'Change image', 'simple-seo' ),
-		$image ? esc_html__( 'Change image', 'simple-seo' ) : esc_html__( 'Choose image', 'simple-seo' )
-	);
-
-	printf(
-		'<button type="button" class="button button-secondary simple-seo-share-image-remove" %1$s>%2$s</button></div>',
-		$image ? '' : 'hidden',
-		esc_html__( 'Remove image', 'simple-seo' )
-	);
+	image_field( SHARE_IMAGE_OPTION, (int) ( $image['id'] ?? 0 ), (string) ( $image['url'] ?? '' ) );
 
 	printf(
 		'<p class="description">%s</p>',
@@ -114,17 +91,7 @@ function enqueue_settings_script( string $hook_suffix ): void {
 		return;
 	}
 
-	wp_enqueue_media();
-
-	$asset = require dirname( __DIR__ ) . '/build/share-image-field.asset.php';
-
-	wp_enqueue_script(
-		'simple-seo-share-image-field',
-		plugins_url( 'build/share-image-field.js', \SIMPLE_SEO_PLUGIN_FILE ),
-		$asset['dependencies'],
-		$asset['version'],
-		true
-	);
+	enqueue_image_field_script();
 }
 
 /**

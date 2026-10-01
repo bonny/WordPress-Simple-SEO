@@ -56,6 +56,7 @@ function logged_values( int $post_id ): array {
 		'meta_description' => get_description( $post_id ),
 		'noindex'          => is_noindex( $post_id ) ? __( 'Yes', 'simple-seo' ) : __( 'No', 'simple-seo' ),
 		'menu_label'       => get_menu_label( $post_id ),
+		'share_image'      => (string) wp_get_attachment_url( get_share_image_id( $post_id ) ),
 	];
 }
 

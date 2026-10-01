@@ -68,6 +68,17 @@ function meta_box( WP_Post $post ): void {
 		text_field( 'menu_label', __( 'Menu label', 'simple-seo' ), get_menu_label( $post->ID ), __( 'Used in automatic page lists, not in hand-made menus.', 'simple-seo' ) );
 	}
 
+	$share_image_id = get_share_image_id( $post->ID );
+
+	// A group, not a <label>: that would replace the buttons' own names.
+	printf(
+		'<div class="simple-seo-field" role="group" aria-labelledby="simple-seo-share-image-label" aria-describedby="simple-seo-share-image-help"><span class="simple-seo-field-label" id="simple-seo-share-image-label">%s</span>',
+		esc_html__( 'Share image', 'simple-seo' )
+	);
+	image_field( 'simple_seo[share_image]', $share_image_id, (string) wp_get_attachment_image_url( $share_image_id, 'medium' ) );
+	printf( '<span class="description" id="simple-seo-share-image-help">%s</span></div>', esc_html( share_image_help() ) );
+	enqueue_image_field_script();
+
 	printf(
 		'<p><label><input type="checkbox" name="simple_seo[noindex_on]" value="1" aria-describedby="simple-seo-noindex-help" %1$s /> %2$s</label><span class="description" id="simple-seo-noindex-help">%3$s</span></p>',
 		checked( is_noindex( $post->ID ), true, false ),
@@ -152,6 +163,11 @@ function save_post( int $post_id, WP_Post $post ): void {
 	save_text( $post_id, TITLE_KEY, $text( 'title' ) );
 	save_text( $post_id, DESCRIPTION_KEY, $text( 'description' ) );
 	update_post_meta( $post_id, NOINDEX_KEY, ! empty( $fields['noindex_on'] ) );
+
+	// Quick Edit posts the other fields but not this one.
+	if ( isset( $fields['share_image'] ) ) {
+		update_post_meta( $post_id, SHARE_IMAGE_KEY, absint( $fields['share_image'] ) );
+	}
 
 	if ( 'page' === $post->post_type ) {
 		save_menu_label( $post_id, $text( 'menu_label' ) );

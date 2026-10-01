@@ -68,6 +68,18 @@ class RestTest extends SimpleSEO_TestCase {
 		$this->assertFalse( metadata_exists( 'post', $post_id, '_simple_seo_custom_page_title_value' ) );
 	}
 
+	public function test_editors_can_set_the_share_image() {
+		$image_id = self::factory()->attachment->create_upload_object( dirname( __DIR__, 2 ) . '/.wordpress-org/banner-772x250.png' );
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'editor' ] ) );
+
+		$request = new WP_REST_Request( 'POST', "/wp/v2/posts/{$this->post_id}" );
+		$request->set_body_params( [ 'meta' => [ '_simple_seo_share_image' => $image_id ] ] );
+
+		$this->assertSame( 200, rest_do_request( $request )->get_status() );
+		$this->assertSame( $image_id, $this->get_meta( 'edit' )['_simple_seo_share_image'] );
+		$this->assertArrayNotHasKey( '_simple_seo_share_image', $this->get_meta() );
+	}
+
 	public function test_subscribers_cannot_write() {
 		wp_set_current_user( self::factory()->user->create( [ 'role' => 'subscriber' ] ) );
 

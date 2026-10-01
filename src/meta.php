@@ -15,6 +15,9 @@ const TITLE_KEY       = '_simple_seo_title';
 const DESCRIPTION_KEY = '_simple_seo_description';
 const NOINDEX_KEY     = '_simple_seo_noindex';
 
+// Attachment ID of the image for link previews, used instead of the featured image.
+const SHARE_IMAGE_KEY = '_simple_seo_share_image';
+
 // Menu label, pages only, Classic Editor only. Same keys as before 1.0: the label is used when the flag is 1.
 const USE_MENU_LABEL_KEY = '_simple_seo_use_custom_menu_label';
 const MENU_LABEL_KEY     = '_simple_seo_custom_menu_label_value';
@@ -28,6 +31,8 @@ add_action( 'added_post_meta', __NAMESPACE__ . '\\forget_legacy_title', 10, 3 );
 add_action( 'updated_post_meta', __NAMESPACE__ . '\\forget_legacy_title', 10, 3 );
 add_action( 'deleted_post_meta', __NAMESPACE__ . '\\forget_legacy_title', 10, 3 );
 add_filter( 'default_post_metadata', __NAMESPACE__ . '\\legacy_title_default', 20, 4 );
+add_action( 'added_post_meta', __NAMESPACE__ . '\\forget_empty_share_image', 10, 4 );
+add_action( 'updated_post_meta', __NAMESPACE__ . '\\forget_empty_share_image', 10, 4 );
 
 /**
  * Register the fields for all post types. A text field is used when it isn't empty.
@@ -57,6 +62,45 @@ function register_meta(): void {
 				'auth_callback'     => fn( $allowed, $meta_key, $post_id ) => current_user_can( 'edit_post', $post_id ),
 			]
 		);
+	}
+
+	register_post_meta(
+		'',
+		SHARE_IMAGE_KEY,
+		[
+			'type'              => 'integer',
+			'description'       => __( 'Attachment ID of the image for link previews, used instead of the featured image. 0 or none uses the featured image.', 'simple-seo' ),
+			'single'            => true,
+			'default'           => 0,
+			'show_in_rest'      => [ 'schema' => [ 'context' => [ 'edit' ] ] ],
+			'sanitize_callback' => __NAMESPACE__ . '\\sanitize_share_image_id',
+			'auth_callback'     => fn( $allowed, $meta_key, $post_id ) => current_user_can( 'edit_post', $post_id ),
+		]
+	);
+}
+
+/**
+ * The share image must be an image attachment; anything else is stored as 0, which is then deleted.
+ *
+ * @param mixed $value Attachment ID.
+ */
+function sanitize_share_image_id( $value ): int {
+	$attachment_id = absint( $value );
+
+	return $attachment_id && wp_attachment_is_image( $attachment_id ) ? $attachment_id : 0;
+}
+
+/**
+ * No share image (0, as the editors send on Remove) deletes the key, as an empty text field does.
+ *
+ * @param int    $meta_id    Meta ID, unused.
+ * @param int    $object_id  Post ID.
+ * @param string $meta_key   Meta key.
+ * @param mixed  $meta_value The stored value.
+ */
+function forget_empty_share_image( $meta_id, $object_id, $meta_key, $meta_value ): void {
+	if ( SHARE_IMAGE_KEY === $meta_key && ! absint( $meta_value ) ) {
+		delete_post_meta( $object_id, SHARE_IMAGE_KEY );
 	}
 }
 
@@ -104,6 +148,15 @@ function legacy_title( int $post_id ): string {
  */
 function get_description( int $post_id ): string {
 	return trim( (string) get_post_meta( $post_id, DESCRIPTION_KEY, true ) );
+}
+
+/**
+ * The post's own share image (attachment ID), or 0 to use the featured image.
+ *
+ * @param int $post_id Post ID.
+ */
+function get_share_image_id( int $post_id ): int {
+	return absint( get_post_meta( $post_id, SHARE_IMAGE_KEY, true ) );
 }
 
 /**

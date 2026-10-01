@@ -39,6 +39,17 @@ class Event_Details_Group {
 
 class Event_Details_Group_Diff_Table_Formatter {}
 
+class Event_Details_Container {
+	/**
+	 * @param Event_Details_Group|Event_Details_Group[] $group_or_groups Group(s).
+	 * @param array<string, mixed>                      $context         Event context.
+	 */
+	public function __construct( $group_or_groups = [], $context = [] ) {}
+
+	/** @return string */
+	public function to_html() {}
+}
+
 class Event_Details_Item_Image_Diff_Table_Row_Formatter {
 	/** @param string $src URL. @param string $caption Caption. @return static */
 	public function set_new_image( $src, $caption = '' ) {}

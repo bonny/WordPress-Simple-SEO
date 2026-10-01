@@ -74,7 +74,7 @@ function link_preview_tags(): void {
 		$title = seo_title( $post_id );
 		$title = '' !== $title ? $title : wp_strip_all_tags( get_the_title( $post_id ) );
 		$url   = (string) get_permalink( $post_id );
-		$image = featured_image( $post_id );
+		$image = attachment_image( get_share_image_id( $post_id ) ) ?? attachment_image( (int) get_post_thumbnail_id( $post_id ) );
 
 		// No meta description: the hand-written excerpt, else the start of the content, so a
 		// shared link never shows an empty card (2026-09-30). Link previews only: the meta
@@ -97,9 +97,9 @@ function link_preview_tags(): void {
 
 	/**
 	 * The link preview image: [ 'url', 'width', 'height', 'alt' ], or null for none.
-	 * By default the featured image, else the default share image from Settings → General.
+	 * By default the post's share image, else its featured image, else the default share image from Settings → General.
 	 *
-	 * @param array{url: string, width: int, height: int, alt: string}|null $image   The featured image, if any.
+	 * @param array{url: string, width: int, height: int, alt: string}|null $image   The image, if any.
 	 * @param int                                                           $post_id The post, 0 on a front page with the latest posts.
 	 */
 	$image = apply_filters( 'simple_seo_link_preview_image', $image, $post_id );
@@ -156,14 +156,13 @@ function is_wide( array $image ): bool {
 }
 
 /**
- * The post's featured image at full size, or null.
+ * An image attachment at full size, or null when there is none (0, or deleted).
  *
- * @param int $post_id Post ID.
+ * @param int $attachment_id Attachment ID.
  * @return array{url: string, width: int, height: int, alt: string}|null
  */
-function featured_image( int $post_id ): ?array {
-	$attachment_id = (int) get_post_thumbnail_id( $post_id );
-	$src           = $attachment_id ? wp_get_attachment_image_src( $attachment_id, 'full' ) : false;
+function attachment_image( int $attachment_id ): ?array {
+	$src = $attachment_id ? wp_get_attachment_image_src( $attachment_id, 'full' ) : false;
 
 	if ( ! $src ) {
 		return null;

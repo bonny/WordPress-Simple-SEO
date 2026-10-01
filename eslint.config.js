@@ -10,6 +10,7 @@ module.exports = [
 	{
 		settings: {
 			'import/core-modules': [
+				'@wordpress/block-editor',
 				'@wordpress/components',
 				'@wordpress/core-data',
 				'@wordpress/data',

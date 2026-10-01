@@ -10,10 +10,13 @@ import {
 	PluginDocumentSettingPanel,
 	store as editorStore,
 } from '@wordpress/editor';
-import { useEntityProp } from '@wordpress/core-data';
+import { MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
+import { store as coreStore, useEntityProp } from '@wordpress/core-data';
 import { useSelect } from '@wordpress/data';
 import { createInterpolateElement } from '@wordpress/element';
 import {
+	BaseControl,
+	Button,
 	CheckboxControl,
 	ExternalLink,
 	Flex,
@@ -24,6 +27,88 @@ import { __, sprintf } from '@wordpress/i18n';
 
 const { otherPlugin, simpleHistoryUrl, frontPageId, faqUrl } =
 	window.simpleSeoEditor || {};
+
+/**
+ * The post's share image: a preview and the media library buttons, like core's
+ * Featured image panel. Shows nothing for users who can't upload files.
+ *
+ * @param {Object}               props
+ * @param {number}               props.imageId  Attachment ID, or 0.
+ * @param {(id: number) => void} props.onChange Called with the new attachment ID, 0 to remove it.
+ */
+function ShareImageControl( { imageId, onChange } ) {
+	const media = useSelect(
+		( select ) =>
+			imageId ? select( coreStore ).getMedia( imageId ) : undefined,
+		[ imageId ]
+	);
+	const previewUrl =
+		media?.media_details?.sizes?.medium?.source_url ?? media?.source_url;
+
+	return (
+		<MediaUploadCheck>
+			{ /* A visual label, not a <label>: that would replace the button's own name. */ }
+			<BaseControl
+				__nextHasNoMarginBottom
+				id="simple-seo-share-image"
+				help={ __(
+					'Used in link previews instead of the featured image.',
+					'simple-seo'
+				) }
+			>
+				<BaseControl.VisualLabel>
+					{ __( 'Share image', 'simple-seo' ) }
+				</BaseControl.VisualLabel>
+				<MediaUpload
+					title={ __( 'Share image', 'simple-seo' ) }
+					allowedTypes={ [ 'image' ] }
+					value={ imageId }
+					onSelect={ ( image ) => onChange( image.id ) }
+					render={ ( { open } ) => (
+						<Flex direction="column" gap={ 2 } align="flex-start">
+							{ previewUrl && (
+								<img
+									src={ previewUrl }
+									alt={ media?.alt_text ?? '' }
+									style={ {
+										maxWidth: '100%',
+										height: 'auto',
+									} }
+								/>
+							) }
+							<Flex justify="flex-start" gap={ 2 }>
+								<Button
+									__next40pxDefaultSize
+									id="simple-seo-share-image"
+									aria-describedby="simple-seo-share-image__help"
+									variant="secondary"
+									onClick={ open }
+								>
+									{ imageId
+										? __( 'Replace', 'simple-seo' )
+										: __(
+												'Set share image',
+												'simple-seo'
+											) }
+								</Button>
+								{ !! imageId && (
+									<Button
+										__next40pxDefaultSize
+										variant="tertiary"
+										isDestructive
+										onClick={ () => onChange( 0 ) }
+									>
+										{ __( 'Remove', 'simple-seo' ) }
+									</Button>
+								) }
+							</Flex>
+						</Flex>
+					) }
+				/>
+			</BaseControl>
+		</MediaUploadCheck>
+	);
+}
 
 function SimpleSeoPanel() {
 	const postType = useSelect(
@@ -45,7 +130,8 @@ function SimpleSeoPanel() {
 	const usesFields =
 		meta._simple_seo_title.trim() !== '' ||
 		meta._simple_seo_description.trim() !== '' ||
-		!! meta._simple_seo_noindex;
+		!! meta._simple_seo_noindex ||
+		!! meta._simple_seo_share_image;
 
 	// Meta edits are merged, so pass only the changed key.
 	const update = ( key ) => ( value ) => setMeta( { [ key ]: value } );
@@ -115,6 +201,11 @@ function SimpleSeoPanel() {
 					) }
 					value={ meta._simple_seo_description }
 					onChange={ update( '_simple_seo_description' ) }
+				/>
+
+				<ShareImageControl
+					imageId={ meta._simple_seo_share_image ?? 0 }
+					onChange={ update( '_simple_seo_share_image' ) }
 				/>
 
 				<CheckboxControl

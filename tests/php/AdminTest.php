@@ -29,6 +29,10 @@ class AdminTest extends SimpleSEO_TestCase {
 
 		update_post_meta( $post_id, '_simple_seo_noindex', true );
 		$this->assertTrue( uses_seo_fields( $post_id ) );
+
+		$other_id = self::factory()->post->create();
+		update_post_meta( $other_id, '_simple_seo_share_image', self::factory()->attachment->create_upload_object( dirname( __DIR__, 2 ) . '/.wordpress-org/banner-772x250.png' ) );
+		$this->assertTrue( uses_seo_fields( $other_id ) );
 	}
 
 	public function test_column_mutes_values_when_another_plugin_is_in_charge() {

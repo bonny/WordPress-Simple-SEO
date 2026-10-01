@@ -111,6 +111,26 @@ class SimpleHistoryTest extends SimpleSEO_TestCase {
 		$this->assertCount( $before, $this->events( $post_id ) );
 	}
 
+	public function test_post_share_image_is_logged() {
+		$post_id  = self::factory()->post->create( [ 'post_title' => 'About us' ] );
+		$image_id = self::factory()->attachment->create_upload_object( dirname( __DIR__, 2 ) . '/.claude/skills/visual-check/demo-share-image.png' );
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'editor' ] ) );
+
+		update_post_meta( $post_id, '_simple_seo_share_image', $image_id );
+		update_post_meta( $post_id, TITLE_KEY, 'Our story' );
+		$this->logger()->log_changes();
+
+		$events = $this->events( $post_id );
+		$this->assertCount( 1, $events );
+		$this->assertSame( '', $events[0]['share_image_prev'] );
+		$this->assertSame( wp_get_attachment_url( $image_id ), $events[0]['share_image_new'] );
+
+		$details = $this->logger()->get_log_row_details_output( (object) [ 'context' => $events[0] ] )->to_html();
+		$this->assertStringContainsString( 'Our story', $details );
+		$this->assertStringContainsString( 'Share image', $details );
+		$this->assertStringContainsString( '<img src="' . wp_get_attachment_url( $image_id ) . '"', $details );
+	}
+
 	public function test_share_image_changes_are_logged() {
 		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$path  = dirname( __DIR__, 2 ) . '/.claude/skills/visual-check/demo-share-image.png';
