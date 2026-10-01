@@ -7,7 +7,11 @@
 # Usage: scripts/plugin-check.sh [extra wp plugin check args]
 set -eu
 REPO=$(cd "$(dirname "$0")/.." && pwd)
-DC=$(cd "$REPO/../_docker-compose-to-run-on-system-boot" && pwd)
+# The docker stack sits next to the repo on one machine and in ~/Projects on another.
+for DC in "$(dirname "$0")/../../_docker-compose-to-run-on-system-boot" "$HOME/Projects/_docker-compose-to-run-on-system-boot"; do
+	[ -d "$DC" ] && break
+done
+DC=$(cd "$DC" && pwd)
 BUILD=$(mktemp -d)
 trap 'rm -rf "$BUILD"' EXIT
 

@@ -17,7 +17,11 @@ trap 'rm -rf "$TMP"' EXIT
 SITE=$1
 TITLE_VALUE=${2-'Custom <b>SEO</b> title & "quotes"'}
 MENU_VALUE=${3-'Short menu label'}
-DC=$(cd "$(dirname "$0")/../../_docker-compose-to-run-on-system-boot" && pwd)
+# The docker stack sits next to the repo on one machine and in ~/Projects on another.
+for DC in "$(dirname "$0")/../../_docker-compose-to-run-on-system-boot" "$HOME/Projects/_docker-compose-to-run-on-system-boot"; do
+	[ -d "$DC" ] && break
+done
+DC=$(cd "$DC" && pwd)
 
 if [ "$SITE" = classic ]; then
 	BASE=http://wp-playground-classiceditor.test:8314
