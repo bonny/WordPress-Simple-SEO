@@ -153,7 +153,8 @@ function get_description( int $post_id ): string {
 
 /**
  * A deleted image is no longer anyone's share image, so the editors don't show an empty field.
- * One query, only when an attachment is deleted.
+ * One bulk delete for all posts (core's \$delete_all), only when an attachment is deleted: one
+ * query when no post uses the image, three when some do.
  *
  * @param int $attachment_id Attachment ID.
  */
