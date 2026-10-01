@@ -68,16 +68,7 @@ function meta_box( WP_Post $post ): void {
 		text_field( 'menu_label', __( 'Menu label', 'simple-seo' ), get_menu_label( $post->ID ), __( 'Used in automatic page lists, not in hand-made menus.', 'simple-seo' ) );
 	}
 
-	$share_image_id = get_share_image_id( $post->ID );
-
-	// A group, not a <label>: that would replace the buttons' own names.
-	printf(
-		'<div class="simple-seo-field" role="group" aria-labelledby="simple-seo-share-image-label" aria-describedby="simple-seo-share-image-help"><span class="simple-seo-field-label" id="simple-seo-share-image-label">%s</span>',
-		esc_html__( 'Share image', 'simple-seo' )
-	);
-	image_field( 'simple_seo[share_image]', $share_image_id, (string) wp_get_attachment_image_url( $share_image_id, 'medium' ) );
-	printf( '<span class="description" id="simple-seo-share-image-help">%s</span></div>', esc_html( share_image_help() ) );
-	enqueue_image_field_script();
+	share_image_field_in_box( $post->ID );
 
 	printf(
 		'<p><label><input type="checkbox" name="simple_seo[noindex_on]" value="1" aria-describedby="simple-seo-noindex-help" %1$s /> %2$s</label><span class="description" id="simple-seo-noindex-help">%3$s</span></p>',
@@ -106,6 +97,29 @@ function meta_box( WP_Post $post ): void {
 		/* translators: Accessibility text. */
 		esc_html__( '(opens in a new tab)', 'simple-seo' )
 	);
+}
+
+/**
+ * The post's share image, for users who can use the media library (as core's Featured image).
+ * Without the field the form posts no share_image, so saving leaves a stored image alone.
+ *
+ * @param int $post_id Post ID.
+ */
+function share_image_field_in_box( int $post_id ): void {
+	if ( ! current_user_can( 'upload_files' ) ) {
+		return;
+	}
+
+	$share_image_id = get_share_image_id( $post_id );
+
+	// A group, not a <label>: that would replace the buttons' own names.
+	printf(
+		'<div class="simple-seo-field" role="group" aria-labelledby="simple-seo-share-image-label" aria-describedby="simple-seo-share-image-help"><span class="simple-seo-field-label" id="simple-seo-share-image-label">%s</span>',
+		esc_html__( 'Share image', 'simple-seo' )
+	);
+	image_field( 'simple_seo[share_image]', $share_image_id, (string) wp_get_attachment_image_url( $share_image_id, 'medium' ) );
+	printf( '<span class="description" id="simple-seo-share-image-help">%s</span></div>', esc_html( share_image_help() ) );
+	enqueue_image_field_script();
 }
 
 /**

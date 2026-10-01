@@ -168,4 +168,14 @@ class MetaTest extends SimpleSEO_TestCase {
 		}
 		$this->assertSame( $other_id, SimpleSEO\get_share_image_id( $other ) );
 	}
+
+	public function test_classic_box_shows_the_share_image_only_to_users_who_can_upload() {
+		$post_id = self::factory()->post->create();
+
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'contributor' ] ) );
+		$this->assertStringNotContainsString( 'simple_seo[share_image]', get_echo( 'SimpleSEO\\meta_box', [ get_post( $post_id ) ] ) );
+
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'author' ] ) );
+		$this->assertStringContainsString( 'simple_seo[share_image]', get_echo( 'SimpleSEO\\meta_box', [ get_post( $post_id ) ] ) );
+	}
 }
