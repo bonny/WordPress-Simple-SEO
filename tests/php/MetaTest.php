@@ -150,4 +150,22 @@ class MetaTest extends SimpleSEO_TestCase {
 
 		$_POST = [];
 	}
+
+	public function test_deleting_the_image_removes_it_as_share_image() {
+		$image_id = self::factory()->attachment->create_upload_object( dirname( __DIR__, 2 ) . '/.wordpress-org/banner-772x250.png' );
+		$posts    = self::factory()->post->create_many( 2 );
+		$other    = self::factory()->post->create();
+		$other_id = self::factory()->attachment->create_upload_object( dirname( __DIR__, 2 ) . '/.wordpress-org/banner-772x250.png' );
+		foreach ( $posts as $post_id ) {
+			update_post_meta( $post_id, '_simple_seo_share_image', $image_id );
+		}
+		update_post_meta( $other, '_simple_seo_share_image', $other_id );
+
+		wp_delete_attachment( $image_id, true );
+
+		foreach ( $posts as $post_id ) {
+			$this->assertFalse( metadata_exists( 'post', $post_id, '_simple_seo_share_image' ) );
+		}
+		$this->assertSame( $other_id, SimpleSEO\get_share_image_id( $other ) );
+	}
 }

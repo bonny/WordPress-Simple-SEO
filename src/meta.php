@@ -33,6 +33,7 @@ add_action( 'deleted_post_meta', __NAMESPACE__ . '\\forget_legacy_title', 10, 3 
 add_filter( 'default_post_metadata', __NAMESPACE__ . '\\legacy_title_default', 20, 4 );
 add_action( 'added_post_meta', __NAMESPACE__ . '\\forget_empty_share_image', 10, 4 );
 add_action( 'updated_post_meta', __NAMESPACE__ . '\\forget_empty_share_image', 10, 4 );
+add_action( 'delete_attachment', __NAMESPACE__ . '\\forget_deleted_share_image' );
 
 /**
  * Register the fields for all post types. A text field is used when it isn't empty.
@@ -148,6 +149,16 @@ function legacy_title( int $post_id ): string {
  */
 function get_description( int $post_id ): string {
 	return trim( (string) get_post_meta( $post_id, DESCRIPTION_KEY, true ) );
+}
+
+/**
+ * A deleted image is no longer anyone's share image, so the editors don't show an empty field.
+ * One query, only when an attachment is deleted.
+ *
+ * @param int $attachment_id Attachment ID.
+ */
+function forget_deleted_share_image( $attachment_id ): void {
+	delete_metadata( 'post', 0, SHARE_IMAGE_KEY, (int) $attachment_id, true );
 }
 
 /**
