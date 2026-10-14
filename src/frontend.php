@@ -107,7 +107,7 @@ function queried_post_id(): int {
  * The static front page's ID, or 0 when the front page shows the latest posts.
  */
 function static_front_page_id(): int {
-	return is_front_page() && 'page' === get_option( 'show_on_front' ) ? get_queried_object_id() : 0;
+	return is_front_page() && get_option( 'show_on_front' ) === 'page' ? get_queried_object_id() : 0;
 }
 
 /**
@@ -125,7 +125,7 @@ function static_front_page_id(): int {
 function document_title( array $parts ): array {
 	$seo_title = seo_title( queried_post_id() );
 
-	if ( '' === $seo_title ) {
+	if ( $seo_title === '' ) {
 		return $parts;
 	}
 
@@ -150,16 +150,20 @@ function document_title( array $parts ): array {
 function old_theme_title( $title, $sep, $seplocation = '' ) {
 	$seo_title = seo_title( queried_post_id() );
 
-	if ( '' === $seo_title ) {
+	if ( $seo_title === '' ) {
 		return $title;
 	}
 
-	return 'right' === $seplocation ? "$seo_title $sep " : " $sep $seo_title";
+	return $seplocation === 'right' ? "$seo_title $sep " : " $sep $seo_title";
 }
 
 /**
- * The meta description of the current page: the post's, or the tagline on a front page
- * with the latest posts. '' for none.
+ * The meta description of the current page: the post's, else its hand-written excerpt, or the
+ * tagline on a front page with the latest posts. '' for none.
+ *
+ * The excerpt since 2026-10-07: Google only reads the meta description, never og:description,
+ * and a summary someone wrote beats a snippet Google picks. Never an automatic excerpt: 30 words
+ * cut mid-sentence are worse than Google's pick.
  */
 function current_description(): string {
 	$post_id     = queried_post_id();
@@ -167,6 +171,10 @@ function current_description(): string {
 
 	if ( $post_id ) {
 		$description = get_description( $post_id );
+
+		if ( $description === '' ) {
+			$description = hand_written_excerpt( $post_id );
+		}
 	} elseif ( is_front_page() ) {
 		$description = get_bloginfo( 'description' );
 	}
@@ -195,7 +203,7 @@ function head_tags(): void {
 	website_schema();
 	$tags = (string) ob_get_clean();
 
-	if ( '' === $tags ) {
+	if ( $tags === '' ) {
 		return;
 	}
 
@@ -205,7 +213,7 @@ function head_tags(): void {
 	 *
 	 * @param bool $comments Whether to print the comments.
 	 */
-	if ( apply_filters( 'simple_seo_debug_comments', 'local' === wp_get_environment_type() ) ) {
+	if ( apply_filters( 'simple_seo_debug_comments', wp_get_environment_type() === 'local' ) ) {
 		$tags = "<!-- Simple SEO start (local sites only, not on live sites). Title and robots tags: printed by WordPress, filtered by Simple SEO. -->\n{$tags}<!-- Simple SEO end -->\n";
 	}
 
@@ -218,7 +226,7 @@ function head_tags(): void {
 function meta_description(): void {
 	$description = current_description();
 
-	if ( '' !== $description ) {
+	if ( $description !== '' ) {
 		printf( "<meta name=\"description\" content=\"%s\" />\n", esc_attr( $description ) );
 	}
 }
@@ -296,7 +304,7 @@ function menu_labels( $pages ) {
 		$label = trim( $labels[ $page->ID ][ MENU_LABEL_KEY ] ?? '' );
 
 		// Checked but left empty: keep the page title instead of an empty link.
-		if ( '' !== $label && ! empty( $labels[ $page->ID ][ USE_MENU_LABEL_KEY ] ) ) {
+		if ( $label !== '' && ! empty( $labels[ $page->ID ][ USE_MENU_LABEL_KEY ] ) ) {
 			$page->post_title = $label;
 		}
 	}

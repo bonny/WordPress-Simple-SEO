@@ -45,7 +45,7 @@ No big company or investors, just one developer: me, the guy behind [Simple Hist
 
 = What happens if I leave a field empty? =
 
-WordPress does what it always does: the post title, and search engines pick their own description. On a front page that shows your latest posts, the Tagline is the description.
+WordPress does what it always does: the post title. For the description, Simple SEO uses the post's excerpt if you wrote one; otherwise search engines pick their own. On a front page that shows your latest posts, the Tagline is the description.
 
 = How long should the SEO title be? =
 
@@ -89,6 +89,10 @@ It's still there for pages: in the Classic Editor box, and in Quick Edit on page
 6. With Simple History, every SEO change is logged: who, when, and what it said before.
 
 == Changelog ==
+
+= Unreleased =
+- New: a post without a meta description uses its excerpt instead, if you wrote one. Google only reads the meta description, not the link preview one, so before this it picked its own text from the page.
+- Fixed: link previews showed the excerpt of password-protected posts.
 
 = 1.5.0 (October 2026) =
 - New: a share image for each post, used in link previews instead of the featured image. Your theme keeps showing the featured image. In both editors, and logged in Simple History.

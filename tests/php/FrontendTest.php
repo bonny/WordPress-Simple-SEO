@@ -40,10 +40,34 @@ class FrontendTest extends SimpleSEO_TestCase {
 	}
 
 	public function test_post_without_fields_is_untouched() {
-		$this->go_to( get_permalink( self::factory()->post->create( [ 'post_title' => 'Plain' ] ) ) );
+		$this->go_to( get_permalink( self::factory()->post->create( [ 'post_title' => 'Plain', 'post_excerpt' => '' ] ) ) );
 
 		$this->assertSame( 'Plain &#8211; Site', wp_get_document_title() );
 		$this->assertSame( '', $this->description_tag() );
+	}
+
+	public function test_description_falls_back_to_the_hand_written_excerpt() {
+		$post_id = self::factory()->post->create( [ 'post_excerpt' => "  A hand-written\n<b>summary</b>. " ] );
+		$this->go_to( get_permalink( $post_id ) );
+
+		$this->assertSame( '<meta name="description" content="A hand-written summary." />' . "\n", $this->description_tag() );
+
+		update_post_meta( $post_id, DESCRIPTION_KEY, 'SEO description' );
+
+		$this->assertSame( '<meta name="description" content="SEO description" />' . "\n", $this->description_tag() );
+	}
+
+	public function test_excerpt_of_a_password_protected_post_stays_hidden() {
+		$post_id = self::factory()->post->create(
+			[
+				'post_excerpt'  => 'Secret summary',
+				'post_password' => 'pass',
+			]
+		);
+		$this->go_to( get_permalink( $post_id ) );
+
+		$this->assertSame( '', $this->description_tag() );
+		$this->assertStringNotContainsString( 'Secret', get_echo( 'SimpleSEO\\link_preview_tags' ) );
 	}
 
 	public function test_static_front_page_title_is_the_whole_title() {

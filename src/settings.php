@@ -28,7 +28,7 @@ add_action( 'delete_attachment', __NAMESPACE__ . '\\forget_share_image' );
  * In wp-admin, so sites updating from an older version get it too.
  */
 function add_share_image_option(): void {
-	if ( false === get_option( SHARE_IMAGE_OPTION ) ) {
+	if ( get_option( SHARE_IMAGE_OPTION ) === false ) {
 		add_option( SHARE_IMAGE_OPTION, [], '', true );
 	}
 }
@@ -87,7 +87,7 @@ function share_image_field(): void {
  * @param string $hook_suffix The current admin page.
  */
 function enqueue_settings_script( string $hook_suffix ): void {
-	if ( 'options-general.php' !== $hook_suffix ) {
+	if ( $hook_suffix !== 'options-general.php' ) {
 		return;
 	}
 
@@ -149,11 +149,11 @@ function share_image(): array {
  * @param string    $meta_key  Meta key.
  */
 function refresh_share_image( $meta_id, $object_id, $meta_key ): void {
-	if ( '_wp_attachment_metadata' !== $meta_key && '_wp_attachment_image_alt' !== $meta_key ) {
+	if ( $meta_key !== '_wp_attachment_metadata' && $meta_key !== '_wp_attachment_image_alt' ) {
 		return;
 	}
 
-	if ( (int) ( share_image()['id'] ?? 0 ) !== (int) $object_id ) {
+	if ( (int) $object_id !== (int) ( share_image()['id'] ?? 0 ) ) {
 		return;
 	}
 
@@ -166,7 +166,7 @@ function refresh_share_image( $meta_id, $object_id, $meta_key ): void {
  * @param int $attachment_id Attachment ID.
  */
 function forget_share_image( $attachment_id ): void {
-	if ( (int) ( share_image()['id'] ?? 0 ) === (int) $attachment_id ) {
+	if ( (int) $attachment_id === (int) ( share_image()['id'] ?? 0 ) ) {
 		update_option( SHARE_IMAGE_OPTION, [] ); // Not delete_option(): see add_share_image_option().
 	}
 }

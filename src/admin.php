@@ -18,7 +18,7 @@ add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\\enqueue_admin_css' );
  * @param int $post_id Post ID.
  */
 function is_front_page_post( int $post_id ): bool {
-	return 'page' === get_option( 'show_on_front' ) && (int) get_option( 'page_on_front' ) === $post_id;
+	return get_option( 'show_on_front' ) === 'page' && (int) get_option( 'page_on_front' ) === $post_id;
 }
 
 /**
@@ -57,11 +57,11 @@ function share_image_help(): string {
  * @param int $post_id Post ID.
  */
 function uses_seo_fields( int $post_id ): bool {
-	return '' !== get_title( $post_id )
-		|| '' !== get_description( $post_id )
+	return get_title( $post_id ) !== ''
+		|| get_description( $post_id ) !== ''
 		|| is_noindex( $post_id )
 		|| get_share_image_id( $post_id )
-		|| '' !== get_menu_label( $post_id );
+		|| get_menu_label( $post_id ) !== '';
 }
 
 /**
@@ -74,7 +74,7 @@ function uses_seo_fields( int $post_id ): bool {
  * @param string $preview_url   URL of the image to show, or ''.
  */
 function image_field( string $name, int $attachment_id, string $preview_url ): void {
-	$has_image = $attachment_id && '' !== $preview_url;
+	$has_image = $attachment_id && $preview_url !== '';
 
 	printf(
 		'<div class="simple-seo-share-image"><img src="%1$s" alt="" style="max-width:300px;width:100%%;height:auto;display:block;margin-bottom:8px" %2$s />',

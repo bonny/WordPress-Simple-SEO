@@ -55,11 +55,11 @@ function register_meta(): void {
 				'type'              => $type,
 				'description'       => $description,
 				'single'            => true,
-				'default'           => 'boolean' === $type ? false : '',
+				'default'           => $type === 'boolean' ? false : '',
 				// Edit context only: logged-in editors (block editor, WP-CLI, application passwords) see the
 				// fields, anonymous requests don't.
 				'show_in_rest'      => [ 'schema' => [ 'context' => [ 'edit' ] ] ],
-				'sanitize_callback' => 'boolean' === $type ? 'rest_sanitize_boolean' : 'sanitize_text_field',
+				'sanitize_callback' => $type === 'boolean' ? 'rest_sanitize_boolean' : 'sanitize_text_field',
 				'auth_callback'     => fn( $allowed, $meta_key, $post_id ) => current_user_can( 'edit_post', $post_id ),
 			]
 		);
@@ -113,7 +113,7 @@ function forget_empty_share_image( $meta_id, $object_id, $meta_key, $meta_value 
  * @param string $post_type Post type.
  */
 function has_seo_fields( string $post_type ): bool {
-	return 'attachment' !== $post_type && is_post_type_viewable( $post_type );
+	return $post_type !== 'attachment' && is_post_type_viewable( $post_type );
 }
 
 /**
@@ -172,6 +172,22 @@ function get_share_image_id( int $post_id ): int {
 }
 
 /**
+ * The excerpt a person wrote for a post, as one line of plain text, or '' for none. Never an
+ * automatic excerpt, and '' for password-protected posts, as in core's get_the_excerpt().
+ *
+ * @param int $post_id Post ID.
+ */
+function hand_written_excerpt( int $post_id ): string {
+	if ( post_password_required( $post_id ) ) {
+		return '';
+	}
+
+	$excerpt = wp_strip_all_tags( (string) get_post_field( 'post_excerpt', $post_id ) );
+
+	return trim( (string) preg_replace( '/\s+/', ' ', $excerpt ) );
+}
+
+/**
  * The menu label of a page, or '' to use the page title. Stored as before 1.0: a flag and the text.
  *
  * @param int $post_id Post ID.
@@ -202,7 +218,7 @@ function is_noindex( int $post_id ): bool {
 function save_text( int $post_id, string $key, string $text ): void {
 	$text = sanitize_text_field( $text );
 
-	if ( '' !== $text ) {
+	if ( $text !== '' ) {
 		update_post_meta( $post_id, $key, $text );
 		return;
 	}
@@ -221,7 +237,7 @@ function save_text( int $post_id, string $key, string $text ): void {
 function save_menu_label( int $post_id, string $text ): void {
 	$text = sanitize_text_field( $text );
 
-	if ( '' === $text ) {
+	if ( $text === '' ) {
 		delete_post_meta( $post_id, USE_MENU_LABEL_KEY );
 		delete_post_meta( $post_id, MENU_LABEL_KEY );
 		return;

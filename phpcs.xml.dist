@@ -49,6 +49,9 @@
 		</properties>
 	</rule>
 
+	<!-- No Yoda conditions: `$title !== ''`, never `'' !== $title`. See the php-code-style skill. -->
+	<rule ref="Generic.ControlStructures.DisallowYodaConditions"/>
+
 	<!-- Braces, never `if (): ... endif;`. Same rule as Simple History; see the php-code-style skill. -->
 	<rule ref="Universal.ControlStructures.DisallowAlternativeSyntax"/>
 

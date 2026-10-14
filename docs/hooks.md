@@ -5,7 +5,7 @@ Filters for developers, all prefixed `simple_seo_`. Each is documented where it'
 | Filter | Arguments | Use it to |
 |---|---|---|
 | `simple_seo_title` | `string $title`, `int $post_id` | Change the SEO title used in `<title>` and `og:title`. Return `''` for the normal title. |
-| `simple_seo_description` | `string $description`, `int $post_id` (0 on a latest-posts front page) | Change the meta description, also used as `og:description`. Return `''` for none. |
+| `simple_seo_description` | `string $description`, `int $post_id` (0 on a latest-posts front page) | Change the meta description (the SEO description, else the post's hand-written excerpt), also used as `og:description`. Return `''` for none. |
 | `simple_seo_noindex` | `bool $noindex`, `int $post_id` | Hide or show a post to search engines in the robots tag. The sitemap follows the stored setting. |
 | `simple_seo_link_previews` | `bool $enabled` | Return `false` to output no Open Graph or Twitter tags (Jetpack's come back then). |
 | `simple_seo_link_preview_image` | `array\|null $image` (`url`, `width`, `height`, `alt`), `int $post_id` | Change the preview image. By default the post's share image, else its featured image, else the default share image from Settings → General. |

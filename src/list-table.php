@@ -40,7 +40,7 @@ function add_column( $columns, $post_type = 'page' ): array {
 	foreach ( $columns as $key => $label ) {
 		$added[ $key ] = $label;
 
-		if ( 'title' === $key ) {
+		if ( $key === 'title' ) {
 			$added[ COLUMN ] = __( 'SEO', 'simple-seo' );
 		}
 	}
@@ -78,7 +78,7 @@ function column_content( $column, $post_id ): void {
 	$noindex     = is_noindex( $post_id );
 	$title       = get_title( $post_id );
 	$description = get_description( $post_id );
-	$has_values  = $noindex || '' !== $title || '' !== $description;
+	$has_values  = $noindex || $title !== '' || $description !== '';
 
 	$other_plugin = active_seo_plugin();
 
@@ -95,11 +95,11 @@ function column_content( $column, $post_id ): void {
 	}
 
 	// A short label on each line, so a row reads on its own.
-	if ( '' !== $title ) {
+	if ( $title !== '' ) {
 		column_line( __( 'Title:', 'simple-seo' ), $title, 'simple-seo-title' );
 	}
 
-	if ( '' !== $description ) {
+	if ( $description !== '' ) {
 		column_line( __( 'Description:', 'simple-seo' ), wp_trim_words( $description, 12 ), 'simple-seo-description' );
 	}
 
@@ -172,7 +172,7 @@ function quick_edit_fields( $column, $post_type ): void {
 	quick_edit_field( 'title', __( 'SEO title', 'simple-seo' ) );
 	quick_edit_field( 'description', __( 'Meta description', 'simple-seo' ) );
 
-	if ( 'page' === $post_type ) {
+	if ( $post_type === 'page' ) {
 		quick_edit_field( 'menu_label', __( 'Menu label', 'simple-seo' ) );
 	}
 
@@ -206,7 +206,7 @@ function quick_edit_field( string $name, string $label ): void {
 function enqueue_quick_edit_script( string $hook_suffix ): void {
 	$screen = get_current_screen();
 
-	if ( 'edit.php' !== $hook_suffix || ! $screen || ! has_seo_fields( $screen->post_type ) ) {
+	if ( $hook_suffix !== 'edit.php' || ! $screen || ! has_seo_fields( $screen->post_type ) ) {
 		return;
 	}
 

@@ -150,7 +150,7 @@ class Simple_History_Logger extends \Simple_History\Loggers\Logger {
 	public function remember_before( $check, $post_id, $meta_key ) {
 		$post_id = (int) $post_id;
 
-		if ( 0 === strpos( (string) $meta_key, '_simple_seo_' ) && ! isset( $this->before[ $post_id ] ) ) {
+		if ( strpos( (string) $meta_key, '_simple_seo_' ) === 0 && ! isset( $this->before[ $post_id ] ) ) {
 			$this->before[ $post_id ] = logged_values( $post_id );
 		}
 
@@ -199,7 +199,7 @@ class Simple_History_Logger extends \Simple_History\Loggers\Logger {
 	 * @return array<int, array{url: string, label: string, action: string}>
 	 */
 	public function get_action_links( $row ) {
-		if ( 0 === strpos( (string) ( $row->context['_message_key'] ?? '' ), 'share_image_' ) ) {
+		if ( strpos( (string) ( $row->context['_message_key'] ?? '' ), 'share_image_' ) === 0 ) {
 			return current_user_can( 'manage_options' )
 				? [
 					[
@@ -225,7 +225,7 @@ class Simple_History_Logger extends \Simple_History\Loggers\Logger {
 			];
 		}
 
-		if ( $post && $post_type && 'publish' === get_post_status( $post ) ) {
+		if ( $post && $post_type && get_post_status( $post ) === 'publish' ) {
 			$links[] = [
 				'url'    => (string) get_permalink( $post ),
 				/* translators: %s: post type, like "page" or "post". */
@@ -234,9 +234,9 @@ class Simple_History_Logger extends \Simple_History\Loggers\Logger {
 			];
 		}
 
-		$tree_url = $post && 'trash' !== get_post_status( $post ) ? page_tree_url( $post ) : '';
+		$tree_url = $post && get_post_status( $post ) !== 'trash' ? page_tree_url( $post ) : '';
 
-		if ( '' !== $tree_url ) {
+		if ( $tree_url !== '' ) {
 			$links[] = [
 				'url'    => $tree_url,
 				'label'  => __( 'Page tree', 'simple-seo' ),
@@ -253,7 +253,7 @@ class Simple_History_Logger extends \Simple_History\Loggers\Logger {
 			];
 		}
 
-		return array_values( array_filter( $links, fn( $link ) => '' !== $link['url'] ) );
+		return array_values( array_filter( $links, fn( $link ) => $link['url'] !== '' ) );
 	}
 
 	/**
@@ -263,7 +263,7 @@ class Simple_History_Logger extends \Simple_History\Loggers\Logger {
 	 * @return Event_Details_Group|Event_Details_Container
 	 */
 	public function get_log_row_details_output( $row ) {
-		if ( 0 === strpos( (string) ( $row->context['_message_key'] ?? '' ), 'share_image_' ) ) {
+		if ( strpos( (string) ( $row->context['_message_key'] ?? '' ), 'share_image_' ) === 0 ) {
 			return $this->share_image_details( $row->context, __( 'Default share image', 'simple-seo' ) );
 		}
 

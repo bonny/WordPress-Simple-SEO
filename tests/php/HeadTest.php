@@ -67,7 +67,7 @@ class HeadTest extends SimpleSEO_TestCase {
 	}
 
 	public function test_post_without_fields() {
-		$head = $this->head( self::factory()->post->create( [ 'post_title' => 'Plain' ] ) );
+		$head = $this->head( self::factory()->post->create( [ 'post_title' => 'Plain', 'post_excerpt' => '' ] ) );
 
 		$this->assertSame( 1, $this->tag_count( '/<title>/', $head ) );
 		$this->assertStringContainsString( '<title>Plain &#8211; Site</title>', $head );

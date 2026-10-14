@@ -18,7 +18,7 @@ add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\enqueue_editor_pan
 function enqueue_editor_panel(): void {
 	$screen = get_current_screen();
 
-	if ( ! $screen || 'post' !== $screen->base || ! has_seo_fields( $screen->post_type ) ) {
+	if ( ! $screen || $screen->base !== 'post' || ! has_seo_fields( $screen->post_type ) ) {
 		return;
 	}
 
@@ -39,7 +39,7 @@ function enqueue_editor_panel(): void {
 				'otherPlugin'      => active_seo_plugin(),
 				'simpleHistoryUrl' => simple_history_tip_url(),
 				'faqUrl'           => FAQ_URL,
-				'frontPageId'      => 'page' === get_option( 'show_on_front' ) ? (int) get_option( 'page_on_front' ) : 0,
+				'frontPageId'      => get_option( 'show_on_front' ) === 'page' ? (int) get_option( 'page_on_front' ) : 0,
 			]
 		) . ';',
 		'before'

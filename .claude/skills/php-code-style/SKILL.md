@@ -14,7 +14,7 @@ The house style, taken from Simple History's `code-quality` skill (`php-standard
 - Hooks at the top of the file, with `__NAMESPACE__ . '\\function_name'`.
 - Type declarations on parameters and returns where WordPress always passes that type. Leave a hook callback's parameter untyped when core may pass something else (for example `get_pages` can pass `false`), and say so in the docblock.
 - Short arrays `[]` (lint allows both, use `[]` in `src/`).
-- Yoda conditions are optional (lint off). Put the constant first when comparing strings, as the existing code does: `'' !== $title`.
+- No Yoda conditions (2026-10-14, PHPCS `Generic.ControlStructures.DisallowYodaConditions`): the variable first, `$title !== ''`, never `'' !== $title`.
 - YAGNI: no options, filters or "extension points" for features nobody asked for.
 
 ## Control flow

@@ -44,12 +44,12 @@ function tree_detail_rows( $rows, $page_id, $post ): array {
 		}
 	}
 
-	if ( 'page' === $post->post_type ) {
+	if ( $post->post_type === 'page' ) {
 		$added[] = [ 'simple-seo-menu-label', __( 'Menu label', 'simple-seo' ), get_menu_label( $post->ID ) ];
 	}
 
 	foreach ( $added as [ $id, $label, $value ] ) {
-		if ( '' !== $value ) {
+		if ( $value !== '' ) {
 			$rows[] = [
 				'id'    => $id,
 				'label' => $label,
@@ -80,5 +80,5 @@ function page_tree_url( WP_Post $post ): string {
 
 	$url = (string) call_user_func( $get_url, $post->post_type );
 
-	return '' === $url ? '' : add_query_arg( 'selected', $post->ID, $url );
+	return $url === '' ? '' : add_query_arg( 'selected', $post->ID, $url );
 }

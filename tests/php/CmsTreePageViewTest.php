@@ -19,7 +19,7 @@ namespace CMS_Tree_Page_View\Admin {
 			public static $url = '';
 
 			public static function get_tree_view_url( $post_type ) {
-				return 'page' === $post_type ? self::$url : '';
+				return $post_type === 'page' ? self::$url : '';
 			}
 		}
 	}

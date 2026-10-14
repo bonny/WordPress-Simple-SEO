@@ -72,20 +72,15 @@ function link_preview_tags(): void {
 
 	if ( $post_id ) {
 		$title = seo_title( $post_id );
-		$title = '' !== $title ? $title : wp_strip_all_tags( get_the_title( $post_id ) );
+		$title = $title !== '' ? $title : wp_strip_all_tags( get_the_title( $post_id ) );
 		$url   = (string) get_permalink( $post_id );
 		$image = attachment_image( get_share_image_id( $post_id ) ) ?? attachment_image( (int) get_post_thumbnail_id( $post_id ) );
 
-		// No meta description: the hand-written excerpt, else the start of the content, so a
-		// shared link never shows an empty card (2026-09-30). Link previews only: the meta
-		// description stays hand-written.
-		if ( '' === $description ) {
-			$description = trim( (string) preg_replace( '/\s+/', ' ', wp_strip_all_tags( (string) get_post_field( 'post_excerpt', $post_id ) ) ) );
-		}
-
-		// The blog page's own content is never shown (WordPress lists the posts there), so the
-		// tagline, as on a front page with the latest posts.
-		if ( '' === $description ) {
+		// No meta description or excerpt (current_description() falls back to the excerpt):
+		// the start of the content, so a shared link never shows an empty card (2026-09-30).
+		// Link previews only. The blog page's own content is never shown (WordPress lists the
+		// posts there), so the tagline, as on a front page with the latest posts.
+		if ( $description === '' ) {
 			$description = (int) get_option( 'page_for_posts' ) === $post_id ? get_bloginfo( 'description' ) : automatic_excerpt( $post_id );
 		}
 	}
@@ -128,13 +123,13 @@ function link_preview_tags(): void {
 	$tags = (array) apply_filters( 'simple_seo_link_preview_tags', $tags, $post_id );
 
 	foreach ( $tags as $property => $content ) {
-		if ( '' === (string) $content ) {
+		if ( (string) $content === '' ) {
 			continue;
 		}
 
 		printf(
 			"<meta %s=\"%s\" content=\"%s\" />\n",
-			0 === strpos( (string) $property, 'og:' ) ? 'property' : 'name',
+			strpos( (string) $property, 'og:' ) === 0 ? 'property' : 'name',
 			esc_attr( (string) $property ),
 			esc_attr( (string) $content )
 		);

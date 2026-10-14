@@ -67,8 +67,8 @@ class LinkPreviewsTest extends SimpleSEO_TestCase {
 		$this->go_to( get_permalink( $post_id ) );
 
 		$this->assertStringContainsString( 'og:description" content="A hand-written summary."', $this->tags() );
-		// Only in link previews, not the meta description.
-		$this->assertSame( '', SimpleSEO\current_description() );
+		// The meta description too (2026-10-07).
+		$this->assertSame( 'A hand-written summary.', SimpleSEO\current_description() );
 
 		update_post_meta( $post_id, '_simple_seo_description', 'The SEO description' );
 		$this->assertStringContainsString( 'og:description" content="The SEO description"', $this->tags() );
@@ -84,7 +84,7 @@ class LinkPreviewsTest extends SimpleSEO_TestCase {
 		// No heading, no shortcode, no HTML, 30 words and an ellipsis.
 		$this->assertStringContainsString( 'og:description" content="First sentence here. Second one. word word', $this->tags() );
 		$this->assertSame( 'First sentence here. Second one. ' . trim( str_repeat( 'word ', 25 ) ) . '&hellip;', SimpleSEO\automatic_excerpt( $post_id ) );
-		// Link previews only: no meta description.
+		// Link previews only: an automatic excerpt is never the meta description.
 		$this->assertSame( '', SimpleSEO\current_description() );
 	}
 
