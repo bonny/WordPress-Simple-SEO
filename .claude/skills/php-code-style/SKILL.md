@@ -1,6 +1,6 @@
 ---
 name: php-code-style
-description: Use when writing or reviewing PHP in Simple SEO, especially code that outputs HTML. House style: namespaced functions, braces not `if (): endif;`, PHP on its own lines, printf for small markup, early returns, YAGNI.
+description: "Use when writing or reviewing PHP in Simple SEO, especially code that outputs HTML. House style: namespaced functions, braces not `if (): endif;`, PHP on its own lines, printf for small markup, early returns, YAGNI."
 ---
 
 # PHP code style (Simple SEO)
