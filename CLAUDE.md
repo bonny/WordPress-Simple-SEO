@@ -107,6 +107,6 @@ Between releases the version stays at the last released one (`bumping-version` s
 
 - Commit messages: no `Claude-Session:` links (2026-09-26: the repo is going public). `Co-Authored-By` is fine.
 - Take tooling and conventions from `../WordPress-CMS-Tree-Page-View` (the most recently revived sibling plugin) and, behind it, Simple History. Keep it proportionate: this plugin is small.
-- The maintainer posts all public content. Draft readme copy, WordPress.org replies, and blog posts into `todo.md` or a `todos/` file and stop.
-- Readme tone: short, personal, a bit funny. See the example copy in `todo.md` and the draft in `todos/readme-draft.md`.
+- The maintainer posts all public content. Draft readme copy, WordPress.org replies, and blog posts into a todo (`todos.py ny seo …`, see `.claude/skills/todo/`) or a `todos/` attachment and stop.
+- Readme tone: short, personal, a bit funny. See the example copy under Copy in `todos/archive.md` and the draft in `todos/readme-draft.md`.
 - Images: every committed PNG goes through `pngquant` then `oxipng` (see the `visual-check` skill). The icon and banner come from `.wordpress-org/icon.svg` and the `generating-banner` skill; design drafts go in the gitignored `.design-drafts/`.
