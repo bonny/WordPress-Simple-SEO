@@ -12,17 +12,17 @@ Short version:
 
 - A todo is `todos/NN-slug.md`. `status`, `state`, `human`, `blocked_by` live in the
   frontmatter, follow-ups as lines under `## Follow-ups`. `todo.md` is generated; never edit it.
-- Change todos with the script: `python3 ../.claude/skills/todos/todos.py <command> --project seo`
+- Change todos with the script: `python3 ../.claude/skills/todos/todos.py <command> --project sseo`
   (`new`, `set`, `done`, `reject`, `followup`, `tick`, `move`). After a hand edit run
-  `index --project seo`, and `check` before you're done.
-- **What's next:** `agent --project seo` and `status active`; suggest one and say why.
-- **Show N:** `show SEO-N` and read the file.
-- **Done:** `done seo N "result"` with a 2–5 line result; trim the log to the decisions.
+  `index --project sseo`, and `check` before you're done.
+- **What's next:** `agent --project sseo` and `status active`; suggest one and say why.
+- **Show N:** `show SSEO-N` and read the file.
+- **Done:** `done sseo N "result"` with a 2–5 line result; trim the log to the decisions.
 - Never run prettier on the todo files. Commit only when Pär asks.
 
 ## Project-specific
 
-- Prefix `SEO-01`. Todos are written in English. `todo.md` and `todos/` are symlinks into the
+- Prefix `SSEO-01`. Todos are written in English. `todo.md` and `todos/` are symlinks into the
   Obsidian vault (`Notes/Simple SEO/`), not in git; set up with `scripts/setup-private-docs.sh`.
   Obsidian wiki links (`[[Simple SEO/todos/01-…]]`) break when a file is renamed or moved, so after
   `done`/`reject` grep the vault for the old name and fix them.
